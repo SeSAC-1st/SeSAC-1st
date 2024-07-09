@@ -14,5 +14,8 @@
     "sequelize-cli": "^6.6.2",
     "showdown": "^2.1.0",
     "tailwindcss": "^3.4.4"
+  },
+  "devDependencies": {
+    "tree-cli": "^0.6.7"
   }
 }
