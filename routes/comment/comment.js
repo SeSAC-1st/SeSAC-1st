@@ -9,10 +9,10 @@ router.get('/list/:postId', controller.getCommentList)
 router.post('/:postId', controller.insertComment)
 
 // 댓글, 대댓글 수정
-router.patch('/:comId', controller.updateComment)
+router.patch('/update/:comId', controller.updateComment)
 
 // 댓글, 대댓글 삭제
-router.patch('/:comId', controller.deleteComment)
+router.patch('/delete/:comId', controller.deleteComment)
 
 // 대댓글 등록
 router.post('/:comId', controller.insertReply)
