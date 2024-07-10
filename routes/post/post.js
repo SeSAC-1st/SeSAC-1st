@@ -6,6 +6,7 @@ const router = express.Router();
 const controller = require('../../controller/post/Cpost');
 
 // 전체 게시물 목록 조회 라우터
+// 검색 테스트 시 http://localhost:8080/post/list/1/12?search=boardTitle 형식으로
 router.get('/list/:page/:size', controller.getPostList);
 // 사용자 게시물 목록 조회 라우터
 router.get('/list/:userId/:page/:size', controller.getUserPostList);
