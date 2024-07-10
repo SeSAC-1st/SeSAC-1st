@@ -38,16 +38,6 @@ const userModel = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             allowNull: true
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            defaultValue: Sequelize.NOW
-        },
-        updateAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-            defaultValue: Sequelize.NOW
-        }
     }, {
         freezeTableName: true
     })
