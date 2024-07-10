@@ -38,6 +38,15 @@ exports.getPostList = async (req, res) => {
       });
     }
     res.json(postList);
+    // {
+    //   "postId": 3,
+    //   "postTitle": "postTitle cr test",
+    //   "postContent": "postContent cr test",
+    //   "userId": 3,
+    //   "isDeleted": false,
+    //   "createdAt": "2024-07-10T06:00:44.000Z",
+    //   "updatedAt": "2024-07-10T06:00:44.000Z"
+    // },  
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -60,6 +69,15 @@ exports.getUserPostList = async (req, res) => {
     })
 
     res.json(userPostList);
+    // {
+    //   "postId": 27,
+    //   "postTitle": "test 12",
+    //   "postContent": "test 12",
+    //   "userId": 5,
+    //   "isDeleted": false,
+    //   "createdAt": "2024-07-10T07:18:17.000Z",
+    //   "updatedAt": "2024-07-10T07:18:17.000Z"
+    // },
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -127,6 +145,11 @@ exports.getMonthlyPostCounts = async (req, res) => {
     }
 
     res.json(allMonths);
+    // {
+    //   "year": 2024,
+    //   "month": 7,
+    //   "count": 14
+    // },
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -142,6 +165,15 @@ exports.getPost = async (req, res) => {
       where: { postId }
     });
     res.json(post);
+    // {
+    //   "postId": 1,
+    //   "postTitle": "search",
+    //   "postContent": "up test",
+    //   "userId": 1,
+    //   "isDeleted": true,
+    //   "createdAt": "2024-07-10T05:47:56.000Z",
+    //   "updatedAt": "2024-07-10T06:49:04.000Z"
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -160,6 +192,9 @@ exports.updatePost = async (req, res) => {
     );
 
     res.json(postUpdate);
+    // [
+    //   1
+    // ] 
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -177,6 +212,9 @@ exports.deletePost = async (req, res) => {
     );
 
     res.json(postDelete);
+    // [
+    //   1
+    // ]
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -194,6 +232,15 @@ exports.insertPost = async (req, res) => {
     });
 
     res.json(postcreate);
+    // {
+    //   "isDeleted": false,
+    //   "postId": 29,
+    //   "postTitle": "test 13",
+    //   "postContent": "test 13",
+    //   "userId": 5,
+    //   "updatedAt": "2024-07-10T08:05:08.190Z",
+    //   "createdAt": "2024-07-10T08:05:08.190Z"
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
