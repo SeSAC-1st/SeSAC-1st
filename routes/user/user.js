@@ -7,3 +7,5 @@ router.get('/register', controller.registerPage);
 
 // 회원가입 로직
 router.post('/register', controller.userRegister);
+
+module.exports = router;
