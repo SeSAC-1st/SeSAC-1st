@@ -22,3 +22,30 @@ exports.userRegister = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }
+
+// 로그인 페이지
+exports.loginPage = (req, res) => {
+    res.render('/user/loginPage');
+}
+
+// 로그인 로직
+exports.userLogin = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { userid, userPw } =req.body;
+        
+        const user = await User.findOne({
+            where: { userid, userPw },
+        });
+
+        res.json(user);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+// 로그아웃 페이지
+
+// 로그아웃 로직
