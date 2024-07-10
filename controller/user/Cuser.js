@@ -13,6 +13,19 @@ exports.userRegister = async (req, res) => {
         const {
             userName, loginId, userPw, email, address, profileImg, userNick, birthday
         } = req.body;
+
+        // loginId 정규표현식 (6~10글자, 영어 대소문자)
+        const loginIdRegex = /^[a-zA-Z0-9]{6,10}$/;
+        if (!loginIdRegex.test(loginId)) {
+            return res.status(400).json({ error: 'Invalid loginId.' });
+        }
+
+        // userPw 정규표현식 검사 (8~12글자, 영어, 숫자, 특수문자 포함)
+        const userPwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
+        if (!userPwRegex.test(userPw)) {
+            return res.status(400).json({ error: 'Invalid userPw.' });
+        }
+
         const newUser = await User.create({
             userName, loginId, userPw, email, address, profileImg, userNick, birthday
         });
@@ -49,7 +62,6 @@ exports.userLogin = async (req, res) => {
     try {
         console.log(req.body);
         const { loginId, userPw } = req.body;
-        
         
         console.log('loginId ->', loginId);
 
