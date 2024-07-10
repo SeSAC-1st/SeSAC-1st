@@ -1,6 +1,6 @@
 // Post 관련 컨트롤러
 
-const { Post } = require('../../models/index');
+const { Post, Comment } = require('../../models/index');
 // fn: SQL 함수 호출을 나타내기 위해 사용(함수 이름과 인수를 받아 호출 생성)
 // col: 특정 칼럼을 참조하기 위해 사용
 // literal: 원시 SQL 구문을 삽입하기 위해 사용
@@ -122,7 +122,7 @@ exports.getMonthlyPostCounts = async (req, res) => {
     // - 순수한 데이터 값만 필요하기 때문에 get({ plain: true })를 사용하여 순수 데이터 값 추출
     const monthlyPostCountsJson = monthlyPostCounts.map(result => result.get({ plain: true }));
 
- 
+
     // const currentMonth = new Date().getMonth() + 1; // 월은 0부터 시작하므로 +1
     // 1 ~ 12월까지의 모든 월에 대해 기본 값을 설정
     const allMonths = [];
@@ -211,10 +211,20 @@ exports.deletePost = async (req, res) => {
       { where: { postId } }
     );
 
-    res.json(postDelete);
-    // [
-    //   1
-    // ]
+    const commentDelete = await Comment.update(
+      { isDeleted: true },
+      { where: { postId } }
+    )
+
+    res.json({ postDelete, commentDelete });
+    // {
+    //   "postDelete": [
+    //       1
+    //   ],
+    //   "commentDelete": [
+    //       1
+    //   ]
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
