@@ -1,5 +1,11 @@
 const { User } = require('../../models/user/User');
 
+// 회원가입 페이지
+exports.registerPage = (req, res) => {
+    res.render('/user/registerPage');
+  };
+
+// 회원가입 로직
 exports.userRegister = async (req, res) => {
     try {
         console.log(req.body)
