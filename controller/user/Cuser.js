@@ -1,4 +1,5 @@
 const { User } = require('../../models/index');
+const { hashPw } = require('../../utils/bcrypt');
 
 // 회원가입 페이지
 exports.registerPage = (req, res) => {
@@ -39,8 +40,11 @@ exports.userRegister = async (req, res) => {
             return res.status(400).json({ error: 'Invalid userNick. It must be 2-10 characters long and include only Korean or English letters.' });
         }
 
+        // 비밀번호 해싱
+        const hashedPw = hashPw(userPw);
+
         const newUser = await User.create({
-            userName, loginId, userPw, email, address, profileImg, userNick, birthday
+            userName, loginId, userPw: hashedPw, email, address, profileImg, userNick, birthday
         });
 
         res.json(newUser);
