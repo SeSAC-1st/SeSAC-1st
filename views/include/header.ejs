@@ -100,4 +100,77 @@
             <% } %>
 </body>
 
+<script>
+    // 사용자 정보 가져오는 axios 함수
+    async function userInfo(loginId) {
+        try {
+            const res = await axios.get('', {
+                params: {
+                    id: loginId
+                }
+            }); // 서버에게 데이터 요청(추후 url 추가 필요)
+            return res.data;
+        } catch (error) {
+            console.error('There was an error!', error);
+            throw error;
+        }
+    }
+
+    // 프로필 사진 url을 가져오는 함수
+    async function profileImageUrl(loginId) {
+        try {
+            const user = await userInfo(loginId);
+            return user.profileImageUrl;
+            // 사용자 정보에서 프로필 사진 url 가져오기
+        } catch (error) {
+            console.error('profile image URL Error: ', error);
+            return null;
+        }
+    }
+
+    // * 프로필 설정 함수
+    async function profileImage(loginId) {
+        const profileImageElement = document.getElementById('profileImage');
+
+        try {
+            const imageUrl = await profileImageUrl(loginId);
+            if (imageUrl) {
+                profileImageElement.src = imageUrl;
+            } else {
+                profileImageElement.src = '' // 기본 프로필 이미지 url
+            }
+        } catch (error) {
+            console.error('profile image error: ', error);
+        }
+    }
+
+    // * 내 게시물 목록 이동
+    document.querySelector('#myPostList').addEventListener('clink', async function (enevt) {
+        event.preventDefault(); // 기본 링크 동작 막음
+
+        try {
+            const userInfo = await userInfo();
+            console.log(userInfo); // 받은 데이터 확인
+
+            document.location.href = ''; // url 추가 예정
+        } catch (error) {
+            alert('사용자 정보를 불러오는데 실패했습니다.')
+        }
+    })
+
+    // * 마이페이지로 이동
+    document.querySelector('#mypage-link').addEventListener('click', async function (enevt) {
+        event.preventDefault(); // 기본 링크 동작 막음
+
+        try {
+            const userInfo = await userInfo();
+            console.log(userInfo); // 받은 데이터 확인
+
+            window.location.href = ''; // url 추가 예정
+        } catch (error) {
+            alert('사용자 정보를 불러오는데 실패했습니다.')
+        }
+    })
+</script>
+
 </html>
