@@ -4,7 +4,7 @@ const { Post, Comment } = require('../../models/index');
 // literal: 원시 SQL 구문을 삽입하기 위해 사용
 const { Op, fn, col, literal } = require('sequelize');
 
-// 전체 게시물 목록 조회 및 검색 메서드
+// 전체 게시물 목록 조회 및 검색 메서드, 전체 개수도 출력
 exports.getPostList = async (req, res) => {
   try {
     const { page, size } = req.params;
@@ -19,7 +19,7 @@ exports.getPostList = async (req, res) => {
     let postList;
 
     if (boardTitle) {
-      postList = await Post.findAll({
+      postList = await Post.findAndCountAll({
         where: {
           isDeleted: false, // isDeleted가 false일 경우만
           postTitle: {
@@ -31,29 +31,133 @@ exports.getPostList = async (req, res) => {
         limit: pageSize, // 한 페이지에 출력할 데이터의 개수
       });
     } else {
-      postList = await Post.findAll({
+      postList = await Post.findAndCountAll({
         where: { isDeleted: false },
         offset: offset,
         limit: pageSize,
       });
     }
     res.json(postList);
-    // {
-    //   "postId": 3,
-    //   "postTitle": "postTitle cr test",
-    //   "postContent": "postContent cr test",
-    //   "userId": 3,
-    //   "isDeleted": false,
-    //   "createdAt": "2024-07-10T06:00:44.000Z",
-    //   "updatedAt": "2024-07-10T06:00:44.000Z"
-    // },
+    //   {
+    //     "count": 14,
+    //     "rows": [
+    //         {
+    //             "postId": 2,
+    //             "postTitle": "postTitle2",
+    //             "postContent": "postContent2",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:12:26.000Z",
+    //             "updatedAt": "2024-07-11T07:12:26.000Z"
+    //         },
+    //         {
+    //             "postId": 3,
+    //             "postTitle": "postTitle3",
+    //             "postContent": "postContent3",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:13:52.000Z",
+    //             "updatedAt": "2024-07-11T07:13:52.000Z"
+    //         },
+    //         {
+    //             "postId": 4,
+    //             "postTitle": "postTitle4",
+    //             "postContent": "postContent4",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:13:58.000Z",
+    //             "updatedAt": "2024-07-11T07:13:58.000Z"
+    //         },
+    //         {
+    //             "postId": 5,
+    //             "postTitle": "postTitle5",
+    //             "postContent": "postContent5",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:04.000Z",
+    //             "updatedAt": "2024-07-11T07:14:04.000Z"
+    //         },
+    //         {
+    //             "postId": 6,
+    //             "postTitle": "postTitle6",
+    //             "postContent": "postContent6",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:11.000Z",
+    //             "updatedAt": "2024-07-11T07:14:11.000Z"
+    //         },
+    //         {
+    //             "postId": 7,
+    //             "postTitle": "postTitle7",
+    //             "postContent": "postContent7",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:18.000Z",
+    //             "updatedAt": "2024-07-11T07:14:18.000Z"
+    //         },
+    //         {
+    //             "postId": 8,
+    //             "postTitle": "postTitle8",
+    //             "postContent": "postContent8",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:25.000Z",
+    //             "updatedAt": "2024-07-11T07:14:25.000Z"
+    //         },
+    //         {
+    //             "postId": 9,
+    //             "postTitle": "postTitle9",
+    //             "postContent": "postContent9",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:30.000Z",
+    //             "updatedAt": "2024-07-11T07:14:30.000Z"
+    //         },
+    //         {
+    //             "postId": 10,
+    //             "postTitle": "postTitle10",
+    //             "postContent": "postContent10",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:37.000Z",
+    //             "updatedAt": "2024-07-11T07:14:37.000Z"
+    //         },
+    //         {
+    //             "postId": 11,
+    //             "postTitle": "postTitle11",
+    //             "postContent": "postContent11",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:44.000Z",
+    //             "updatedAt": "2024-07-11T07:14:44.000Z"
+    //         },
+    //         {
+    //             "postId": 12,
+    //             "postTitle": "postTitle12",
+    //             "postContent": "postContent12",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:51.000Z",
+    //             "updatedAt": "2024-07-11T07:14:51.000Z"
+    //         },
+    //         {
+    //             "postId": 13,
+    //             "postTitle": "postTitle13",
+    //             "postContent": "postContent13",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:57.000Z",
+    //             "updatedAt": "2024-07-11T07:14:57.000Z"
+    //         }
+    //     ]
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
 
-// 사용자 게시물 목록 조회 메서드
+// 사용자 게시물 목록 조회 메서드, 전체 개수도 출력
 exports.getUserPostList = async (req, res) => {
   try {
     const { userId, page, size } = req.params;
@@ -62,22 +166,126 @@ exports.getUserPostList = async (req, res) => {
     const pageSize = size ? parseInt(size, 10) : 12;
     const offset = (pageNumber - 1) * pageSize;
 
-    const userPostList = await Post.findAll({
+    const userPostList = await Post.findAndCountAll({
       where: { userId },
       offset: offset,
       limit: pageSize,
     });
 
     res.json(userPostList);
-    // {
-    //   "postId": 27,
-    //   "postTitle": "test 12",
-    //   "postContent": "test 12",
-    //   "userId": 5,
-    //   "isDeleted": false,
-    //   "createdAt": "2024-07-10T07:18:17.000Z",
-    //   "updatedAt": "2024-07-10T07:18:17.000Z"
-    // },
+    //   {
+    //     "count": 15,
+    //     "rows": [
+    //         {
+    //             "postId": 1,
+    //             "postTitle": "postTitle1",
+    //             "postContent": "postContent1",
+    //             "userId": 1,
+    //             "isDeleted": true,
+    //             "createdAt": "2024-07-11T07:12:18.000Z",
+    //             "updatedAt": "2024-07-11T07:16:34.000Z"
+    //         },
+    //         {
+    //             "postId": 2,
+    //             "postTitle": "postTitle2",
+    //             "postContent": "postContent2",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:12:26.000Z",
+    //             "updatedAt": "2024-07-11T07:12:26.000Z"
+    //         },
+    //         {
+    //             "postId": 3,
+    //             "postTitle": "postTitle3",
+    //             "postContent": "postContent3",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:13:52.000Z",
+    //             "updatedAt": "2024-07-11T07:13:52.000Z"
+    //         },
+    //         {
+    //             "postId": 4,
+    //             "postTitle": "postTitle4",
+    //             "postContent": "postContent4",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:13:58.000Z",
+    //             "updatedAt": "2024-07-11T07:13:58.000Z"
+    //         },
+    //         {
+    //             "postId": 5,
+    //             "postTitle": "postTitle5",
+    //             "postContent": "postContent5",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:04.000Z",
+    //             "updatedAt": "2024-07-11T07:14:04.000Z"
+    //         },
+    //         {
+    //             "postId": 6,
+    //             "postTitle": "postTitle6",
+    //             "postContent": "postContent6",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:11.000Z",
+    //             "updatedAt": "2024-07-11T07:14:11.000Z"
+    //         },
+    //         {
+    //             "postId": 7,
+    //             "postTitle": "postTitle7",
+    //             "postContent": "postContent7",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:18.000Z",
+    //             "updatedAt": "2024-07-11T07:14:18.000Z"
+    //         },
+    //         {
+    //             "postId": 8,
+    //             "postTitle": "postTitle8",
+    //             "postContent": "postContent8",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:25.000Z",
+    //             "updatedAt": "2024-07-11T07:14:25.000Z"
+    //         },
+    //         {
+    //             "postId": 9,
+    //             "postTitle": "postTitle9",
+    //             "postContent": "postContent9",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:30.000Z",
+    //             "updatedAt": "2024-07-11T07:14:30.000Z"
+    //         },
+    //         {
+    //             "postId": 10,
+    //             "postTitle": "postTitle10",
+    //             "postContent": "postContent10",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:37.000Z",
+    //             "updatedAt": "2024-07-11T07:14:37.000Z"
+    //         },
+    //         {
+    //             "postId": 11,
+    //             "postTitle": "postTitle11",
+    //             "postContent": "postContent11",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:44.000Z",
+    //             "updatedAt": "2024-07-11T07:14:44.000Z"
+    //         },
+    //         {
+    //             "postId": 12,
+    //             "postTitle": "postTitle12",
+    //             "postContent": "postContent12",
+    //             "userId": 1,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-11T07:14:51.000Z",
+    //             "updatedAt": "2024-07-11T07:14:51.000Z"
+    //         }
+    //     ]
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
