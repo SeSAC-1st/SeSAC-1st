@@ -6,6 +6,7 @@ exports.registerPage = (req, res) => {
   };
 
 // 회원가입 로직
+// 회원가입 암호화
 exports.userRegister = async (req, res) => {
     try {
         console.log('User ->', User);
@@ -13,6 +14,12 @@ exports.userRegister = async (req, res) => {
         const {
             userName, loginId, userPw, email, address, profileImg, userNick, birthday
         } = req.body;
+
+         // userName 정규표현식 검사 (한글, 영어로 2~10글자)
+         const userNameRegex = /^[가-힣a-zA-Z]{2,10}$/;
+         if (!userNameRegex.test(userName)) {
+             return res.status(400).json({ error: 'Invalid userName. It must be 2-10 characters long and include only Korean or English letters.' });
+         }
 
         // loginId 정규표현식 (6~10글자, 영어 대소문자)
         const loginIdRegex = /^[a-zA-Z0-9]{6,10}$/;
@@ -24,6 +31,12 @@ exports.userRegister = async (req, res) => {
         const userPwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
         if (!userPwRegex.test(userPw)) {
             return res.status(400).json({ error: 'Invalid userPw.' });
+        }
+
+        // userNick 정규표현식 검사 (한글, 영어로 2~10글자)
+        const userNickRegex = /^[가-힣a-zA-Z]{2,10}$/;
+        if (!userNickRegex.test(userNick)) {
+            return res.status(400).json({ error: 'Invalid userNick. It must be 2-10 characters long and include only Korean or English letters.' });
         }
 
         const newUser = await User.create({
@@ -58,6 +71,11 @@ exports.loginPage = (req, res) => {
 
 
 // 로그인 로직
+
+// 로그인 정규표현식
+// 로그인 암호화
+// 로그인 암호화 DB 대조
+// 로그인 session
 exports.userLogin = async (req, res) => {
     try {
         console.log(req.body);
