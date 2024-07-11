@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>로그인 페이지</title>
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        border: none;
+      }
+      body {
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+      }
+      .loginBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 1120px;
+        height: 600px;
+      }
+      .loginWrapper {
+        width: 400px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* .loginWrapper > h2 {
+        font-size: 24px;
+        color: #4a81c8;
+        margin-bottom: 10px;
+      } */
+
+      .loginWrapper > hr {
+        width: 100%;
+        margin-bottom: 20px;
+        border: 0;
+        height: 1px;
+        background-color: #006eff;
+      }
+
+      .registerText {
+        width: 100%;
+        text-align: left;
+        color: #006eff;
+      }
+      .registerText > a {
+        display: inline-block;
+        width: 70px;
+        border-style: solid;
+        border-width: 0px 1px 0px 1px;
+        border-color: #2d2d2d;
+        color: #2d2d2d;
+        text-align: center;
+        text-decoration-line: none;
+        cursor: pointer !important;
+      }
+      .registerText > a:active {
+        font-weight: 800;
+        border-width: 0px 2px 0px 2px;
+      }
+
+      #loginForm {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #loginForm > input {
+        width: 100%;
+        height: 48px;
+        padding: 0 10px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+        border-radius: 6px;
+        background-color: #f8f8f8;
+      }
+
+      .loginId:focus,
+      .userPw:focus {
+        outline: 3px solid #f2f2f2ef;
+        /* outline: none; */
+        background-color: #f0f0f0 !important;
+      }
+
+      #loginForm > input::placeholder {
+        color: #d2d2d2;
+      }
+      .errorMessage {
+        color: red;
+        text-align: left;
+        font-size: 13px;
+        width: 100%;
+      }
+
+      .loginButton {
+        color: #fff;
+        font-size: 16px;
+        background-color: #006eff !important;
+        margin-top: 20px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .loginButton:active {
+        background-color: #0d4a9b !important;
+      }
+
+      #loginForm > label {
+        color: #999999;
+      }
+
+      /* 다크 모드 스타일 */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #333333;
+          color: #ffffff;
+        }
+        .loginWrapper {
+          background-color: #333333;
+        }
+        .registerText > a {
+          color: #ffffff;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loginBox">
+      <div class="loginWrapper">
+        <a href="/"
+          ><img src="/image/logoImage.png" alt="logoImage" width="100px"
+        /></a>
+        <hr />
+        <form id="loginForm">
+          <input
+            type="text"
+            class="loginId"
+            name="loginId"
+            placeholder="아이디"
+            onkeydown="idKeySet(this)"
+          />
+          <input
+            type="password"
+            class="userPw"
+            name="userPw"
+            placeholder="비밀번호"
+          />
+          <!-- <label for="remember-check">
+          <input type="checkbox" id="remember-check" />아이디 저장하기
+        </label> -->
+          <div class="errorMessage" id="errorMessage">
+            <p></p>
+          </div>
+          <input
+            type="button"
+            class="loginButton"
+            value="로그인"
+            onclick="submitForm()"
+          />
+        </form>
+        <div class="registerText"><a href="/">회원가입</a></div>
+      </div>
+    </div>
+
+    <script>
+      function idKeySet(key) {
+        key.value = key.value.replace(/[^0-9a-zA-Z]/gi, '');
+      }
+
+      function submitForm() {
+        const data = {
+          loginId: document.querySelector("input[name = 'loginId']").value,
+          userPw: document.querySelector("input[name = 'userPw']").value,
+        };
+        axios({
+          method: 'POST',
+          url: '/백엔드 서버 주소',
+          data,
+        })
+          .then((res) => {
+            if (res.data.success) {
+              // 서버측 코드에서 id, pw가 맞다면 res.send({ success: true }) 반환하도록 부탁드려요
+              window.location.href = '/postsPage';
+            } else {
+              document.getElementById('errorMessage').textContent =
+                '아이디 또는 비밀번호를 다시 확인해주세요';
+            }
+          })
+          .catch((error) => {
+            console.error('로그인 중 오류 발생:', error);
+          });
+      }
+    </script>
+  </body>
+</html>
