@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/static/css/output.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <main>
+        <div class="container mx-auto py-4 px-20 md:px-48">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- <% for(let i = 0; i < 10; i++) { %> -->
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <img class="w-full h-48 object-cover" src="https://via.placeholder.com/400x300"
+                        alt="Placeholder Image">
+                    <div class="p-4">
+                        <h2 class="text-lg font-semibold mb-2"><!--Card Title <%= i + 1 %>--></h2>
+                        <p class="text-gray-700">This is a description of the card content. It can be multiple lines
+                            long
+                            and will be truncated if it exceeds the space.</p>
+                    </div>
+                </div>
+                <!-- <% } %> -->
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
