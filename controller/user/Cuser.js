@@ -74,7 +74,43 @@ exports.loginPage = (req, res) => {
 }
 
 
+
 // 로그인 로직
+
+// 로그인 암호화
+// 로그인 암호화 DB 대조
+// 로그인 session
+exports.userLogin = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { loginId, userPw } = req.body;
+        
+        // loginId 정규표현식 (6~10글자, 영어 대소문자)
+        const loginIdRegex = /^[a-zA-Z0-9]{6,10}$/;
+        if (!loginIdRegex.test(loginId)) {
+            return res.status(400).json({ error: 'Invalid loginId.' });
+        }
+
+        // userPw 정규표현식 검사 (8~12글자, 영어, 숫자, 특수문자 포함)
+        const userPwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
+        if (!userPwRegex.test(userPw)) {
+            return res.status(400).json({ error: 'Invalid userPw.' });
+        }
+        console.log('loginId ->', loginId);
+        console.log('userPw ->', userPw);
+
+
+        const user = await User.findOne({
+            where: { loginId, userPw },
+        });
+
+        res.json(user);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 // 로그인 정규표현식
 // 로그인 암호화
