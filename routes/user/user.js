@@ -21,7 +21,7 @@ router.post('/checkLoginid', controller.checkDuplicatedLoginid);
 router.patch('/:userId', controller.updateUser);
 
 // 회원 조회
-router.get('/:userId', controller.getUser)
+// router.get('/:userId', controller.getUser)
 
 // 로그아웃 로직
 router.get('/logout', controller.userLogout);

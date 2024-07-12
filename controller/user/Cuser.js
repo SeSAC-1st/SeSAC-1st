@@ -155,10 +155,53 @@ exports.checkDuplicatedLoginid = async (req, res) => {
     }
 }
 
-// // 회원 정보 수정
-// exports.updateUser = async (req, res) => {
-    
-// }
+/**
+ * 회원 정보를 수정하는 함수
+ * @param {Object} req - 요청 객체
+ * @param {Object} req.body - 요청 본문 데이터
+ * @param {string} req.body.userId - 수정할 회원의 로그인 ID
+ * @param {string} [req.body.userPw] - 새 비밀번호 (선택적)
+ * @param {string} [req.body.userNick] - 새 닉네임 (선택적)
+ * @param {string} [req.body.profileImg] - 새 프로필 이미지 (선택적)
+ * @param {Object} res - 응답 객체
+ * @returns {Promise<void>} - 비동기 함수는 아무것도 반환하지 않습니다.
+ */
+// 회원 정보 수정
+exports.updateUser = async (req, res) => {
+    try {
+        const { userId } = req.params; // URL 경로에서 userId 추출
+        const { email, address, profileImg, userNick } = req.body;
+        console.log('Updating user info for userId ->', userId);
+
+        const user = await User.findOne({
+            where: { userId },
+        });
+
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        // 업데이트할 데이터 객체 생성
+        const updatedData = {};
+        if (email) updatedData.email = email;
+        if (address) updatedData.address = address;
+        if (profileImg) updatedData.profileImg = profileImg;
+        if (userNick) updatedData.userNick = userNick;
+
+        await User.update(updatedData, {
+            where: { userId },
+        });
+
+        const updatedUser = await User.findOne({
+            where: { userId },
+        });
+
+        res.json(updatedUser);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 // // 회원 조회
 // exports.getUser = async (req, res) => {
