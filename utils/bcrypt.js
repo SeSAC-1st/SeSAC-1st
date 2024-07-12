@@ -16,6 +16,6 @@ return bcrypt.hashSync(pw, saltRounds);
 
 // 비밀번호 정답 검증 함수 정의
 exports.comparePw = (inputPw, originalPw) => {
-    console.log(comparpw);
+    console.log('inputPw, originalPw ->', inputPw, originalPw);
     return bcrypt.compareSync(inputPw, originalPw);
 }

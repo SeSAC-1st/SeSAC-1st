@@ -86,62 +86,36 @@ exports.loginPage = (req, res) => {
 
 // 로그인 로직
 
-// 로그인 암호화 DB 대조
 // 로그인 session
 exports.userLogin = async (req, res) => {
     try {
         console.log(req.body);
         const { loginId, userPw } = req.body;
         
-        // loginId 정규표현식 (6~10글자, 영어 대소문자)
-        const loginIdRegex = /^[a-zA-Z0-9]{6,10}$/;
-        if (!loginIdRegex.test(loginId)) {
-            return res.status(400).json({ error: 'Invalid loginId.' });
-        }
-
-        // userPw 정규표현식 검사 (8~12글자, 영어, 숫자, 특수문자 포함)
-        const userPwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
-        if (!userPwRegex.test(userPw)) {
-            return res.status(400).json({ error: 'Invalid userPw.' });
-        }
         console.log('loginId ->', loginId);
         console.log('userPw ->', userPw);
 
         // 비밀번호 해싱
-        const hashedPw = hashPw(userPw);
+        // const hashedPw = hashPw(userPw);
 
-        const comparedPw = comparePw()
-
+        // 데이터베이스에서 사용자를 찾습니다.
         const user = await User.findOne({
-            where: { loginId, userPw:hashedPw },
+            where: { loginId },
         });
+        console.log('userId, userPw ->', user.loginId, user.userPw);
 
-        res.json(user);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
-    }
-}
-
-// 로그인 정규표현식
-// 로그인 암호화
-// 로그인 암호화 DB 대조
-// 로그인 session
-exports.userLogin = async (req, res) => {
-    try {
-        console.log(req.body);
-        const { loginId, userPw } = req.body;
-        
-        console.log('loginId ->', loginId);
-
-        if (loginId === undefined) {
-            throw new Error('loginId가 정의되지 않았습니다.');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
         }
 
-        const user = await User.findOne({
-            where: { loginId, userPw },
-        });
+          // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
+          const isPasswordValid = comparePw(userPw, user.userPw);
+          console.log('userPw, user.userPw ->', userPw, user.userPw)
+
+          if (!isPasswordValid) {
+              return res.status(401).json({ error: 'Invalid password.' });
+          }
+
 
         res.json(user);
 
@@ -150,7 +124,6 @@ exports.userLogin = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }
-
 
 
 // 로그아웃 페이지
