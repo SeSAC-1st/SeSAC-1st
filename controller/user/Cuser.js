@@ -6,6 +6,20 @@ exports.registerPage = (req, res) => {
     res.render('/user/registerPage');
 };
 
+/**
+ * 사용자 등록을 처리하는 함수
+ * @param {Object} req - 요청 객체
+ * @param {Object} req.body - 요청 본문 데이터
+ * @param {string} req.body.userName - 사용자의 이름 (한글, 영어로 2~10글자)
+ * @param {string} req.body.loginId - 로그인 ID (6~10글자, 영어 대소문자, 숫자 포함)
+ * @param {string} req.body.userPw - 사용자 비밀번호 (8~12글자, 영어, 숫자, 특수문자 포함)
+ * @param {string} req.body.email - 사용자 이메일
+ * @param {string} req.body.address - 사용자 주소
+ * @param {string} req.body.userNick - 사용자 닉네임 (한글, 영어로 2~10글자)
+ * @param {string} req.body.birthday - 사용자 생일 (YYYY-MM-DD 형식)
+ * @param {Object} res - 응답 객체
+ * @returns {Promise<void>} - 비동기 함수는 아무것도 반환하지 않습니다.
+ */
 // 회원가입 로직
 exports.userRegister = async (req, res) => {
     try {
@@ -17,27 +31,19 @@ exports.userRegister = async (req, res) => {
 
          // userName 정규표현식 검사 (한글, 영어로 2~10글자)
          const userNameRegex = /^[가-힣a-zA-Z]{2,10}$/;
-         if (!userNameRegex.test(userName)) {
-             return res.status(400).json({ error: 'Invalid userName.' });
-         }
+         if (!userNameRegex.test(userName)) return res.status(400).json({ error: 'Invalid userName.' });
 
         // loginId 정규표현식 (6~10글자, 영어 대소문자, 숫자 포함)
         const loginIdRegex = /^[a-zA-Z0-9]{6,10}$/;
-        if (!loginIdRegex.test(loginId)) {
-            return res.status(400).json({ error: 'Invalid loginId.' });
-        }
+        if (!loginIdRegex.test(loginId)) return res.status(400).json({ error: 'Invalid loginId.' });
 
         // userPw 정규표현식 검사 (8~12글자, 영어, 숫자, 특수문자 포함)
         const userPwRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,12}$/;
-        if (!userPwRegex.test(userPw)) {
-            return res.status(400).json({ error: 'Invalid userPw.' });
-        }
+        if (!userPwRegex.test(userPw)) return res.status(400).json({ error: 'Invalid userPw.' });
 
         // userNick 정규표현식 검사 (한글, 영어로 2~10글자)
         const userNickRegex = /^[가-힣a-zA-Z]{2,10}$/;
-        if (!userNickRegex.test(userNick)) {
-            return res.status(400).json({ error: 'Invalid userNick.' });
-        }
+        if (!userNickRegex.test(userNick)) return res.status(400).json({ error: 'Invalid userNick.' });
 
         // 비밀번호 해싱
         const hashedPw = hashPw(userPw);
@@ -72,7 +78,6 @@ exports.loginPage = (req, res) => {
     res.render('/user/loginPage');
 }
 
-
 // 로그인 로직
 /**
  * 사용자의 로그인 요청을 처리합니다.
@@ -103,17 +108,13 @@ exports.userLogin = async (req, res) => {
         });
         console.log('userId, userPw ->', user.loginId, user.userPw);
 
-        if (!user) {
-            return res.status(404).json({ error: 'User not found.' });
-        }
+        if (!user) return res.status(404).json({ error: 'User not found.' });
 
         // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
         const isPasswordValid = comparePw(userPw, user.userPw);
         console.log('userPw, user.userPw ->', userPw, user.userPw)
 
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid password.' });
-        }
+        if (!isPasswordValid) return res.status(401).json({ error: 'Invalid password.' });
 
         req.session.user = {
             loginId : user.loginId,
@@ -131,8 +132,26 @@ exports.userLogin = async (req, res) => {
     }
 }
 
+// // 로그인 아이디 중복 체크
+// exports.checkDuplicatedLoginid = async (req, res) => {
 
-// 로그아웃 페이지
+// }
 
+// // 회원 정보 수정
+// exports.updateUser = async (req, res) => {
+    
+// }
+
+// // 회원 조회
+// exports.getUser = async (req, res) => {
+    
+// }
 
 // 로그아웃 로직
+exports.userLogout = async (req, res) => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).send('Failed to logout.');
+
+        res.send('Logged out successfully.');
+    });
+}
