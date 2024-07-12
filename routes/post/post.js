@@ -34,6 +34,9 @@ router.post('/', controller.insertPost);
 // 게시물 제목으로 검색(검색 후 전체 게시물 조회)
 
 // 게시물 등록 폼 페이지 이동
-router.get('/form', controller.getPostFormPage);
+// router.get('/form', controller.getPostFormPage);
+
+// 게시물 수정 폼 페이지 이동
+// router.post('/form/:postId', controller.getPostFormPage)
 
 module.exports = router;

@@ -30,12 +30,34 @@ exports.getPostList = async (req, res) => {
         },
         offset: offset, // 보여 줄 페이지
         limit: pageSize, // 한 페이지에 출력할 데이터의 개수
+        // include: [
+        //   {
+        //     model: Comment,
+        //     attributes: [
+        //       'Post.postId',
+        //       [fn('COUNT', col('comId')), 'commentCount'],
+        //     ],
+        //     required: false,
+        //     group: ['Comment.postId'],
+        //   },
+        // ],
       });
     } else {
       postList = await Post.findAndCountAll({
         where: { isDeleted: false },
         offset: offset,
         limit: pageSize,
+        // include: [
+        //   {
+        //     model: Comment,
+        //     attributes: [
+        //       'Post.postId',
+        //       [fn('COUNT', col('comId')), 'commentCount'],
+        //     ],
+        //     required: false,
+        //     group: ['Comment.postId'],
+        //   },
+        // ],
       });
     }
     res.json(postList);
@@ -164,6 +186,7 @@ exports.getPostList = async (req, res) => {
 // 사용자 게시물 목록 조회 메서드, 전체 개수도 출력
 exports.getUserPostList = async (req, res) => {
   try {
+    // userId는 session에서 가져오기로 변경
     const { userId, page, size } = req.params;
 
     const pageNumber = page ? parseInt(page, 10) : 1;
@@ -661,4 +684,9 @@ exports.insertPost = async (req, res) => {
 //   res.render('search/searchPage');
 // };
 
-// 게시물 등록 폼 페이지 이동
+// 게시물 폼 페이지 이동(등록, 수정을 한 메서드에)
+// exports.getPostFormPage = (req, res) => {
+// 등록은 그냥 페이지 이동
+//   res.render('posts/postFormPage')
+// 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
+// }
