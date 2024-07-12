@@ -15,26 +15,14 @@ const commentModel = (sequelize, DataTypes) => {
       postId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'Post',
-        //   key: 'postId',
-        // },
       },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'User',
-        //   key: 'userId',
-        // },
       },
       parentComId: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        // references: {
-        //   model: 'Comment',
-        //   key: 'comId',
-        // },
       },
       isDeleted: {
         type: DataTypes.BOOLEAN,
