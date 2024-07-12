@@ -132,10 +132,28 @@ exports.userLogin = async (req, res) => {
     }
 }
 
-// // 로그인 아이디 중복 체크
-// exports.checkDuplicatedLoginid = async (req, res) => {
+// 로그인 아이디 중복 체크
+exports.checkDuplicatedLoginid = async (req, res) => {
+    try {
+        const { loginId } = req.body;
+        console.log('duplicate loginId ->', loginId);
 
-// }
+        const user = await User.findOne({
+            where: { loginId },
+        });
+
+        // loginId가 이미 존재하는 경우
+        if (user) return res.status(409).json({ error: 'Login ID is already in use.'});
+
+        // loginId가 존재하지 않는 경우
+        res.json({ message: 'Login ID is available.' });
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 // // 회원 정보 수정
 // exports.updateUser = async (req, res) => {
