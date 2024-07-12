@@ -10,85 +10,9 @@
 
 <body>
     <%- include('../include/header.ejs') %>
-        <!-- 카드구조 -->
-        <div class="container mx-auto py-4 px-4 sm:px-6 lg:px-52 pt-20">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <% for (let i=0; i < 12; i++) { %>
-                    <!-- <%# posts.forEach(function(post) { %> --> <!--게시물 개수만큼-->
-                    <div
-                        class="bg-gray-50 shadow-md rounded-lg overflow-hidden transform transition duration-500 hover:scale-105">
-                        <div class="p-4">
-                            <a href="#" class="text-lg font-bold hover:underline block mb-2">게시물 제목 <%= i + 1 %>
-                                    <!-- <%#= post.title %> --> <!--게시물 제목-->
-                            </a>
-                            <p class="text-gray-600 mb-4">
-                                게시물 내용이 여기에 표시됩니다. 게시물 내용이 100글자 이상일 경우 '...'으로 표시됩니다.
-                            </p>
-                            <div class="border-t border-gray-300 pt-2 mt-2">
-                                <div class="text-gray-500 text-sm mb-2">
-                                    닉네임: 사용자<%= i + 1 %>
-                                </div>
-                                <div class="flex justify-end space-x-2 text-gray-400 text-xs">
-                                    <span>조회수: <%= Math.floor(Math.random() * 1000) %></span>
-                                    <span>댓글수: <%= Math.floor(Math.random() * 100) %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <% } %>
-            </div>
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div class="flex justify-center mt-4 pb-6">
-            <nav aria-label="Page navigation example">
-                <ul class="flex items-center -space-x-px h-8 text-sm">
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Previous</span>
-                            <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M5 1 1 5l4 4" />
-                            </svg>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                    </li>
-                    <li>
-                        <a href="#" aria-current="page"
-                            class="z-10 flex items-center justify-center px-3 h-8 leading-tight text-white border border-blue-300 bg-mainColor hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-mainColor dark:text-white">3</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Next</span>
-                            <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <%- include('../include/footer.ejs') %>
+        <%- include('../include/postgrid.ejs') %>
+            <%- include('../include/pagination.ejs') %>
+                <%- include('../include/footer.ejs') %>
 </body>
 
 </html>
