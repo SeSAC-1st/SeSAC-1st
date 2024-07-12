@@ -4,7 +4,7 @@ const { Post, Comment } = require('../../models/index');
 // literal: 원시 SQL 구문을 삽입하기 위해 사용
 const { Op, fn, col, literal } = require('sequelize');
 
-// 전체 게시물 목록 조회 및 검색 메서드, 전체 개수도 출력
+// 전체 게시물 목록 조회 및 검색 메서드, 전체 개수, 댓글 수도 출력
 exports.getPostList = async (req, res) => {
   try {
     const { page, size } = req.params;
@@ -18,6 +18,7 @@ exports.getPostList = async (req, res) => {
 
     let postList;
 
+    // 댓글 수 쿼리 추가 해야됨
     if (boardTitle) {
       postList = await Post.findAndCountAll({
         where: {
@@ -38,6 +39,9 @@ exports.getPostList = async (req, res) => {
       });
     }
     res.json(postList);
+    // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
+    // res.render('posts/postsPage', {postList})
+
     //   {
     //     "count": 14,
     //     "rows": [
@@ -165,7 +169,7 @@ exports.getUserPostList = async (req, res) => {
     const pageNumber = page ? parseInt(page, 10) : 1;
     const pageSize = size ? parseInt(size, 10) : 12;
     const offset = (pageNumber - 1) * pageSize;
-
+    // 댓글 수 쿼리 추가 해야됨
     const userPostList = await Post.findAndCountAll({
       where: { userId, isDeleted: false },
       offset: offset,
@@ -295,6 +299,7 @@ exports.getUserPostList = async (req, res) => {
 // 월별 게시물 개수 조회 메서드
 exports.getMonthlyPostCounts = async (req, res) => {
   try {
+    // session에서 가져오는걸로 고치기
     const { userId } = req.body;
 
     // 현재 연도 가져오기
@@ -303,7 +308,7 @@ exports.getMonthlyPostCounts = async (req, res) => {
     // 데이터베이스에서 현재 연도의 연도별, 월별 게시물 개수를 가져옴
     const monthlyPostCounts = await Post.findAll({
       where: {
-        userId: userId,
+        userId,
         isDeleted: false,
         // 모든 조건이 참일 때만 반환
         [Op.and]: [
@@ -432,15 +437,137 @@ exports.getPost = async (req, res) => {
     const post = await Post.findOne({
       where: { postId },
     });
-    res.json(post);
-    // {
-    //   "postId": 1,
-    //   "postTitle": "search",
-    //   "postContent": "up test",
-    //   "userId": 1,
-    //   "isDeleted": true,
-    //   "createdAt": "2024-07-10T05:47:56.000Z",
-    //   "updatedAt": "2024-07-10T06:49:04.000Z"
+
+    // 해당 postId에 해당하는 댓글과 대댓글 목록
+    // 상세 페이지에서 댓글 수 보여주는지 화면 설계 보고 쿼리 수정
+    const commList = await Comment.findAll({
+      where: {
+        // 댓글은 postId에 해당하고 상위 댓글이 없고 삭제되지 않은것 조회
+        postId, // 댓글 postId로 조회
+        parentComId: null, // 상위 댓글 가져오기
+        isDeleted: false, // 상위 댓글이 삭제되지 않은 것만 조회
+      },
+      include: [
+        {
+          model: Comment,
+          as: 'replies', // 대댓글 관계 설정
+          where: {
+            postId, // 대댓글도 postId로 조회
+            isDeleted: false, // 삭제되지 않은 대댓글만 가져옴
+          },
+          required: false,
+        },
+      ],
+      order: [
+        // 정렬은 다시 한번 확인 필요
+        ['createdAt', 'ASC'], // 댓글 순서대로 정렬
+        ['replies', 'createdAt', 'ASC'], // 대댓글 순서대로 정렬
+      ],
+    });
+
+    res.json({ post, comments: commList });
+    // 조회해서 게시물 상세 페이지로 데이터 가지고 이동, 댓글/대댓글 리스트 포함
+    // res.render('posts/postDetailPage', { post, comments: commList });
+
+    //   {
+    //     "post": {
+    //         "postId": 1,
+    //         "postTitle": "postTitle1",
+    //         "postContent": "postContent1",
+    //         "userId": 1,
+    //         "isDeleted": true,
+    //         "createdAt": "2024-07-11T07:12:18.000Z",
+    //         "updatedAt": "2024-07-11T07:16:34.000Z"
+    //     },
+    //     "comments": [
+    //         {
+    //             "comId": 5,
+    //             "comContent": "content1",
+    //             "postId": 1,
+    //             "userId": 1,
+    //             "parentComId": null,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-12T06:41:49.000Z",
+    //             "updatedAt": "2024-07-12T06:41:49.000Z",
+    //             "replies": [
+    //                 {
+    //                     "comId": 10,
+    //                     "comContent": "reply2",
+    //                     "postId": 1,
+    //                     "userId": 1,
+    //                     "parentComId": 5,
+    //                     "isDeleted": false,
+    //                     "createdAt": "2024-07-12T06:42:35.000Z",
+    //                     "updatedAt": "2024-07-12T06:42:35.000Z"
+    //                 },
+    //                 {
+    //                     "comId": 11,
+    //                     "comContent": "reply3",
+    //                     "postId": 1,
+    //                     "userId": 1,
+    //                     "parentComId": 5,
+    //                     "isDeleted": false,
+    //                     "createdAt": "2024-07-12T06:42:46.000Z",
+    //                     "updatedAt": "2024-07-12T06:42:46.000Z"
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             "comId": 6,
+    //             "comContent": "content2",
+    //             "postId": 1,
+    //             "userId": 1,
+    //             "parentComId": null,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-12T06:41:54.000Z",
+    //             "updatedAt": "2024-07-12T06:41:54.000Z",
+    //             "replies": [
+    //                 {
+    //                     "comId": 12,
+    //                     "comContent": "reply4",
+    //                     "postId": 1,
+    //                     "userId": 1,
+    //                     "parentComId": 6,
+    //                     "isDeleted": false,
+    //                     "createdAt": "2024-07-12T06:43:01.000Z",
+    //                     "updatedAt": "2024-07-12T06:43:01.000Z"
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             "comId": 7,
+    //             "comContent": "content3",
+    //             "postId": 1,
+    //             "userId": 1,
+    //             "parentComId": null,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-12T06:41:58.000Z",
+    //             "updatedAt": "2024-07-12T06:41:58.000Z",
+    //             "replies": []
+    //         },
+    //         {
+    //             "comId": 8,
+    //             "comContent": "content4",
+    //             "postId": 1,
+    //             "userId": 1,
+    //             "parentComId": null,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-12T06:42:02.000Z",
+    //             "updatedAt": "2024-07-12T06:42:02.000Z",
+    //             "replies": []
+    //         },
+    //         {
+    //             "comId": 9,
+    //             "comContent": "content5",
+    //             "postId": 1,
+    //             "userId": 1,
+    //             "parentComId": null,
+    //             "isDeleted": false,
+    //             "createdAt": "2024-07-12T06:42:06.000Z",
+    //             "updatedAt": "2024-07-12T06:42:06.000Z",
+    //             "replies": []
+    //         }
+    //     ]
     // }
   } catch (error) {
     console.error(error);
@@ -459,7 +586,9 @@ exports.updatePost = async (req, res) => {
       { where: { postId } }
     );
 
-    res.json(postUpdate);
+    res.json(postUpdate[0]);
+    // 리턴을 업데이트된 행의 개수 - 1
+
     // [
     //   1
     // ]
@@ -529,5 +658,7 @@ exports.insertPost = async (req, res) => {
 
 // 검색 페이지 이동
 // exports.getSearchPage = (req, res) => {
-//   res.render('/posts/searchPage');
+//   res.render('search/searchPage');
 // };
+
+// 게시물 등록 폼 페이지 이동
