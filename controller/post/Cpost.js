@@ -526,3 +526,8 @@ exports.insertPost = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+// 검색 페이지 이동
+exports.getSearchPage = (req, res) => {
+  res.render('/posts/searchPage');
+};
