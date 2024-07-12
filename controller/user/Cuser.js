@@ -73,6 +73,7 @@ exports.loginPage = (req, res) => {
 }
 
 
+// 로그인 로직
 /**
  * 사용자의 로그인 요청을 처리합니다.
  * 
@@ -83,8 +84,6 @@ exports.loginPage = (req, res) => {
  * @param {Object} res - Express 응답 객체
  * @returns {Promise<void>} - 비동기 함수이므로 Promise를 반환합니다.
  */
-
-// 로그인 로직
 
 // 로그인 session
 exports.userLogin = async (req, res) => {
@@ -108,15 +107,22 @@ exports.userLogin = async (req, res) => {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-          // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
-          const isPasswordValid = comparePw(userPw, user.userPw);
-          console.log('userPw, user.userPw ->', userPw, user.userPw)
+        // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
+        const isPasswordValid = comparePw(userPw, user.userPw);
+        console.log('userPw, user.userPw ->', userPw, user.userPw)
 
-          if (!isPasswordValid) {
-              return res.status(401).json({ error: 'Invalid password.' });
-          }
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid password.' });
+        }
 
+        req.session.user = {
+            loginId : user.loginId,
+            profileImg: user.profileImg,
+            userNick: user.userNick
+        }
 
+        console.log(req.session.user);
+    
         res.json(user);
 
     } catch (error) {
