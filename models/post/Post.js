@@ -1,5 +1,3 @@
-// Post 테이블 모델
-
 const postModel = (sequelize, DataTypes) => {
   const Post = sequelize.define(
     'Post',
@@ -21,10 +19,6 @@ const postModel = (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'User',
-        //   key: 'userId',
-        // },
       },
       isDeleted: {
         type: DataTypes.BOOLEAN,
