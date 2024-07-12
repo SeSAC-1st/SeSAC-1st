@@ -167,7 +167,7 @@ exports.getUserPostList = async (req, res) => {
     const offset = (pageNumber - 1) * pageSize;
 
     const userPostList = await Post.findAndCountAll({
-      where: { userId },
+      where: { userId, isDeleted: false },
       offset: offset,
       limit: pageSize,
     });
@@ -528,6 +528,6 @@ exports.insertPost = async (req, res) => {
 };
 
 // 검색 페이지 이동
-exports.getSearchPage = (req, res) => {
-  res.render('/posts/searchPage');
-};
+// exports.getSearchPage = (req, res) => {
+//   res.render('/posts/searchPage');
+// };
