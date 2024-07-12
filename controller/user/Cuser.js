@@ -1,5 +1,5 @@
 const { User } = require('../../models/index');
-const { hashPw, comparePw } = require('../../utils/bcrypt');
+const { hashPw, comparePw } = require('../../utils/passwordUtils');
 
 // 회원가입 페이지
 exports.registerPage = (req, res) => {
