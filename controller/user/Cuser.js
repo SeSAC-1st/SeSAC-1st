@@ -203,10 +203,19 @@ exports.updateUser = async (req, res) => {
 };
 
 
-// // 회원 조회
-// exports.getUser = async (req, res) => {
-    
-// }
+// 회원 조회
+exports.getUser = async (req, res) => {
+    const { userId } = req.params; // URL 경로에서 userId 추출
+    console.log('Searching user info for userId ->', userId);
+
+    const user = await User.findOne({
+        where: { userId },
+    });
+
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+}
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
