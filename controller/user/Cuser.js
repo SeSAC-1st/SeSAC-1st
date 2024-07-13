@@ -7,7 +7,7 @@ const { hashPw, comparePw } = require('../../utils/passwordUtils');
 // };
 
 /**
- * 사용자 등록을 처리하는 함수
+ * 회원가입
  * @param {Object} req - 요청 객체
  * @param {Object} req.body - 요청 본문 데이터
  * @param {string} req.body.userName - 사용자의 이름 (한글, 영어로 2~10글자)
@@ -23,8 +23,6 @@ const { hashPw, comparePw } = require('../../utils/passwordUtils');
 // 회원가입 로직
 exports.userRegister = async (req, res) => {
   try {
-    console.log('User ->', User);
-    console.log(req.body);
     const { userName, loginId, userPw, email, address, userNick, birthday } =
       req.body;
 
@@ -63,19 +61,21 @@ exports.userRegister = async (req, res) => {
     });
 
     res.json(newUser);
-    console.log(newUser);
-    // {
-    //     "userId": 1,
-    //     "userName": "ranis",
-    //     "loginId": "ranikuns",
-    //     "userPw": "rani12345",
-    //     "email": "rani@gamil.com",
+    // 회원가입 완료 시 회원가입 완료 페이지로 이동
+    // if (newUser) res.render('user/registerCompletePage')
+    //   else res.status(500).send('Internal Server Error');
+
+    //   {
+    //     "userId": 6,
+    //     "userName": "가힣당",
+    //     "loginId": "ijoijmm1",
+    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
+    //     "email": "urlend@gamil.com",
     //     "address": "seoul",
-    //     "profileImg": "cat",
-    //     "userNick": "babocat",
-    //     "birthday": "1998-06-15",
-    //     "updatedAt": "2024-07-10T08:34:58.834Z",
-    //     "createdAt": "2024-07-10T08:34:58.834Z"
+    //     "userNick": "lion",
+    //     "birthday": "1996-06-21",
+    //     "updatedAt": "2024-07-13T12:27:30.884Z",
+    //     "createdAt": "2024-07-13T12:27:30.884Z"
     // }
   } catch (error) {
     console.error(error);
@@ -100,42 +100,49 @@ exports.userRegister = async (req, res) => {
  * @returns {Promise<void>} - 비동기 함수이므로 Promise를 반환합니다.
  */
 
-// 로그인 session
+// 로그인 로직 session 포함
 exports.userLogin = async (req, res) => {
   try {
-    console.log(req.body);
     const { loginId, userPw } = req.body;
 
-    console.log('loginId ->', loginId);
-    console.log('userPw ->', userPw);
-
-    // 비밀번호 해싱
-    // const hashedPw = hashPw(userPw);
-
-    // 데이터베이스에서 사용자를 찾습니다.
+    // 회원 조회
     const user = await User.findOne({
       where: { loginId },
     });
-    console.log('userId, userPw ->', user.loginId, user.userPw);
 
     if (!user) return res.status(404).json({ error: 'User not found.' });
 
     // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
     const isPasswordValid = comparePw(userPw, user.userPw);
-    console.log('userPw, user.userPw ->', userPw, user.userPw);
 
     if (!isPasswordValid)
       return res.status(401).json({ error: 'Invalid password.' });
 
-    req.session.user = {
-      loginId: user.loginId,
-      profileImg: user.profileImg,
-      userNick: user.userNick,
-    };
-
-    console.log(req.session.user);
+    // req.session.user = {
+    //   loginId: user.loginId,
+    //   profileImg: user.profileImg,   // 프로필 이미지 없으면 null
+    //   userNick: user.userNick,
+    //   isLoggedIn : true
+    // };
+    // console.log(req.session.user);
 
     res.json(user);
+    // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
+    // if(req.session.user) res.redirect('/post/list/1/12')
+
+    //   {
+    //     "userId": 6,
+    //     "userName": "가힣당",
+    //     "loginId": "ijoijmm1",
+    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
+    //     "email": "urlend@gamil.com",
+    //     "address": "seoul",
+    //     "profileImg": null,
+    //     "userNick": "lion",
+    //     "birthday": "1996-06-21",
+    //     "createdAt": "2024-07-13T12:27:30.000Z",
+    //     "updatedAt": "2024-07-13T12:27:30.000Z"
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -146,18 +153,16 @@ exports.userLogin = async (req, res) => {
 exports.checkDuplicatedLoginid = async (req, res) => {
   try {
     const { loginId } = req.body;
-    console.log('duplicate loginId ->', loginId);
 
     const user = await User.findOne({
       where: { loginId },
     });
 
     // loginId가 이미 존재하는 경우
-    if (user)
-      return res.status(409).json({ error: 'Login ID is already in use.' });
+    if (user) return res.status(409).json({ result: true });
 
     // loginId가 존재하지 않는 경우
-    res.json({ message: 'Login ID is available.' });
+    res.json({ result: false });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -205,6 +210,22 @@ exports.updateUser = async (req, res) => {
     });
 
     res.json(updatedUser);
+    // 회원 정보 수정을 완료하면 업데이트된 정보를 가지고 마이페이지에 다시 출력
+    // if (updatedUser) res.send({updatedUser})
+
+    //   {
+    //     "userId": 6,
+    //     "userName": "가힣당",
+    //     "loginId": "ijoijmm1",
+    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
+    //     "email": "ranikun@gamil.com",
+    //     "address": "raniland wio",
+    //     "profileImg": "babocat.jpg",
+    //     "userNick": "babo",
+    //     "birthday": "1996-06-21",
+    //     "createdAt": "2024-07-13T12:27:30.000Z",
+    //     "updatedAt": "2024-07-13T13:12:35.000Z"
+    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -212,19 +233,18 @@ exports.updateUser = async (req, res) => {
 };
 
 // 회원 조회
-exports.getUser = async (req, res) => {
-  // userId는 session에서 가져오기로 변경
-  const { userId } = req.params;
-  console.log('Searching user info for userId ->', userId);
+// exports.getUser = async (req, res) => {
+//   // userId는 session에서 가져오기로 변경
+//   const { userId } = req.params;
 
-  const user = await User.findOne({
-    where: { userId },
-  });
+//   const user = await User.findOne({
+//     where: { userId },
+//   });
 
-  if (!user) return res.status(404).json({ error: 'User not found' });
+//   if (!user) return res.status(404).json({ error: 'User not found' });
 
-  res.json(user);
-};
+//   res.json(user);
+// };
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
@@ -236,8 +256,15 @@ exports.userLogout = async (req, res) => {
 };
 
 // 마이페이지 이동
-// 회원 조회 한 후 조회한 데이터 가지고 profilePage.ejs 렌더링
 // exports.getProfilePage = async (req, res) => {
-//     // userId는 session에서 가져와서 회원 조회
+//   // userId는 session에서 가져와서 회원 조회
+//   const { userId } = req.params;
+
+//   const user = await User.findOne({
+//     where: { userId },
+//   });
+// if (!user) return res.status(404).json({ error: 'User not found' });
+//   // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
+//   res.render('user/profilePage', {user})
 
 // }
