@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 // 내보냈던 db 중 sequelize 객체를 구조분해 할당해서 꺼냄
 const { sequelize } = require('./models') 
+const passport = require('passport');
+
 // const userRouter = require('./routes/user/user')
 // const postRouter = require('./routes/post/post')
 // const commentRouter = require('./routes/comment/comment')
@@ -27,13 +29,30 @@ app.use(express.json());
 // app.use('/post', postRouter)
 // app.use('/comment', commentRouter)
 
+// Passport 미들웨어 설정
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 라우팅 설정
+app.get('/auth/github',
+    passport.authenticate('github')
+);
+
+app.get('/auth/github/callback', 
+    passport.authenticate('github', { failureRedirect: '/login' }),
+    function(req, res) {
+      // Successful authentication, redirect home.
+      res.redirect('/');
+    }
+);
+
 app.get('*', (req, res) => {
     res.render('404')
 })
 
 // 테이블을 생성하고 처음에만 force : true 로 실행하고 그 뒤로는 false로 변경하고 실행
 sequelize
-    .sync({ force: true
+    .sync({ force: false
 
      })    // force : true -> 서버 실행때마다 테이블 재생성(데이터 다 날아감), false -> 서버 실행 시 테이블 없으면 생성
     .then(() => {
