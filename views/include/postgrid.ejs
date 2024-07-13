@@ -1,16 +1,16 @@
 <% userPostList.rows.forEach(post=> { %>
   <div
     class="group relative bg-gray-50 shadow-md rounded-lg overflow-hidden transform transition duration-500 hover:scale-105 p-4">
-    <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2">
-      <%= post.postTitle %>
-    </h2>
+    <a href="/<%= post.id %>">
+      <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2">
+        <%= post.postTitle %>
+      </h2>
+    </a>
     <div class="mt-4 flex justify-between">
       <div>
         <h3 class="text-sm text-gray-700">
-          <a href="#"> <!-- <%= post.id %> -->
-            <span aria-hidden="true" class="absolute inset-0 text-gray-600 mb-4"></span>
-            <%= post.postContent %>
-          </a>
+          <span aria-hidden="true" class="absolute inset-0 text-gray-600 mb-4"></span>
+          <%= post.postContent %>
         </h3>
       </div>
     </div>
