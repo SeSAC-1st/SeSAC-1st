@@ -311,25 +311,45 @@ exports.getUserPostList = async (req, res) => {
       subQuery: false, // 서브쿼리를 사용하지 않도록 설정
     });
 
-    res.json({ userPostList, userPostCount });
+    const cntPostGroupMonth = await this.getMonthlyPostCounts(userId);
+
+    res.json({ userPostList, userPostCount, cntPostGroupMonth });
     // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
-    // res.render('posts/myPostsPage', {userPostList, userPostCount})
+    // res.render('posts/myPostsPage', {userPostList, userPostCount, cntPostGroupMonth})
 
     //   {
     //     "userPostList": [
+
     //         {
-    //             "postId": 16,
-    //             "postTitle": "ejkim's title",
-    //             "postContent": "ejkim's content",
-    //             "userId": 4,
-    //             "createdAt": "2024-07-13T04:33:50.000Z",
-    //             "commentCount": 1,
+    //             "postId": 13,
+    //             "postTitle": "ㄹㅇㄴㄹㄹ553.0.가",
+    //             "postContent": "urlend's content3",
+    //             "userId": 1,
+    //             "createdAt": "2024-06-13T06:24:14.000Z",
+    //             "commentCount": 0,
     //             "User": {
     //                 "userNick": "dog"
     //             }
     //         }
     //     ],
-    //     "userPostCount": 1
+    //     "userPostCount": 19,
+    //     "cntPostGroupMonth": [
+    //         {
+    //             "year": 2024,
+    //             "month": 1,
+    //             "count": 2
+    //         },
+    //         {
+    //             "year": 2024,
+    //             "month": 11,
+    //             "count": 1
+    //         },
+    //         {
+    //             "year": 2024,
+    //             "month": 12,
+    //             "count": 0
+    //         }
+    //     ]
     // }
   } catch (error) {
     console.error(error);
@@ -338,11 +358,8 @@ exports.getUserPostList = async (req, res) => {
 };
 
 // 월별 게시물 개수 조회 메서드
-exports.getMonthlyPostCounts = async (req, res) => {
+exports.getMonthlyPostCounts = async (userId) => {
   try {
-    // session에서 가져오는걸로 고치기
-    const { userId } = req.body;
-
     // 현재 연도 가져오기
     const currentYear = new Date().getFullYear();
 
@@ -403,68 +420,6 @@ exports.getMonthlyPostCounts = async (req, res) => {
 
     // res.json(allMonths);
     return allMonths;
-    //   [
-    //     {
-    //         "year": 2024,
-    //         "month": 1,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 2,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 3,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 4,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 5,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 6,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 7,
-    //         "count": 14
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 8,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 9,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 10,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 11,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 12,
-    //         "count": 0
-    //     }
-    // ]
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
