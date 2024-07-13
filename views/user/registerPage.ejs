@@ -103,10 +103,15 @@
         font-weight: 700;
       }
 
-      .inputguide {
-        display: inline-block;
-        margin-bottom: 30px;
+      /* .inputguide */
+      .userNameGuide,
+      .loginIdGuide,
+      .userPwGuide,
+      .userNickGuide {
+        display: none;
+        margin-bottom: 20px;
         color: red;
+        /* font-size: 13px !important; */
       }
 
       .userName:focus,
@@ -117,10 +122,131 @@
       .address:focus,
       .birthday:focus {
         outline: 3px solid #f2f2f2ef;
-        /* outline: none; */
         background-color: #f0f0f0 !important;
       }
     </style>
+    <script>
+      let userNameValidate;
+      let loginIdValidate;
+      let userPwValidate;
+      let userNickValidate;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // 완성 - 이름 (한글, 영어로 2~10글자) 유효성 검사
+        let userNameField = document.querySelector('.userName');
+        let userNameGuide = document.querySelector('.userNameGuide');
+        userNameField.addEventListener('input', function () {
+          let userNamePattern = /^[가-힣a-zA-Z]{2,10}$/; // 영어 대소문자, 숫자, 특수문자, 공백
+          let userNameinvalidPattern = /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z]/g;
+          if (userNameinvalidPattern.test(this.value)) {
+            alert('이름은 한글, 영어만 입력 가능합니다.');
+            this.value = this.value.replace(userNameinvalidPattern, '');
+          } else {
+            if (!userNamePattern.test(this.value)) {
+              userNameGuide.style.display = 'block';
+              userNameValidate = false;
+            } else {
+              userNameGuide.style.display = 'none';
+              userNameValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 아이디에 (6~10글자, 영어 대소문자) 유효성 검사
+        let loginIdField = document.querySelector('.loginId');
+        let loginIdGuide = document.querySelector('.loginIdGuide');
+        loginIdField.addEventListener('input', function () {
+          let loginIdPattern = /^[a-zA-Z0-9]{6,10}$/; // 대소문자, 숫자, 길이 6~10
+          let loginIdinvalidPattern = /[^a-zA-Z0-9]/g;
+          if (loginIdinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(loginIdinvalidPattern, '');
+            alert('아이디는 영어, 숫자만 사용 가능합니다.');
+          } else {
+            if (!loginIdPattern.test(this.value)) {
+              loginIdGuide.style.display = 'block';
+              loginIdValidate = false;
+            } else {
+              loginIdGuide.style.display = 'none';
+              loginIdValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 비밀번호에 (8~12글자, 영어, 숫자, 특수문자 포함) 유효성 검사
+        let userPwField = document.querySelector('.userPw');
+        let userPwGuide = document.querySelector('.userPwGuide');
+        userPwField.addEventListener('input', function () {
+          let userPwPattern =
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,15}$/;
+          let userPwinvalidPattern = /[^A-Za-z\d@$!%*#?&]/g;
+          if (userPwinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(userPwinvalidPattern, '');
+            alert(
+              '비밀번호는 영어, 숫자, 특수문자(@$!%*#?&)만 사용 가능합니다.'
+            );
+          } else {
+            if (!userPwPattern.test(this.value)) {
+              userPwGuide.style.display = 'block';
+              userPwValidate = false;
+            } else {
+              userPwGuide.style.display = 'none';
+              userPwValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 별명 (한글, 영어로 2~10글자) 유효성 검사
+        let userNickField = document.querySelector('.userNick');
+        let userNickGuide = document.querySelector('.userNickGuide');
+        userNickField.addEventListener('input', function () {
+          let userNickPattern = /^[가-힣a-zA-Z]{2,10}$/;
+          let userNickinvalidPattern = /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z]/g;
+
+          if (userNickinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(userNickinvalidPattern, '');
+            // 유효하지 않은 문자를 공백으로 대체
+            alert('별명은 한글, 영어만 입력 가능합니다.');
+          } else {
+            if (!userNickPattern.test(this.value)) {
+              userNickGuide.style.display = 'block';
+              userNickValidate = false;
+            } else {
+              userNickGuide.style.display = 'none';
+              userNickValidate = true;
+            }
+          }
+        });
+      });
+
+      function validateForm() {
+        let isValid = true;
+        let requiredFields = document.querySelectorAll(
+          '.userName, .loginId, .userPw, .userNick'
+        );
+        requiredFields.forEach(function (field) {
+          if (
+            userNameValidate &&
+            loginIdValidate &&
+            userPwValidate &&
+            userNickValidate
+          ) {
+            isValid = true;
+          } else {
+            isValid = false;
+          }
+        });
+        return isValid;
+      }
+
+      // 회원가입 버튼 눌렀을 때 필수입력값에 따른 처리 (페이지 렌더링 또는 alert 창)
+      function submitRegisterForm() {
+        if (validateForm()) {
+          alert('/나중에 페이지 렌더링으로 변경/');
+        } else {
+          alert('(*)필수 항목들을 제대로 입력하지 않았습니다.');
+        }
+      }
+    </script>
   </head>
   <body>
     <div class="registerBox">
@@ -131,31 +257,26 @@
         <hr />
         <form id="registerForm">
           <div>
-            <span class="inputguide">*값은 필수입니다.</span>
-            <br />
             <label>
               *이름
               <br />
-              <input
-                type="text"
-                class="userName"
-                name="userName"
-                onkeydown="nameKeySet(this)"
-                required
-              />
+              <input type="text" class="userName" name="userName" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*이름을 입력하세요.</span> -->
             </label>
+          </div>
+          <div class="userNameGuide">
+            *이름은 2~10글자의 한글, 영어만 사용 가능합니다.
           </div>
           <div class="idBox">
             <label>
               *아이디
               <br />
-              <input
-                type="text"
-                class="loginId"
-                name="loginId"
-                onkeydown="idKeySet(this)"
-                required
-              />
+              <input type="text" class="loginId" name="loginId" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*아이디를 입력하세요.</span> -->
             </label>
             <input
               type="button"
@@ -164,29 +285,37 @@
               value="중복체크"
             />
           </div>
+          <div class="loginIdGuide">
+            *아이디는 6~10글자의 영문, 숫자만 사용 가능합니다.
+          </div>
 
           <div>
             <label>
               *비밀번호
               <br />
-              <input
-                type="password"
-                class="userPw"
-                name="userPw"
-                onkeydown="pwKeySet()"
-                required
-              />
+              <input type="password" class="userPw" name="userPw" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*비밀번호를 입력하세요.</span> -->
             </label>
           </div>
-
+          <div class="userPwGuide">
+            *비밀번호는 8~15글자의 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야
+            합니다.
+          </div>
           <div>
             <label>
               *별명
               <br />
               <input type="text" class="userNick" name="userNick" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*별명을 입력하세요.</span> -->
             </label>
           </div>
-
+          <div class="userNickGuide">
+            별명은 2~10글자의 한글, 영어만 사용 가능합니다.
+          </div>
           <div>
             <label>
               이메일
