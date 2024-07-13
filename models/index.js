@@ -27,6 +27,10 @@ PostModel.belongsTo(UserModel, { foreignKey: 'userId' });
 PostModel.hasMany(CommentModel, { foreignKey: 'postId' });
 CommentModel.belongsTo(PostModel, { foreignKey: 'postId' });
 
+// User 모델과 Comment 모델 간의 관계 설정
+UserModel.hasMany(CommentModel, { foreignKey: 'userId' });
+CommentModel.belongsTo(UserModel, { foreignKey: 'userId' });
+
 // Comment 모델과 자신(댓글) 간의 관계 설정
 CommentModel.hasMany(CommentModel, {
   as: 'replies',
