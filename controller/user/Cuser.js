@@ -3,7 +3,7 @@ const { hashPw } = require('../../utils/bcrypt');
 
 // 회원가입 페이지
 exports.registerPage = (req, res) => {
-    res.render('/user/registerPage');
+    res.render('user/registerPage');
   };
 
 // 회원가입 로직
@@ -70,7 +70,7 @@ exports.userRegister = async (req, res) => {
 
 // 로그인 페이지
 exports.loginPage = (req, res) => {
-    res.render('/user/loginPage');
+    res.render('user/loginPage');
 }
 
 

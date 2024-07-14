@@ -11,8 +11,8 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 
 
 // 모델 불러오기
-// const UserModel = require('./user/User')(sequelize, Sequelize)   // user 모델의 파라미터로 전달
-// const PostModel = require('./post/Post')(sequelize, Sequelize)   // post 모델의 파라미터로 전달
+const UserModel = require('./user/User')(sequelize, Sequelize)   // user 모델의 파라미터로 전달
+const PostModel = require('./post/Post')(sequelize, Sequelize)   // post 모델의 파라미터로 전달
 const CommentModel = require('./comment/Comment')(sequelize, Sequelize)   // comment 모델의 파라미터로 전달
 
 
@@ -89,8 +89,8 @@ db.Sequelize = Sequelize;
 
 
 // db 에 만든 모델 집어넣기
-// db.User = UserModel
-// db.Post = PostModel
+db.User = UserModel
+db.Post = PostModel
 db.Comment = CommentModel
 
 // db 객체를 내보내기 -> 다른 파일에서 db모듈 사용 예정
