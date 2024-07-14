@@ -85,8 +85,8 @@ exports.userRegister = async (req, res) => {
 
 // 로그인 페이지
 // exports.loginPage = (req, res) => {
-//     res.render('user/loginPage');
-// }
+//   res.render('user/loginPage');
+// };
 
 // 로그인 로직
 /**
@@ -112,23 +112,24 @@ exports.userLogin = async (req, res) => {
 
     if (!user) return res.status(404).json({ error: 'User not found.' });
 
-    // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교합니다.
+    // 데이터베이스에 저장된 해시된 비밀번호와 입력된 비밀번호를 비교
     const isPasswordValid = comparePw(userPw, user.userPw);
 
     if (!isPasswordValid)
       return res.status(401).json({ error: 'Invalid password.' });
 
-    // req.session.user = {
-    //   loginId: user.loginId,
-    //   profileImg: user.profileImg,   // 프로필 이미지 없으면 null
-    //   userNick: user.userNick,
-    //   isLoggedIn : true
-    // };
-    // console.log(req.session.user);
+    req.session.user = {
+      userId: user.userId,
+      profileImg: user.profileImg, // 프로필 이미지 없으면 null
+      userNick: user.userNick,
+      isLoggedIn: true,
+    };
+    console.log(req.session.user);
 
     res.json(user);
     // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
-    // if(req.session.user) res.redirect('/post/list/1/12')
+    // if (req.session.user) res.redirect('/');
+    // else res.send({ result: false });
 
     //   {
     //     "userId": 6,
@@ -160,9 +161,8 @@ exports.checkDuplicatedLoginid = async (req, res) => {
 
     // loginId가 이미 존재하는 경우
     if (user) return res.status(409).json({ result: true });
-
     // loginId가 존재하지 않는 경우
-    res.json({ result: false });
+    else res.json({ result: false });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -183,10 +183,9 @@ exports.checkDuplicatedLoginid = async (req, res) => {
 // 회원 정보 수정
 exports.updateUser = async (req, res) => {
   try {
-    // userId는 session에서 가져오기
     const { userId } = req.params;
+    // const { userId } = req.session.user;
     const { email, address, profileImg, userNick } = req.body;
-    console.log('Updating user info for userId ->', userId);
 
     const user = await User.findOne({
       where: { userId },
@@ -209,9 +208,17 @@ exports.updateUser = async (req, res) => {
       where: { userId },
     });
 
+    // 수정된 정보를 session에도 저장
+    req.session.user = {
+      ...req.session.user,
+      profileImg: updatedUser.profileImg,
+      userNick: updatedUser.userNick,
+    };
+    // console.log('updateUserSession', req.session.user);
     res.json(updatedUser);
     // 회원 정보 수정을 완료하면 업데이트된 정보를 가지고 마이페이지에 다시 출력
-    // if (updatedUser) res.send({updatedUser})
+    // if (updatedUser) res.send({ updatedUser, sessionUser: req.session.user });
+    // else res.status(500).send('Internal Server Error');
 
     //   {
     //     "userId": 6,
@@ -248,23 +255,26 @@ exports.updateUser = async (req, res) => {
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
+  console.log('session', req.session);
   req.session.destroy((err) => {
     if (err) return res.status(500).send('Failed to logout.');
-
+    // 로그아웃 완료하면 메인(전체 게시물 목록)페이지로 이동
+    // res.redirect('/')
     res.send('Logged out successfully.');
   });
 };
 
 // 마이페이지 이동
 // exports.getProfilePage = async (req, res) => {
-//   // userId는 session에서 가져와서 회원 조회
-//   const { userId } = req.params;
+//   // 페이지 이동시 로그인 상태인지 확인
+//   if (req.session.user) {
+//     const { userId } = req.session.user;
 
-//   const user = await User.findOne({
-//     where: { userId },
-//   });
-// if (!user) return res.status(404).json({ error: 'User not found' });
-//   // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
-//   res.render('user/profilePage', {user})
-
-// }
+//     const user = await User.findOne({
+//       where: { userId },
+//     });
+//     if (!user) return res.status(404).json({ error: 'User not found' });
+//     // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
+//     res.render('user/profilePage', { user, sessionUser:req.session.user });
+//   } else res.redirect('/user/login');
+// };

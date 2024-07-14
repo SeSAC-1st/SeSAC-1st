@@ -3,7 +3,6 @@ const { Comment } = require('../../models/index');
 //댓글, 대댓글 목록 조회 - 게시글 상세 밑에 쓴 쿼리
 // exports.getCommentList = async (req, res) => {
 //   try {
-//     // 쿼리 어떻게 나오는지 보고 화면에 어떻게 뿌릴지 확인
 //     const { postId } = req.params;
 //     const commList = await Comment.findAll({
 //       where: {
@@ -84,17 +83,6 @@ const { Comment } = require('../../models/index');
 //     //         "updatedAt": "2024-07-10T02:49:49.000Z",
 //     //         "replies": []
 //     //     },
-//     //     {
-//     //         "comId": 5,
-//     //         "comContent": "댓글이용",
-//     //         "postId": 1,
-//     //         "userId": 1,
-//     //         "parentComId": null,
-//     //         "isDeleted": false,
-//     //         "createdAt": "2024-07-10T04:56:47.000Z",
-//     //         "updatedAt": "2024-07-10T04:56:47.000Z",
-//     //         "replies": []
-//     //     }
 //     // ]
 //   } catch (error) {
 //     console.error(error);
@@ -105,7 +93,9 @@ const { Comment } = require('../../models/index');
 // 댓글 등록
 exports.insertComment = async (req, res) => {
   try {
+    // 댓글 등록 입력창 누르면 로그인 상태인지 아닌지 확인
     const { postId } = req.params;
+    // const {userId} = req.session.user
     // userId는 세션에서 가져오기
     const { userId, comContent } = req.body;
     const insertCom = await Comment.create({
@@ -113,8 +103,8 @@ exports.insertComment = async (req, res) => {
       postId,
       userId,
     });
+    res.json({ insertCom });
     // 댓글 등록이 되면 해당 댓글을 댓글 목록 밑에 추가(화면 이동 안하고 바로 밑에 출력해줘야하기 때문에 좀더 생각)
-    // res.send({insertCom})
     // if (insertCom) res.send({insertCom})
     //   else res.status(500).send({ error: '' });
 
@@ -136,27 +126,27 @@ exports.insertComment = async (req, res) => {
 // 댓글, 대댓글 수정
 exports.updateComment = async (req, res) => {
   try {
-    const { comId } = req.params;
-    const { comContent } = req.body;
-    const updateComment = await Comment.update(
-      { comContent }, // 업데이트할 컬럼
-      {
-        where: {
-          // 조건
-          comId,
-        },
-        // returning: true, // 업데이트된 객체 반환
-      }
-    );
-    res.json(updateComment[0]);
-    // console.log(typeof updateComment[0]);
-    // 수정 완료 하면 업데이트된 댓글을 그대로 보내줌, 아니면 content만 보내줘도 됨
-    // if (updateComment[0] === 1) {
-    //   const updatedComment = await Comment.findByPk(comId);
-    //   res.send({updatedComment});
-    // }
+    if (req.session.user) {
+      const { comId } = req.params;
+      const { comContent } = req.body;
+      const updateComment = await Comment.update(
+        { comContent }, // 업데이트할 컬럼
+        {
+          where: {
+            // 조건
+            comId,
+          },
+        }
+      );
+      res.json(updateComment[0]);
+      // 수정 완료 하면 업데이트된 댓글을 그대로 보내줌, 아니면 content만 보내줘도 됨
+      // if (updateComment[0] === 1) {
+      //   const updatedComment = await Comment.findByPk(comId);
+      //   res.send({updatedComment});
+      // }
 
-    // return : 1   업데이트된 행 개수
+      // return : 1   업데이트된 행 개수
+    } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -166,29 +156,31 @@ exports.updateComment = async (req, res) => {
 // 댓글 삭제
 exports.deleteComment = async (req, res) => {
   try {
-    const { comId } = req.params;
-    const deleteComm = await Comment.update(
-      { isDeleted: true }, // 논리적 삭제
-      {
-        where: {
-          // 상위 댓글 업데이트
-          comId,
-        },
-      }
-    );
-    const deleteReply = await Comment.update(
-      { isDeleted: true }, // 논리적 삭제
-      {
-        where: {
-          // 해당 댓글의 대댓글까지 업데이트
-          parentComId: comId,
-        },
-      }
-    );
-    res.json({ deleteComm, deleteReply });
-    // 댓글 삭제가 완료되면 댓글 목록에서 해당 댓글이 없어져야함, 프론트에서 다시 댓글 로드하는 방식??
-    // if (deleteComm[0] === 1) res.send({result:true})
-    //   else res.status(500).send({error:''})
+    if (req.session.user) {
+      const { comId } = req.params;
+      const deleteComm = await Comment.update(
+        { isDeleted: true }, // 논리적 삭제
+        {
+          where: {
+            // 상위 댓글 업데이트
+            comId,
+          },
+        }
+      );
+      const deleteReply = await Comment.update(
+        { isDeleted: true }, // 논리적 삭제
+        {
+          where: {
+            // 해당 댓글의 대댓글까지 업데이트
+            parentComId: comId,
+          },
+        }
+      );
+      res.json({ deleteComm, deleteReply });
+      // 댓글 삭제가 완료되면 댓글 목록에서 해당 댓글이 없어져야함,대댓글도 같이 삭제, 프론트에서 다시 댓글 로드하는 방식??
+      // if (deleteComm[0] === 1) res.send({result:true})
+      //   else res.status(500).send({error:''})
+    } else res.redirect('/user/login');
 
     // {
     //     "deleteComm": [
@@ -207,20 +199,22 @@ exports.deleteComment = async (req, res) => {
 // 대댓글 삭제
 exports.deleteCommentReply = async (req, res) => {
   try {
-    const { comId } = req.params;
-    const deleteComm = await Comment.update(
-      { isDeleted: true }, // 논리적 삭제
-      {
-        where: {
-          // 해당 대댓글 업데이트
-          comId,
-        },
-      }
-    );
-    res.json(deleteComm[0]); // 리턴값 : 1  업데이트된 행개수
-    // 대댓글 삭제가 완료되면 댓글 목록에서 해당 대댓글이 없어져야함, 프론트에서 다시 댓글 로드하는 방식??
-    // if (deleteComm[0] === 1) res.send({result:true})
-    //   else res.status(500).send({error:''})
+    if (req.session.user) {
+      const { comId } = req.params;
+      const deleteComm = await Comment.update(
+        { isDeleted: true },
+        {
+          where: {
+            // 해당 대댓글 업데이트
+            comId,
+          },
+        }
+      );
+      res.json(deleteComm[0]); // 리턴값 : 1  업데이트된 행개수
+      // 대댓글 삭제가 완료되면 댓글 목록에서 해당 대댓글이 없어져야함, 프론트에서 다시 댓글 로드하는 방식??
+      // if (deleteComm[0] === 1) res.send({result:true})
+      //   else res.status(500).send({error:''})
+    } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -230,19 +224,22 @@ exports.deleteCommentReply = async (req, res) => {
 // 대댓글 등록
 exports.insertReply = async (req, res) => {
   try {
-    // userId는 세션에서 가져오고, parentComId 는 답글달기 버튼 눌렀을 때 해당 댓글의 comId 넣기
-    const { comId } = req.params;
-    const { postId, userId, comContent } = req.body;
-    const insertReply = await Comment.create({
-      comContent,
-      postId,
-      userId,
-      parentComId: comId,
-    });
-    res.json(insertReply);
-    // 대댓글 등록 완료되면 등록된 대댓글을 댓글 목록에 추가
-    // if (insertReply) res.send({insertReply})
-    // else res.status(500).send({ error: '' });
+    if (req.session.user) {
+      // userId는 세션에서 가져오고, parentComId 는 답글달기 버튼 눌렀을 때 해당 댓글의 comId 넣기
+      // const {userId} = req.session.user
+      const { comId } = req.params;
+      const { postId, userId, comContent } = req.body;
+      const insertReply = await Comment.create({
+        comContent,
+        postId,
+        userId,
+        parentComId: comId,
+      });
+      res.json(insertReply);
+      // 대댓글 등록 완료되면 등록된 대댓글을 댓글 목록에 추가
+      // if (insertReply) res.send({insertReply})
+      // else res.status(500).send({ error: '' });
+    } else res.redirect('/user/login');
 
     // {
     //     "isDeleted": false,

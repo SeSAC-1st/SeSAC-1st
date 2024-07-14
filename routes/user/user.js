@@ -17,7 +17,8 @@ router.post('/login', controller.userLogin);
 // 로그인 아이디 중복 체크
 router.post('/checkLoginid', controller.checkDuplicatedLoginid);
 
-// 회원 정보 수정
+// 회원 정보 수정, userId 지우기
+// router.patch('/', controller.updateUser);
 router.patch('/:userId', controller.updateUser);
 
 // 회원 조회
