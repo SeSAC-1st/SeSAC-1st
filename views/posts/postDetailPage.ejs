@@ -11,29 +11,33 @@
 <body>
     <%- include('../include/header.ejs') %>
         <main class="mx-auto px-4 sm:px-24 md:px-36 lg:px-80 pt-20">
-            <h1 class="text-3xl font-extrabold mb-10 text-center">블로그 게시물 제목</h1>
+            <h1 class="text-3xl font-extrabold mb-10 text-center">
+                <%= post.postTitle %>
+            </h1>
             <div class="text-gray-500 mb-5">
                 <div class="flex justify-between items-center">
                     <div>
-                        <span class="font-semibold mr-2">by 홍길동</span>
-                        <span class="text-sm">2024-7-12</span>
+                        <span class="font-semibold mr-2">by <%= post.User.userNick %></span>
+                        <span class="text-sm">
+                            <%= new Date(post.createdAt).toLocaleDateString() %>
+                        </span>
                     </div>
                     <div>
                         <button type="button"
-                            class="bg-blue-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-blue-600">수정</button>
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600">수정</button>
                         <button type="button"
-                            class="bg-red-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600"
+                            onclick="deletePost('<%= post.postId %>', '<%= post.userId %>')">
+                            삭제
+                        </button>
+
                     </div>
                 </div>
                 <hr class="border border-gray-300 my-2">
             </div>
             <div class="mt-5">
                 <p>
-                    이곳에 게시물의 내용이 들어갑니다. 게시물 내용이 길 경우 여러 문단으로 나누어 작성할 수 있습니다.
-                    예를 들어, 여기에 첫 번째 문단의 내용이 들어갑니다.
-                </p>
-                <p>
-                    두 번째 문단의 내용은 여기서 시작됩니다. 블로그 게시물은 일반적으로 다양한 형식의 텍스트, 이미지, 링크 등을 포함할 수 있습니다.
+                    <%= post.postContent %>
                 </p>
             </div>
             <hr class="border border-gray-300 my-6">
@@ -47,24 +51,7 @@
                         작성</button>
                 </div>
             </form>
-            <!-- <div id="comment-section" class="mb-6 mt-6">
-                <% if (comments.length> 0) { %>
-                    <ul>
-                        <% comments.forEach(function(comment) { %>
-                            <li class="mb-4">
-                                <strong class="block text-gray-700">
-                                    <%= comment.username %>
-                                </strong>
-                                <p class="text-gray-600">
-                                    <%= comment.text %>
-                                </p>
-                            </li>
-                            <% }); %>
-                    </ul>
-                    <% } else { %>
-                        <p class="text-gray-600">댓글이 없습니다.</p>
-                        <% } %>
-            </div> -->
+
             <div id="comment-section" class="mb-6 mt-6 pt-10">
                 <ul>
                     <li class="mb-4">
@@ -75,9 +62,9 @@
                             </div>
                             <div>
                                 <button type="button"
-                                    class="bg-blue-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-blue-600">수정</button>
+                                    class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
                                 <button type="button"
-                                    class="bg-red-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                                    class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
                             </div>
                         </div>
                         <p class="text-gray-600 pb-1">댓글 내용이 여기에 들어갑니다.</p>
@@ -103,5 +90,28 @@
         </main>
         <%- include('../include/footer.ejs') %>
 </body>
+
+<script>
+    // 삭제 버튼 클릭시
+    async function deletePost(postId, userId) {
+        try {
+            if (window.confirm('게시물을 삭제하시겠습니까?')) {
+                const response = await axios.patch(`/post/${postId}/delete`);
+                if (response.data.success) {
+                    console.log('Delete successful');
+                    // 클라이언트 측에서 리다이렉트 처리
+                    window.location.href = `/post/list/${userId}/1/12`;
+                } else {
+                    console.log('Delete failed');
+                    // 삭제 실패 처리
+                }
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    }
+
+
+</script>
 
 </html>
