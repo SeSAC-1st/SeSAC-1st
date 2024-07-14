@@ -24,7 +24,8 @@
                     </div>
                     <div>
                         <button type="button"
-                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600">수정</button>
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600"
+                            onclick="updatePost('<%= post.postId %>', '<%= post.userId %>')">수정</button>
                         <button type="button"
                             class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600"
                             onclick="deletePost('<%= post.postId %>', '<%= post.userId %>')">
@@ -42,8 +43,8 @@
             </div>
             <hr class="border border-gray-300 my-6">
             <span class="font-semibold mr-2 text-lg">댓글</span>
-            <form name="comment" class="space-y-4 mt-4">
-                <textarea id="text" name="text" placeholder="댓글을 작성하세요.(100자 이하)" maxlength="100"
+            <form id="commentForm" name="comment" class="space-y-4 mt-4">
+                <textarea id="comment" name="text" placeholder="댓글을 작성하세요.(100자 이하)" maxlength="100"
                     class="w-full h-24 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
                 <div class="flex justify-end">
                     <button type="submit"
@@ -51,39 +52,11 @@
                         작성</button>
                 </div>
             </form>
+            <div id="comment-section" class="mb-6 mt-6 pt-10">
+                <p id="no-comments" class="text-gray-500">댓글이 없습니다.</p>
+            </div>
 
             <div id="comment-section" class="mb-6 mt-6 pt-10">
-                <ul>
-                    <li class="mb-4">
-                        <div class="flex justify-between">
-                            <div class="flex items-center mb-2">
-                                <p class="text-gray-700 font-semibold mr-2">홍길동</p>
-                                <p class="text-gray-600 text-sm">2024-07-12</p>
-                            </div>
-                            <div>
-                                <button type="button"
-                                    class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
-                                <button type="button"
-                                    class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 pb-1">댓글 내용이 여기에 들어갑니다.</p>
-                        <button type="button"
-                            class="reply-btn bg-gray-200 py-0.5 px-1 text-xs md:py-1 md:px-3 rounded">답글</button>
-                        <div class="reply-form hidden mt-2">
-                            <textarea class="w-full p-2 border rounded mb-2" placeholder="대댓글 입력"></textarea>
-                            <button type="button"
-                                class="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600">등록</button>
-                        </div>
-                    </li>
-                    <li class="mb-4">
-                        <div class="flex items-center mb-2">
-                            <p class="text-gray-700 font-semibold mr-2">아무개</p>
-                            <p class="text-gray-600 text-sm">2024-07-12</p>
-                        </div>
-                        <p class="text-gray-600">댓글 내용이 여기에 들어갑니다.</p>
-                    </li>
-                </ul>
             </div>
 
 
@@ -92,6 +65,17 @@
 </body>
 
 <script>
+    // 수정 버튼 클릭 시
+    async function updatePost(postId, userId) {
+        try {
+            // 입력폼 페이지로 이동하는 코드
+            window.location.href = ``; // url 입력 필요.
+        } catch (error) {
+            console.error('update error>>', error);
+        }
+    }
+
+
     // 삭제 버튼 클릭시
     async function deletePost(postId, userId) {
         try {
@@ -107,7 +91,7 @@
                 }
             }
         } catch (error) {
-            console.error('Error deleting post:', error);
+            console.error('delete error>>', error);
         }
     }
 
