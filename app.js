@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
+const sessionMiddleware = require('./middlewares/session');
 // 내보냈던 db 중 sequelize 객체를 구조분해 할당해서 꺼냄
 const { sequelize } = require('./models');
+const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user/user');
 const postRouter = require('./routes/post/post');
 const commentRouter = require('./routes/comment/comment');
@@ -22,14 +24,16 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(sessionMiddleware);
 
+app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/comment', commentRouter);
 
-app.get('*', (req, res) => {
-  res.render('404');
-});
+// app.get('*', (req, res) => {
+//   res.render('404');
+// });
 
 // 테이블을 생성하고 처음에만 force : true 로 실행하고 그 뒤로는 false로 변경하고 실행
 sequelize
