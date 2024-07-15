@@ -1,22 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="/static/css/output.css" rel="stylesheet" />
-
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        // 세션값 대체 임시 전역변수 선언(헤더 변환 확인용)
-        let t = 1; // 로그인 상태 = 0, 로그아웃 상태 = 1
-    </script>
-</head>
-
-<body>
+<script>
+    // 세션값 대체 임시 전역변수 선언(헤더 변환 확인용)
+    const t = 1; // 로그인 상태 = 0, 로그아웃 상태 = 1
+</script>
+<% const t=0; %>
     <!-- 로그인 전 헤더 -->
     <% if(t===0) { %>
         <header
@@ -34,7 +20,7 @@
                         </svg>
                     </a>
                     <button type="button"
-                        class="text-white bg-mainColor active:bg-blue-900 font-medium rounded-lg text-sm px-4 py-1 text-center dark:bg-mainColor dark:active:bg-blue-900 ">로그인</button>
+                        class="text-white bg-blue-500 active:bg-blue-900 font-medium rounded-lg text-sm px-4 py-1 text-center dark:bg-blue-500 dark:active:bg-blue-900 ">로그인</button>
                 </div>
             </div>
         </header>
@@ -98,9 +84,9 @@
                 </div>
             </header>
             <% } %>
-</body>
+                </body>
 
-<script>
+                <!-- <script>
     // 사용자 정보 가져오는 axios 함수
     async function userInfo(loginId) {
         try {
@@ -171,6 +157,4 @@
             alert('사용자 정보를 불러오는데 실패했습니다.')
         }
     })
-</script>
-
-</html>
+</script> -->
