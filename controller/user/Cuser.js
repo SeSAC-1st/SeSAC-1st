@@ -124,7 +124,7 @@ exports.userLogin = async (req, res) => {
       userNick: user.userNick,
       isLoggedIn: true,
     };
-    console.log(req.session.user);
+    // console.log(req.session.user);
 
     res.json(user);
     // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
@@ -255,7 +255,7 @@ exports.updateUser = async (req, res) => {
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
-  console.log('session', req.session);
+  // console.log('session', req.session);
   req.session.destroy((err) => {
     if (err) return res.status(500).send('Failed to logout.');
     // 로그아웃 완료하면 메인(전체 게시물 목록)페이지로 이동
