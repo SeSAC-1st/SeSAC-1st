@@ -2,9 +2,9 @@ const { User } = require('../../models/index');
 const { hashPw, comparePw } = require('../../utils/passwordUtils');
 
 // 회원가입 페이지
-// exports.registerPage = (req, res) => {
-//     res.render('user/registerPage');
-// };
+exports.registerPage = (req, res) => {
+    res.render('user/registerPage');
+  };
 
 /**
  * 사용자 등록을 처리하는 함수
@@ -20,7 +20,6 @@ const { hashPw, comparePw } = require('../../utils/passwordUtils');
  * @param {Object} res - 응답 객체
  * @returns {Promise<void>} - 비동기 함수는 아무것도 반환하지 않습니다.
  */
-
 // 회원가입 로직
 exports.userRegister = async (req, res) => {
   try {
