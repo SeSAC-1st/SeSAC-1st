@@ -19,7 +19,7 @@ exports.userRegister = async (req, res) => {
          // userName 정규표현식 검사 (한글, 영어로 2~10글자)
          const userNameRegex = /^[가-힣a-zA-Z]{2,10}$/;
          if (!userNameRegex.test(userName)) {
-             return res.status(400).json({ error: 'Invalid userName. It must be 2-10 characters long and include only Korean or English letters.' });
+             return res.status(400).json({ error: 'Invalid userName.' });
          }
 
         // loginId 정규표현식 (6~10글자, 영어 대소문자)
@@ -37,7 +37,7 @@ exports.userRegister = async (req, res) => {
         // userNick 정규표현식 검사 (한글, 영어로 2~10글자)
         const userNickRegex = /^[가-힣a-zA-Z]{2,10}$/;
         if (!userNickRegex.test(userNick)) {
-            return res.status(400).json({ error: 'Invalid userNick. It must be 2-10 characters long and include only Korean or English letters.' });
+            return res.status(400).json({ error: 'Invalid userNick.' });
         }
 
         // 비밀번호 해싱
@@ -103,6 +103,9 @@ exports.userLogin = async (req, res) => {
     }
 }
 
+
+
 // 로그아웃 페이지
+
 
 // 로그아웃 로직
