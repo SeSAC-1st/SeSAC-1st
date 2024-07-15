@@ -173,7 +173,7 @@
             onclick="submitForm()"
           />
         </form>
-        <div class="registerText"><a href="/">회원가입</a></div>
+        <div class="registerText"><a href="/user/register">회원가입</a></div>
       </div>
     </div>
 
@@ -189,7 +189,7 @@
         };
         axios({
           method: 'POST',
-          url: '/백엔드 서버 주소',
+          url: '/',
           data,
         })
           .then((res) => {
