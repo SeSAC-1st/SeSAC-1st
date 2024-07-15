@@ -1,31 +1,26 @@
 <% userPostList.rows.forEach(post => { %>
-<div
-  class="group relative bg-gray-50 shadow-md rounded-lg overflow-hidden transform transition duration-500 hover:scale-105 p-4"
->
-  <h2
-    class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2"
-  >
-    <%= post.postTitle %>
-  </h2>
-  <div class="mt-4 flex justify-between">
-    <div>
-      <h3 class="text-sm text-gray-700">
-        <a href="#">
-          <span
-            aria-hidden="true"
-            class="absolute inset-0 text-gray-600 mb-4"
-          ></span>
-          <%= post.postContent %>
-        </a>
-      </h3>
+  <a href="/post/<%= post.postId %>" class="dark:bg-gray-900  group block relative bg-gray-50 shadow-md rounded-lg overflow-hidden transform transition duration-500 hover:scale-105 p-4">
+    <div class="flex flex-col h-full ">
+      <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline mb-2">
+        <%= post.postTitle %>
+      </h2>
+      <div class="mt-4 flex-grow">
+        <div>
+          <h3 class="text-sm text-gray-700">
+            <%= post.postContent %>
+          </h3>
+        </div>
+      </div>
+      <div class="border-t border-gray-300 pt-2 mt-2">
+        <p class="font-medium text-gray-900 text-gray-500 text-sm mb-2">
+          by <%= post.userId %>
+        </p>
+        <div class="flex justify-end space-x-2 text-gray-400 text-xs mt-1">
+          <span>조회수: <%= Math.floor(Math.random() * 1000) %></span>
+          <span>댓글수: <%= Math.floor(Math.random() * 100) %></span>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="border-t border-gray-300 pt-2 mt-2">
-    <p class="font-medium text-gray-900 text-gray-500 text-sm mb-2">by <%= post.userId %></p>
-    <div class="flex justify-end space-x-2 text-gray-400 text-xs mt-1">
-      <span>조회수: <%= Math.floor(Math.random() * 1000) %></span>
-      <span>댓글수: <%= Math.floor(Math.random() * 100) %></span>
-    </div>
-  </div>
-</div>
-<% }); %>
+  </a>
+  <% }); %>
+  
