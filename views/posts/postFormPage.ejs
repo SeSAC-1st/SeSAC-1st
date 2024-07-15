@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 게시물 작성페이지</title>
+    <%- include('../include/head.ejs') %>
+    <link rel="stylesheet" href="/css/toastui-editor.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head>
+<body>
+    <div id="editor"></div>
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <!-- <script src="/js/toastui-editor-all.min.js"></script> -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '500px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+
+        // 이미지 hooks
+        hooks: {
+            addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
+                console.log(blob);
+                console.log(callback);
+            }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
