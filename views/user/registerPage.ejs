@@ -107,7 +107,8 @@
       .userNameGuide,
       .loginIdGuide,
       .userPwGuide,
-      .userNickGuide {
+      .userNickGuide,
+      .userPwCheckGuide {
         display: none;
         margin-bottom: 20px;
         color: red;
@@ -293,6 +294,21 @@
           }
         }
       }
+
+      // 완성 - 비밀번호 확인 함수 (실시간)
+      function userPwRecheck() {
+        let userPw = document.querySelector('.userPw').value;
+        let userPwCheck = document.querySelector('.userPwCheck').value;
+        if (userPw != userPwCheck) {
+          //   document.querySelector('.userPwCheckGuide').innerHTML =
+          //     '비밀번호가 일치하지 않습니다';
+          document.querySelector('.userPwCheckGuide').style.display = 'block';
+          return false;
+        } else {
+          document.querySelector('.userPwCheckGuide').style.display = 'none';
+          return true;
+        }
+      }
     </script>
   </head>
   <body>
@@ -360,6 +376,7 @@
                 type="password"
                 class="userPwCheck"
                 name="userPwCheck"
+                oninput="userPwRecheck()"
                 required
               />
               <!-- oninput="pwCheck()" -->
