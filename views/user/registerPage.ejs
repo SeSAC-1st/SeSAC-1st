@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원가입</title>
+    <%- include("../include/head.ejs") %>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        border: none;
+      }
+      body {
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* height: 100vh; */
+        background-color: #ffffff;
+      }
+      .registerBox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 1120px;
+        height: 1000px;
+      }
+      .registerWrapper {
+        width: 400px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .registerWrapper hr {
+        width: 100%;
+        margin-bottom: 20px;
+        border: 0;
+        height: 1px;
+        background-color: #006eff;
+      }
+
+      #registerForm {
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #registerForm div {
+        width: 100%;
+      }
+      .idBox {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+
+      #registerForm input {
+        width: 100%;
+        height: 48px;
+        padding: 0 10px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+        border-radius: 6px;
+        background-color: #f8f8f8;
+      }
+
+      .loginId {
+        width: 150% !important;
+      }
+
+      /* 중복확인버튼 */
+      .idDuplicateCheckButton {
+        width: 25% !important;
+        color: #fff;
+        font-size: 16px;
+        background-color: #006eff !important;
+        margin-top: 20px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .idDuplicateCheckButton:active,
+      .registerButton:active {
+        background-color: #0d4a9b !important;
+      }
+
+      .registerButton {
+        color: #fff;
+        font-size: 16px;
+        background-color: #006eff !important;
+        margin-top: 20px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .registerBox label {
+        font-weight: 700;
+      }
+
+      /* .inputguide */
+      .userNameGuide,
+      .loginIdGuide,
+      .userPwGuide,
+      .userNickGuide,
+      .userPwCheckGuide {
+        display: none;
+        margin-bottom: 20px;
+        color: red;
+        /* font-size: 13px !important; */
+      }
+
+      .userName:focus,
+      .loginId:focus,
+      .userPw:focus,
+      .userNick:focus,
+      .email:focus,
+      .address:focus,
+      .birthday:focus {
+        outline: 3px solid #f2f2f2ef;
+        background-color: #f0f0f0 !important;
+      }
+    </style>
+    <script>
+      let userNameValidate;
+      let loginIdValidate;
+      let userPwValidate;
+      let userNickValidate;
+      let idDuplicate = false;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // 완성 - 이름 (한글, 영어로 2~10글자) 유효성 검사
+        let userNameField = document.querySelector('.userName');
+        let userNameGuide = document.querySelector('.userNameGuide');
+        userNameField.addEventListener('input', function () {
+          let userNamePattern = /^[가-힣a-zA-Z]{2,10}$/; // 영어 대소문자, 숫자, 특수문자, 공백
+          let userNameinvalidPattern = /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z]/g;
+          if (userNameinvalidPattern.test(this.value)) {
+            alert('이름은 한글, 영어만 입력 가능합니다.');
+            this.value = this.value.replace(userNameinvalidPattern, '');
+          } else {
+            if (!userNamePattern.test(this.value)) {
+              userNameGuide.style.display = 'block';
+              userNameValidate = false;
+            } else {
+              userNameGuide.style.display = 'none';
+              userNameValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 아이디에 (6~10글자, 영어 대소문자) 유효성 검사
+        let loginIdField = document.querySelector('.loginId');
+        let loginIdGuide = document.querySelector('.loginIdGuide');
+        loginIdField.addEventListener('input', function () {
+          let loginIdPattern = /^[a-zA-Z0-9]{6,10}$/; // 대소문자, 숫자, 길이 6~10
+          let loginIdinvalidPattern = /[^a-zA-Z0-9]/g;
+          if (loginIdinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(loginIdinvalidPattern, '');
+            alert('아이디는 영어, 숫자만 사용 가능합니다.');
+          } else {
+            if (!loginIdPattern.test(this.value)) {
+              loginIdGuide.style.display = 'block';
+              loginIdValidate = false;
+            } else {
+              loginIdGuide.style.display = 'none';
+              loginIdValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 비밀번호에 (8~12글자, 영어, 숫자, 특수문자 포함) 유효성 검사
+        let userPwField = document.querySelector('.userPw');
+        let userPwGuide = document.querySelector('.userPwGuide');
+        userPwField.addEventListener('input', function () {
+          let userPwPattern =
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,15}$/;
+          let userPwinvalidPattern = /[^A-Za-z\d@$!%*#?&]/g;
+          if (userPwinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(userPwinvalidPattern, '');
+            alert(
+              '비밀번호는 영어, 숫자, 특수문자(@$!%*#?&)만 사용 가능합니다.'
+            );
+          } else {
+            if (!userPwPattern.test(this.value)) {
+              userPwGuide.style.display = 'block';
+              userPwValidate = false;
+            } else {
+              userPwGuide.style.display = 'none';
+              userPwValidate = true;
+            }
+          }
+        });
+
+        // 완성 - 별명 (한글, 영어로 2~10글자) 유효성 검사
+        let userNickField = document.querySelector('.userNick');
+        let userNickGuide = document.querySelector('.userNickGuide');
+        userNickField.addEventListener('input', function () {
+          let userNickPattern = /^[가-힣a-zA-Z]{2,10}$/;
+          let userNickinvalidPattern = /[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z]/g;
+
+          if (userNickinvalidPattern.test(this.value)) {
+            this.value = this.value.replace(userNickinvalidPattern, '');
+            // 유효하지 않은 문자를 공백으로 대체
+            alert('별명은 한글, 영어만 입력 가능합니다.');
+          } else {
+            if (!userNickPattern.test(this.value)) {
+              userNickGuide.style.display = 'block';
+              userNickValidate = false;
+            } else {
+              userNickGuide.style.display = 'none';
+              userNickValidate = true;
+            }
+          }
+        });
+      });
+
+      function validateForm() {
+        let isValid = true;
+        let requiredFields = document.querySelectorAll(
+          '.userName, .loginId, .userPw, .userNick'
+        );
+        requiredFields.forEach(function (field) {
+          if (
+            userNameValidate &&
+            loginIdValidate &&
+            userPwValidate &&
+            userNickValidate &&
+            idDuplicate
+          ) {
+            isValid = 'registerComplete';
+          } else if (
+            userNameValidate &&
+            loginIdValidate &&
+            userPwValidate &&
+            userNickValidate &&
+            !idDuplicate
+          ) {
+            isValid = 'notExecuteIdDuplicate';
+          } else {
+            isValid = 'reCheck';
+          }
+        });
+        return isValid;
+      }
+
+      // 회원가입 버튼 눌렀을 때 필수입력값에 따른 처리 (페이지 렌더링 또는 alert 창)
+      function submitRegisterForm() {
+        let isValid = validateForm();
+        if (isValid === 'registerComplete') {
+          alert('/나중에 페이지 렌더링으로 변경/');
+        } else if (isValid === 'notExecuteIdDuplicate') {
+          alert('아이디 중복검사를 실행해주세요');
+        } else if (isValid === 'reCheck') {
+          alert('(*)필수 항목들을 제대로 입력하지 않았습니다.');
+        } else {
+          alert('알 수 없는 오류');
+        }
+      }
+
+      // 아이디 중복확인 함수 (= 중복확인 버튼 눌렀을 때 함수)
+      async function idDuplicateCheck() {
+        const loginId = document.querySelector('.loginId').value;
+
+        if (!loginId) {
+          alert('아이디를 입력해주세요.');
+          return;
+        }
+
+        try {
+          const response = await axios.post('checkLoginid', {
+            loginId,
+          });
+
+          if (response.data.result === true) {
+            alert('이미 사용 중인 아이디입니다.');
+          } else if (response.data.result === false) {
+            alert('사용 가능한 아이디입니다.');
+            idDuplicate = true;
+          } else {
+            alert('아이디 중복 검사에 실패했습니다.');
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 409) {
+            alert('이미 사용 중인 아이디입니다.');
+          } else {
+            console.error('Error:', error);
+            alert('아이디 중복 검사 중 오류가 발생했습니다.');
+          }
+        }
+      }
+
+      // 완성 - 비밀번호 확인 함수 (실시간)
+      function userPwRecheck() {
+        let userPw = document.querySelector('.userPw').value;
+        let userPwCheck = document.querySelector('.userPwCheck').value;
+        if (userPw != userPwCheck) {
+          //   document.querySelector('.userPwCheckGuide').innerHTML =
+          //     '비밀번호가 일치하지 않습니다';
+          document.querySelector('.userPwCheckGuide').style.display = 'block';
+          return false;
+        } else {
+          document.querySelector('.userPwCheckGuide').style.display = 'none';
+          return true;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="registerBox">
+      <div class="registerWrapper">
+        <a href="/"
+          ><img src="/image/logoImage.png" alt="logoImage" width="100px"
+        /></a>
+        <hr />
+        <form id="registerForm">
+          <div>
+            <label>
+              *이름
+              <br />
+              <input type="text" class="userName" name="userName" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*이름을 입력하세요.</span> -->
+            </label>
+          </div>
+          <div class="userNameGuide">
+            *이름은 2~10글자의 한글, 영어만 사용 가능합니다.
+          </div>
+          <div class="idBox">
+            <label>
+              *아이디
+              <br />
+              <input type="text" class="loginId" name="loginId" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*아이디를 입력하세요.</span> -->
+            </label>
+            <input
+              type="button"
+              class="idDuplicateCheckButton"
+              onclick="idDuplicateCheck()"
+              value="중복체크"
+            />
+          </div>
+          <div class="loginIdGuide">
+            *아이디는 6~10글자의 영문, 숫자만 사용 가능합니다.
+          </div>
+
+          <div>
+            <label>
+              *비밀번호
+              <br />
+              <input type="password" class="userPw" name="userPw" required />
+              <!-- oninput="checkField(this)" -->
+              <!-- oninput="pwCheck()" -->
+
+              <!-- <span class="inputguide">*비밀번호를 입력하세요.</span> -->
+            </label>
+          </div>
+          <div class="userPwGuide">
+            *비밀번호는 8~15글자의 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야
+            합니다.
+          </div>
+
+          <div>
+            <label>
+              *비밀번호 확인
+              <br />
+              <input
+                type="password"
+                class="userPwCheck"
+                name="userPwCheck"
+                oninput="userPwRecheck()"
+                required
+              />
+              <!-- oninput="pwCheck()" -->
+            </label>
+          </div>
+          <div class="userPwCheckGuide">*비밀번호가 일치하지 않습니다.</div>
+          <div>
+            <label>
+              *별명
+              <br />
+              <input type="text" class="userNick" name="userNick" required />
+              <!-- oninput="checkField(this)" -->
+
+              <!-- <span class="inputguide">*별명을 입력하세요.</span> -->
+            </label>
+          </div>
+          <div class="userNickGuide">
+            별명은 2~10글자의 한글, 영어만 사용 가능합니다.
+          </div>
+          <div>
+            <label>
+              이메일
+              <br />
+              <input type="email" class="email" name="email" />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              주소
+              <br />
+              <input type="text" class="address" name="address" />
+            </label>
+          </div>
+
+          <div>
+            <label>
+              생일
+              <br />
+              <input type="date" class="birthday" name="birthday" />
+            </label>
+          </div>
+
+          <div class="errorMessage" id="errorMessage">
+            <p></p>
+          </div>
+
+          <input
+            type="button"
+            class="registerButton"
+            value="회원가입"
+            onclick="submitRegisterForm()"
+          />
+        </form>
+      </div>
+    </div>
+    <%- include("../include/footer.ejs") %>
+  </body>
+</html>
