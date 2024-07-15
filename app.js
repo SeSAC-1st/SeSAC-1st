@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
 // 내보냈던 db 중 sequelize 객체를 구조분해 할당해서 꺼냄
+const { sequelize } = require('./models') 
+const userRouter = require('./routes/user/user')
+const postRouter = require('./routes/post/post')
+const commentRouter = require('./routes/comment/comment')
 const { sequelize } = require('./models');
 const userRouter = require('./routes/user/user');
 const postRouter = require('./routes/post/post');
@@ -24,10 +28,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/static', express.static(__dirname + '/static'));
 
-app.listen(PORT, () => {
-  console.log(`Sever is running! The port number is ${PORT} ...`);
-});
+// app.listen(port, () => {
+//   console.log(`Sever is running! The port number is ${port} ...`);
+// });
 
+app.use('/user', userRouter)
+app.use('/post', postRouter)
+app.use('/comment', commentRouter)
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/comment', commentRouter);
@@ -38,20 +45,6 @@ app.get('*', (req, res) => {
 
 // 테이블을 생성하고 처음에만 force : true 로 실행하고 그 뒤로는 false로 변경하고 실행
 sequelize
-<<<<<<< HEAD
-    .sync({ force: true
-
-     })    // force : true -> 서버 실행때마다 테이블 재생성(데이터 다 날아감), false -> 서버 실행 시 테이블 없으면 생성
-    .then(() => {
-        app.listen(port, () => {
-            console.log('database connection succeed');
-            console.log(`http://localhost:${port}`);
-        });
-    })
-    .catch((err) => {
-        console.error(err)
-    })
-=======
   .sync({ force: false }) // force : true -> 서버 실행때마다 테이블 재생성(데이터 다 날아감), false -> 서버 실행 시 테이블 없으면 생성
   .then(() => {
     app.listen(port, () => {
@@ -62,4 +55,3 @@ sequelize
   .catch((err) => {
     console.error(err);
   });
->>>>>>> f632409ea5edb891dd01588a81750053494bcb69
