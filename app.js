@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 // 내보냈던 db 중 sequelize 객체를 구조분해 할당해서 꺼냄
 const { sequelize } = require('./models') 
-// const userRouter = require('./routes/user/user')
-// const postRouter = require('./routes/post/post')
-// const commentRouter = require('./routes/comment/comment')
+const userRouter = require('./routes/user/user')
+const postRouter = require('./routes/post/post')
+const commentRouter = require('./routes/comment/comment')
 
 const path = require('path')
 const dotenv = require('dotenv')
@@ -24,13 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/static', express.static(__dirname + '/static'));
 
-app.listen(PORT, () => {
-  console.log(`Sever is running! The port number is ${PORT} ...`);
-});
+// app.listen(port, () => {
+//   console.log(`Sever is running! The port number is ${port} ...`);
+// });
 
-// app.use('/user', userRouter)
-// app.use('/post', postRouter)
-// app.use('/comment', commentRouter)
+app.use('/user', userRouter)
+app.use('/post', postRouter)
+app.use('/comment', commentRouter)
 
 app.get('*', (req, res) => {
     res.render('404')
