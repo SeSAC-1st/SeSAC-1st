@@ -3,7 +3,7 @@ const controller = require('../../controller/comment/Ccomment');
 const router = express.Router();
 
 //댓글, 대댓글 목록 조회
-router.get('/list/:postId', controller.getCommentList);
+// router.get('/list/:postId', controller.getCommentList);
 
 // 댓글 등록
 router.post('/:postId', controller.insertComment);

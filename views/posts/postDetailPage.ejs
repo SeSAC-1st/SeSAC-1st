@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 게시물 상세페이지</title>
+    <%- include('../include/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../include/header.ejs') %>
+        <main class="mx-auto px-4 sm:px-24 md:px-36 lg:px-80 pt-20">
+            <h1 class="text-3xl font-extrabold mb-10 text-center">
+                <%= post.postTitle %>
+            </h1>
+            <div class="text-gray-500 mb-5">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="font-semibold mr-2">by <%= post.User.userNick %></span>
+                        <span class="text-sm">
+                            <%= new Date(post.createdAt).toLocaleDateString() %>
+                        </span>
+                    </div>
+                    <div>
+                        <button type="button"
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600"
+                            onclick="updatePost('<%= post.postId %>', '<%= post.userId %>')">수정</button>
+                        <button type="button"
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600"
+                            onclick="deletePost('<%= post.postId %>', '<%= post.userId %>')">
+                            삭제
+                        </button>
+
+                    </div>
+                </div>
+                <hr class="border border-gray-300 my-2">
+            </div>
+            <div class="mt-5">
+                <p>
+                    <%= post.postContent %>
+                </p>
+            </div>
+            <hr class="border border-gray-300 my-6">
+            <span class="font-semibold mr-2 text-lg">댓글</span>
+            <form id="commentForm" name="comment" class="space-y-4 mt-4">
+                <textarea id="comment" name="text" placeholder="댓글을 작성하세요.(100자 이하)" maxlength="100"
+                    class="w-full h-24 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="bg-blue-500 text-white font-semibold py-0.5 px-1 md:py-1 md:px-3 rounded hover:bg-blue-600">댓글
+                        작성</button>
+                </div>
+            </form>
+            <div id="comment-section" class="mb-6 mt-6 pt-10">
+                <p id="no-comments" class="text-gray-500">댓글이 없습니다.</p>
+            </div>
+
+            <div id="comment-section" class="mb-6 mt-6 pt-10">
+            </div>
+
+
+        </main>
+        <%- include('../include/footer.ejs') %>
+</body>
+
+<script>
+    // 수정 버튼 클릭 시
+    async function updatePost(postId, userId) {
+        try {
+            // 입력폼 페이지로 이동하는 코드
+            window.location.href = ``; // url 입력 필요.
+        } catch (error) {
+            console.error('update error>>', error);
+        }
+    }
+
+
+    // 삭제 버튼 클릭시
+    async function deletePost(postId, userId) {
+        try {
+            if (window.confirm('게시물을 삭제하시겠습니까?')) {
+                const response = await axios.patch(`/post/${postId}/delete`);
+                if (response.data.success) {
+                    console.log('Delete successful');
+                    // 클라이언트 측에서 리다이렉트 처리
+                    window.location.href = `/post/list/${userId}/1/12`;
+                } else {
+                    console.log('Delete failed');
+                    // 삭제 실패 처리
+                }
+            }
+        } catch (error) {
+            console.error('delete error>>', error);
+        }
+    }
+
+    // <댓글>
+    // 댓글 작성 폼 선택
+    const commentForm = document.getElementById('commentForm');
+
+    // 댓글 작성 폼에 이벤트 리스너 추가
+    commentForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // 기본 폼 제출 동작 방지
+
+        const commentText = document.getElementById('comment').value;
+        const postId = '<%= post.postId %>';
+
+        try {
+            const res = await axios.post(`/post/${postId}`, { postId, comContent }); // 경로, 요청변수 변경 필요.
+
+            if (res.data.success) {
+                // 댓글 작성 성공 시 동적으로 댓글 요소 추가
+                addCommentElement(res.data.comment);
+                commentForm.reset(); // 폼 초기화
+            } else {
+                console.error('댓글 작성 실패:', res.data.error);
+            }
+        } catch (error) {
+            console.error('댓글 작성 중 오류 발생:', error);
+        }
+    });
+
+    const currentUserId = document.body.getAttribute('data-current-user-id');
+
+    // 댓글 동작 추가 함수
+    function addCommentElement(comment) {
+        const commentSection = document.getElementById('comment-section');
+        const noComments = document.getElementById('no-comments');
+
+        // "댓글이 없습니다." 메시지 숨김
+        if (noComments) {
+            noComments.style.display = 'none';
+        }
+
+        const commentElement = document.createElement('li'); // commentElement = 댓글요소 li
+        commentElement.classList.add('mb-4'); // commentElement에 mb-4 클래스 추가
+
+        // 댓글 작성자와 로그인한 사용자가 동일할 때만 수정, 삭제 버튼 표시
+        const isAuthor = commList.User.userId === currentUserId;
+
+        commentElement.innerHTML = `
+            <div class="flex justify-between">
+                <div class="flex items-center mb-2">
+                    <p class="text-gray-700 font-semibold mr-2">${commList.User.userNick}</p>
+                    <p class="text-gray-600 text-sm">${new Date(commList.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div>
+                    ${isAuthor ? `
+                        <button id="edit-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
+                        <button id="delete-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                    ` : ''}
+                </div>
+            </div>
+            <p class="text-gray-600 pb-1">${commList.comContent}</p>
+            <button type="button" class="reply-btn bg-gray-200 py-0.5 px-1 text-xs md:py-1 md:px-3 rounded">답글</button>
+            <div class="reply-form hidden mt-2">
+                <textarea class="w-full p-2 border rounded mb-2" placeholder="대댓글 입력"></textarea>
+                <button type="button" class="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600">등록</button>
+            </div>
+        `;
+
+        commentSection.appendChild(commentElement);
+
+        // 답글 버튼 클릭 이벤트 리스너 추가
+        const replyBtns = commentElement.querySelectorAll('.reply-btn');
+        replyBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const replyForm = btn.nextElementSibling;
+                replyForm.classList.toggle('hidden');
+            });
+        });
+    }
+
+    // 댓글 삭제 버튼 클릭 이벤트 리스너 추가
+    const deleteCommentBtns = commentElement.querySelectorAll('.delete-btn');
+    deleteCommentBtns.forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            const confirmDelete = confirm('정말로 이 댓글을 삭제하시겠습니까?');
+            if (confirmDelete) {
+                try {
+                    const commentId = btn.dataset.commentId;
+                    const res = await axios.patch(`/delete/${comId}`);
+                    if (res.data.success) {
+                        // 댓글 삭제 성공 시 댓글 요소 제거
+                        btn.closest('li').remove();
+                        if (commentSection.children.length === 0) {
+                            // 마지막 댓글이 삭제된 경우 "댓글이 없습니다." 메시지 표시
+                            const noComments = document.createElement('p');
+                            noComments.id = 'no-comments';
+                            noComments.textContent = '댓글이 없습니다.';
+                            commentSection.appendChild(noComments);
+                        }
+                    } else {
+                        console.error('댓글 삭제 실패:', res.data.error);
+                    }
+                } catch (error) {
+                    console.error('댓글 삭제 중 오류 발생:', error);
+                }
+            }
+        });
+    });
+
+    // 댓글 수정 버튼 클릭시
+    const commentEditBtns = commentElement.querySelectorAll('.edit-btn');
+    commentEditBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const commentItem = btn.closest('li');
+            const commentContent = commentItem.querySelector('.comment-content');
+            const commentText = commentContent.textContent.trim();
+
+            // 수정 폼 생성
+            const editForm = document.createElement('form');
+            editForm.classList.add('edit-form');
+
+            const editInput = document.createElement('textarea');
+            editInput.classList.add('edit-input');
+            editInput.value = commentText;
+
+            const submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.textContent = '수정';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.textContent = '취소';
+            cancelBtn.classList.add('cancel-btn');
+
+            editForm.appendChild(editInput);
+            editForm.appendChild(submitBtn);
+            editForm.appendChild(cancelBtn);
+
+            // 기존 댓글 내용 감추기
+            commentContent.style.display = 'none';
+
+            // 수정 폼 삽입
+            commentItem.insertBefore(editForm, commentContent.nextSibling);
+
+            // 취소 버튼 클릭 시 수정 폼 제거 및 기존 댓글 내용 표시
+            cancelBtn.addEventListener('click', () => {
+                editForm.remove();
+                commentContent.style.display = 'block';
+            });
+
+            // 수정 폼 제출 시 댓글 수정 처리
+            editForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const updatedText = editInput.value.trim();
+                try {
+                    const commentId = btn.dataset.commentId;
+                    const res = await axios.patch(`/update/${comId}`, { comId, updatedComment }); // 수정필요
+                    if (res.data.success) {
+                        // 수정된 댓글 내용 업데이트
+                        commentContent.textContent = updatedText;
+                        editForm.remove();
+                        commentContent.style.display = 'block';
+                    } else {
+                        console.error('댓글 수정 실패:', res.data.error);
+                    }
+                } catch (error) {
+                    console.error('댓글 수정 중 오류 발생:', error);
+                }
+            });
+        });
+    });
+
+
+    // <대댓글>
+    // 'commentElement'에 대댓글 요소를 추가하는 함수
+    // 'replies' 객체를 기반으로 대댓글을 생성
+    function addReplyElement(commentElement, replies) {
+        const replyElement = document.createElement('div'); // 대댓글 요소 div 생성
+        replyElement.classList.add('ml-6', 'mb-4', 'reply');
+
+        const isAuthorReply = reply.User.userId === currentUserId;
+        // 현재 사용자가 대댓글 작성자인지 확인
+
+        replyElement.innerHTML = `
+        <div class="flex justify-between">
+            <div class="flex items-center mb-2">
+                <p class="text-gray-700 font-semibold mr-2">${replies.User.userNick}</p>
+                <p class="text-gray-600 text-sm">${new Date(replies.comContent).toLocaleDateString()}</p>
+            </div>
+            <div>
+                ${isAuthorReply ? `
+                    <button type="button" class="edit-reply-btn bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
+                    <button type="button" class="delete-reply-btn bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                ` : ''}
+            </div>
+        </div>
+        <p class="reply-content text-gray-600 pb-1">${replies.replyText}</p>
+    `;
+
+        commentElement.appendChild(replyElement);
+        // 'commentElement'에 대댓글 요소를 추가
+
+        const editReplyBtn = replyElement.querySelector('.edit-reply-btn');
+        // 대댓글 요소 내 '수정' 버튼을 선택
+        const deleteReplyBtn = replyElement.querySelector('.delete-reply-btn');
+        // 대댓글 요소 내 '삭제' 버튼을 선택
+
+        if (editReplyBtn) {
+            editReplyBtn.addEventListener('click', () => editReply(replyElement, replies.replyId));
+            // '수정' 버튼이 존재하면 클릭 시 'editReply' 함수를 호출하도록 이벤트 리스너를 추가
+        }
+        if (deleteReplyBtn) {
+            deleteReplyBtn.addEventListener('click', () => deleteReply(replyElement, replies.replyId));
+            // '삭제' 버튼이 존재하면 클릭 시 'deleteReply' 함수를 호출하도록 이벤트 리스너를 추가
+        }
+    }
+
+    async function editReply(replyElement, replyId) {
+        // 대댓글을 수정하는 함수
+        const replyContent = replyElement.querySelector('.reply-content');
+        // 대댓글 내용 요소를 선택
+        const replyText = replyContent.textContent.trim();
+        // 대댓글 내용 텍스트를 가져와서 앞뒤 공백을 제거
+
+        const editForm = document.createElement('form');
+        // 새로운 'form' 요소를 생성
+        editForm.classList.add('edit-form');
+        // 생성된 'form' 요소에 'edit-form' 클래스를 추가
+
+        const editInput = document.createElement('textarea');
+        // 새로운 'textarea' 요소를 생성
+        editInput.classList.add('edit-input');
+        // 생성된 'textarea' 요소에 'edit-input' 클래스를 추가
+        editInput.value = replyText;
+        // 'textarea' 요소에 대댓글 내용을 설정
+
+        const submitBtn = document.createElement('button');
+        // 새로운 'button' 요소를 생성
+        submitBtn.type = 'submit';
+        // 버튼 타입을 'submit'으로 설정
+        submitBtn.textContent = '수정';
+        // 버튼 텍스트를 '수정'으로 설정합니다.
+
+        const cancelBtn = document.createElement('button');
+        // 새로운 'button' 요소를 생성합니다.
+        cancelBtn.type = 'button';
+        // 버튼 타입을 'button'으로 설정합니다.
+        cancelBtn.textContent = '취소';
+        // 버튼 텍스트를 '취소'로 설정합니다.
+        cancelBtn.classList.add('cancel-btn');
+        // '취소' 버튼에 'cancel-btn' 클래스를 추가합니다.
+
+        editForm.appendChild(editInput);
+        // 'textarea' 요소를 'form'에 추가합니다.
+        editForm.appendChild(submitBtn);
+        // '수정' 버튼을 'form'에 추가합니다.
+        editForm.appendChild(cancelBtn);
+        // '취소' 버튼을 'form'에 추가합니다.
+
+        replyContent.style.display = 'none';
+        // 대댓글 내용을 숨깁니다.
+        replyElement.appendChild(editForm);
+        // 수정 폼을 대댓글 요소에 추가합니다.
+
+        cancelBtn.addEventListener('click', () => {
+            editForm.remove();
+            replyContent.style.display = 'block';
+            // '취소' 버튼 클릭 시 수정 폼을 제거하고 대댓글 내용을 다시 표시합니다.
+        });
+
+        editForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // 폼 제출 시 기본 동작을 막습니다.
+            const updatedText = editInput.value.trim();
+            // 수정된 텍스트를 가져와 앞뒤 공백을 제거합니다.
+            try {
+                const res = await axios.patch(`/reply/${replyId}/update`, { replyId, updatedText });
+                // 서버에 PATCH 요청을 보내 대댓글을 수정합니다.
+                if (res.data.success) {
+                    replyContent.textContent = updatedText;
+                    editForm.remove();
+                    replyContent.style.display = 'block';
+                    // 수정이 성공하면 대댓글 내용을 갱신하고 수정 폼을 제거한 후 대댓글 내용을 다시 표시합니다.
+                } else {
+                    console.error('대댓글 수정 실패:', res.data.error);
+                    // 수정이 실패하면 콘솔에 오류를 출력합니다.
+                }
+            } catch (error) {
+                console.error('대댓글 수정 중 오류 발생:', error);
+                // 수정 요청 중 오류가 발생하면 콘솔에 오류를 출력합니다.
+            }
+        });
+    }
+
+    async function deleteReply(replyElement, replyId) {
+        // 대댓글을 삭제하는 함수입니다.
+        if (confirm('정말로 이 대댓글을 삭제하시겠습니까?')) {
+            // 사용자에게 확인 메시지를 표시하고 삭제 여부를 묻습니다.
+            try {
+                const res = await axios.patch(`/reply/${replyId}/delete`);
+                // 서버에 PATCH 요청을 보내 대댓글을 삭제합니다.
+                if (res.data.success) {
+                    replyElement.remove();
+                    // 삭제가 성공하면 대댓글 요소를 제거합니다.
+                } else {
+                    console.error('대댓글 삭제 실패:', res.data.error);
+                    // 삭제가 실패하면 콘솔에 오류를 출력합니다.
+                }
+            } catch (error) {
+                console.error('대댓글 삭제 중 오류 발생:', error);
+                // 삭제 요청 중 오류가 발생하면 콘솔에 오류를 출력합니다.
+            }
+        }
+    }
+
+
+</script>
+
+</html>
