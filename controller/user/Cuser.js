@@ -20,6 +20,7 @@ const { hashPw, comparePw } = require('../../utils/passwordUtils');
  * @param {Object} res - 응답 객체
  * @returns {Promise<void>} - 비동기 함수는 아무것도 반환하지 않습니다.
  */
+
 // 회원가입 로직
 exports.userRegister = async (req, res) => {
   try {
@@ -84,9 +85,10 @@ exports.userRegister = async (req, res) => {
 };
 
 // 로그인 페이지
-// exports.loginPage = (req, res) => {
-//     res.render('user/loginPage');
-// }
+exports.loginPage = (req, res) => {
+    res.render('user/loginPage');
+}
+
 
 // 로그인 로직
 /**
