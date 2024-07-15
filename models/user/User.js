@@ -15,7 +15,7 @@ const userModel = (sequelize, DataTypes) => {
             allowNull: false
         },
         userPw: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.STRING(30),
             allowNull: false
         },
         email: {
