@@ -1,0 +1,160 @@
+<script>
+    // 세션값 대체 임시 전역변수 선언(헤더 변환 확인용)
+    const t = 1; // 로그인 상태 = 0, 로그아웃 상태 = 1
+</script>
+<% const t=0; %>
+    <!-- 로그인 전 헤더 -->
+    <% if(t===0) { %>
+        <header
+            class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+            <div class="flex flex-wrap justify-between items-center mx-auto py-1 px-4 md:px-10">
+                <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <img src="/static/image/logoImage.png" class="h-8 md:h-14" alt="blomit Logo" />
+                </a>
+                <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                    <a href="">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-4 md:size-6 text-gray-900 dark:text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </a>
+                    <button type="button"
+                        class="text-white bg-blue-500 active:bg-blue-900 font-medium rounded-lg text-sm px-4 py-1 text-center dark:bg-blue-500 dark:active:bg-blue-900 ">로그인</button>
+                </div>
+            </div>
+        </header>
+        <% } else { %>
+            <!-- 로그인 후 헤더 -->
+            <header
+                class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+                <div class="flex flex-wrap justify-between items-center mx-auto py-1 px-4 md:px-10">
+                    <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                        <img src="/static/image/logoImage.png" class="h-8 md:h-14" alt="blomit Logo" />
+                        <% if(true) { %> <!--세션 id랑 userid랑 같으면-->
+                            <span class="text-gray-700 dark:text-white text-sm ml-2">로그인 상태</span> <!--별명값 넣음.-->
+                            <% } %>
+                    </a>
+                    <div class="flex items-center space-x-6 rtl:space-x-reverse">
+                        <a href="">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-4 md:size-6 text-gray-900 dark:text-white">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </a>
+                        <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName"
+                            class="flex items-center pe-1 font-medium rounded-full md:me-0 focus:ring-4 focus:ring-mainColor dark:focus:ring-mainColor"
+                            type="button">
+                            <img id="profileImage" class="w-8 h-8 md:w-12 md:h-12 me-2 rounded-full" src=""
+                                alt="user photo">
+                            <svg class="w-2.5 h-2.5 ms-3 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 4 4 4-4" />
+                            </svg>
+                        </button>
+                        <!-- 프로필 눌렀을때 메뉴창 드롭다운 -->
+                        <div id="dropdownAvatarName"
+                            class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                aria-labelledby="dropdownInformdropdownAvatarNameButtonationButton">
+                                <li>
+                                    <a href="#" id="myPostList"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">내
+                                        게시물 목록</a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">새
+                                        게시물 작성</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="mypage-link"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">마이페이지</a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">로그아웃</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+            <% } %>
+                </body>
+
+                <!-- <script>
+    // 사용자 정보 가져오는 axios 함수
+    async function userInfo(loginId) {
+        try {
+            const res = await axios.get('', {
+                params: {
+                    id: loginId
+                }
+            }); // 서버에게 데이터 요청(추후 url 추가 필요)
+            return res.data;
+        } catch (error) {
+            console.error('There was an error!', error);
+            throw error;
+        }
+    }
+
+    // 프로필 사진 url을 가져오는 함수
+    async function profileImageUrl(loginId) {
+        try {
+            const user = await userInfo(loginId);
+            return user.profileImageUrl;
+            // 사용자 정보에서 프로필 사진 url 가져오기
+        } catch (error) {
+            console.error('profile image URL Error: ', error);
+            return null;
+        }
+    }
+
+    // * 프로필 설정 함수
+    async function profileImage(loginId) {
+        const profileImageElement = document.getElementById('profileImage');
+
+        try {
+            const imageUrl = await profileImageUrl(loginId);
+            if (imageUrl) {
+                profileImageElement.src = imageUrl;
+            } else {
+                profileImageElement.src = '' // 기본 프로필 이미지 url
+            }
+        } catch (error) {
+            console.error('profile image error: ', error);
+        }
+    }
+
+    // * 내 게시물 목록 이동
+    document.querySelector('#myPostList').addEventListener('clink', async function (enevt) {
+        event.preventDefault(); // 기본 링크 동작 막음
+
+        try {
+            const userInfo = await userInfo();
+            console.log(userInfo); // 받은 데이터 확인
+
+            document.location.href = ''; // url 추가 예정
+        } catch (error) {
+            alert('사용자 정보를 불러오는데 실패했습니다.')
+        }
+    })
+
+    // * 마이페이지로 이동
+    document.querySelector('#mypage-link').addEventListener('click', async function (enevt) {
+        event.preventDefault(); // 기본 링크 동작 막음
+
+        try {
+            const userInfo = await userInfo();
+            console.log(userInfo); // 받은 데이터 확인
+
+            window.location.href = ''; // url 추가 예정
+        } catch (error) {
+            alert('사용자 정보를 불러오는데 실패했습니다.')
+        }
+    })
+</script> -->

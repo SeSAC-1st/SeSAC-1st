@@ -2,9 +2,9 @@ const { User } = require('../../models/index');
 const { hashPw, comparePw } = require('../../utils/passwordUtils');
 
 // 회원가입 페이지
-// exports.registerPage = (req, res) => {
-//     res.render('user/registerPage');
-// };
+exports.registerPage = (req, res) => {
+    res.render('user/registerPage');
+  };
 
 /**
  * 회원가입
@@ -84,9 +84,9 @@ exports.userRegister = async (req, res) => {
 };
 
 // 로그인 페이지
-// exports.loginPage = (req, res) => {
-//   res.render('user/loginPage');
-// };
+exports.loginPage = (req, res) => {
+    res.render('user/loginPage');
+}
 
 // 로그인 로직
 /**
