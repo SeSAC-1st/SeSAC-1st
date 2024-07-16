@@ -62,8 +62,8 @@ exports.userRegister = async (req, res) => {
 
     res.json(newUser);
     // 회원가입 완료 시 회원가입 완료 페이지로 이동
-    // if (newUser) res.redirect('/register/complete')
-    //   else res.status(500).send('Internal Server Error');
+    if (newUser) res.send({ result: true });
+    else res.send({ result: false });
 
     //   {
     //     "userId": 6,
@@ -128,8 +128,8 @@ exports.userLogin = async (req, res) => {
 
     res.json(user);
     // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
-    // if (req.session.user) res.redirect('/');
-    // else res.send({ result: false });
+    // if (!req.session.user) res.send({ result: false });
+    // res.send({ result: true });
 
     //   {
     //     "userId": 6,
@@ -279,7 +279,7 @@ exports.userLogout = async (req, res) => {
 //   } else res.redirect('/user/login');
 // };
 
-// 회원가입 페이지 이동
+// 회원가입 완료 페이지 이동
 exports.getRegisterCompletePage = (req, res) => {
   res.render('user/registerCompletePage');
 };
