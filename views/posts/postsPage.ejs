@@ -10,8 +10,12 @@
     <style>
         .card {
             opacity: 0;
-            transform: translateY(-50px);
+            transform: translateY(-50px) rotate(0deg);
             animation: slideUpDown 1s ease-in-out forwards;
+        }
+
+        .card-shake:hover {
+            animation: shake  0.5s ease-in-out;
         }
 
         @keyframes slideUpDown {
@@ -26,6 +30,21 @@
             100% {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(2deg);
+            }
+            50% {
+                transform: rotate(-2deg);
+            }
+            75% {
+                transform: rotate(2deg);
             }
         }
 

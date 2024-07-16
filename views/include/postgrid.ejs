@@ -5,8 +5,8 @@
     <div class="card w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-3  ">
       <div class="w-full p-3">
         <div class=" border border-coolGray-100 shadow-dashboard rounded-md 
-          h-[330px] shadow-lg hover:shadow-xl overflow-hidden transform origin-bottom transition duration-400 hover:scale-105  ease-in 
-         dark:bg-gray-500 min-w-60 relative">
+          h-[330px] shadow-lg hover:shadow-xl overflow-hidden transform origin-bottom transition duration-400   ease-in 
+         dark:bg-gray-500 min-w-60 relative card-shake ">
           <div class="flex flex-col justify-center items-center px-4 pt-8 pb-6 ">
             <a href="/post/<%= post.postId %>">
                 <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2 dark:text-white">
@@ -42,3 +42,10 @@
 </div>
 </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const card = document.querySelector('.animate-shake');
+      card.classList.add('opacity-100');
+  });
+</script>
