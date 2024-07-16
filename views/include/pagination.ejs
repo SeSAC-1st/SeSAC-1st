@@ -1,51 +1,55 @@
 <div class="flex justify-center mt-4 pb-6">
   <nav aria-label="Page navigation example">
     <ul class="flex items-center -space-x-px h-8 text-sm">
-      <!-- startPage: 4개씩 그룹을 만들고 그 페이지 그룹의 첫번째 페이지 번호 -->
-      <% const startPage=Math.max(1, Math.floor((pageNumber - 1) / 4) * 4 + 1); %>
-        <!-- 현재 페이지 그룹의 마지막 페이지 번호 -->
-        <% const endPage=Math.min(startPage + 3, pageCount); %>
-          <!-- 이전 페이지 그룹의 첫 번째 페이지 번호 -->
-          <% const previousPageGroupFirstPage=Math.max(1, pageNumber - 5); %>
-            <!-- 다음 페이지 그룹의 첫 번째 페이지 번호 -->
-            <% const nextPageGroupFirstPage=endPage + 1; %>
+      <!-- postCount: 총 게시물 수 -->
+      <!-- pageCount: 총 게시물 수 / 한페이지에 보여질 게시물(12) = 총 페이지 수 -->
+      <!-- currentPage: 현재 페이지 -->
+      <!-- pageGrop: 현재 페이지가 속한 페이지 그룹-->
+      <!-- lastNumber: 현재 그룹에서 마지막 페이지번호 -->
+      <!-- firstNumber: 현재 그룹에서 첫번째 페이지번호 -->
+      <!-- next: 다음페이지 그룹으로 -->
+      <!-- prev: 전페이지 그룹으로 -->
+      <% const pageGrop=Math.floor((currentPage - 1) / 5) + 1; let lastNumber=pageGrop * 5; if (lastNumber> pageCount) {
+        lastNumber = pageCount;
+        }
+        let firstNumber = (pageGrop - 1) * 5 + 1;
+        if (firstNumber < 1) {firstNumber=1}; const next=lastNumber + 1; const prev=firstNumber - 1; %>
+          <% if (pageGrop> 1) { %>
+            <li>
+              <a href="/post/list/<%= prev %>/12"
+                class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border-2 border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <span class="sr-only">Previous</span>
+                <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 1 1 5l4 4" />
+                </svg>
+              </a>
+            </li>
+            <% } %>
 
-              <% if (pageNumber> 1) { %>
+              <% for (let i=firstNumber; i <=lastNumber; i++) { %>
                 <li>
-                  <a href="/post/list/<%= previousPageGroupFirstPage %>/12"
-                    class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border-2 border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <span class="sr-only">Previous</span>
-                    <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                      fill="none" viewBox="0 0 6 10">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 1 1 5l4 4" />
-                    </svg>
+                  <a href="/post/list/<%= i %>/12"
+                    class="flex items-center justify-center px-3 h-8 leading-tight <%= currentPage === i ? 'text-blue-500 font-bold' : 'text-gray-500' %> bg-white border-2 border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <%= i %>
                   </a>
                 </li>
                 <% } %>
 
-                  <% for (let i=startPage; i <=endPage; i++) { %>
+                  <% if (pageGrop < Math.ceil(pageCount / 5)) { %>
                     <li>
-                      <a href="/post/list/<%= i %>/12"
-                        class="flex items-center justify-center px-3 h-8 leading-tight <%= pageNumber === i ? 'text-blue-500 font-bold' : 'text-gray-500' %> bg-white border-2 border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <%= i %>
+                      <a href="/post/list/<%= next %>/12"
+                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border-2 border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <span class="sr-only">Next</span>
+                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                          fill="none" viewBox="0 0 6 10">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 9 4-4-4-4" />
+                        </svg>
                       </a>
                     </li>
                     <% } %>
-
-                      <% if (pageNumber < pageCount) { %>
-                        <li>
-                          <a href="/post/list/<%= nextPageGroupFirstPage %>/12"
-                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border-2 border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                            <span class="sr-only">Next</span>
-                            <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                          </a>
-                        </li>
-                        <% } %>
     </ul>
   </nav>
 </div>
