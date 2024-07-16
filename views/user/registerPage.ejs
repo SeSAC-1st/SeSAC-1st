@@ -109,7 +109,8 @@
       .loginIdGuide,
       .userPwGuide,
       .userNickGuide,
-      .userPwCheckGuide {
+      .userPwCheckGuide,
+      .emailGuide {
         display: none;
         margin-bottom: 20px;
         color: red;
@@ -127,11 +128,13 @@
         background-color: #f0f0f0 !important;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
       let userNameValidate;
       let loginIdValidate;
       let userPwValidate;
       let userNickValidate;
+      let emailValidate = true;
       let idDuplicate = false;
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -219,6 +222,22 @@
             }
           }
         });
+
+        // 이메일 유효성 검사
+        let emailField = document.querySelector('.email');
+        let emailGuide = document.querySelector('.emailGuide');
+        emailField.addEventListener('input', function () {
+          let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+          if (this.value === '' || emailPattern.test(this.value)) {
+            emailGuide.style.display = 'none';
+            emailValidate = true;
+          } else {
+            emailGuide.style.display = 'block';
+            emailValidate = false;
+          }
+        });
+
+        //
       });
 
       function validateForm() {
@@ -227,23 +246,30 @@
           '.userName, .loginId, .userPw, .userNick'
         );
         requiredFields.forEach(function (field) {
+          // 유효성이 다 맞았을 때
           if (
             userNameValidate &&
             loginIdValidate &&
             userPwValidate &&
             userNickValidate &&
+            emailValidate &&
             idDuplicate
           ) {
             isValid = 'registerComplete';
-          } else if (
+          }
+          // 유효성은 다 맞았는데 중복검사가 안 됐을 때
+          else if (
             userNameValidate &&
             loginIdValidate &&
             userPwValidate &&
             userNickValidate &&
+            emailValidate &&
             !idDuplicate
           ) {
             isValid = 'notExecuteIdDuplicate';
-          } else {
+          }
+          // 그 외의 경우 (유효성 검사 안 된 상태)
+          else {
             isValid = 'reCheck';
           }
         });
@@ -251,10 +277,41 @@
       }
 
       // 회원가입 버튼 눌렀을 때 필수입력값에 따른 처리 (페이지 렌더링 또는 alert 창)
-      function submitRegisterForm() {
+      async function submitRegisterForm() {
         let isValid = validateForm();
         if (isValid === 'registerComplete') {
-          alert('/나중에 페이지 렌더링으로 변경/');
+          let userName = document.querySelector('.userName').value;
+          let loginId = document.querySelector('.loginId').value;
+          let userPw = document.querySelector('.userPw').value;
+          let userNick = document.querySelector('.userNick').value;
+          let email = document.querySelector('.email').value;
+          let address = document.querySelector('.address').value;
+          let birthday = document.querySelector('.birthday').value;
+          console.log(userName);
+          console.log(loginId);
+          console.log(userPw);
+          console.log(userNick);
+          console.log(email);
+          console.log(address);
+          console.log(birthday);
+          try {
+            const response = await axios({
+              method: 'post',
+              url: '/user/register',
+              data: {
+                userName,
+                loginId,
+                userPw,
+                email,
+                address,
+                userNick,
+                birthday,
+              },
+            });
+          } catch (error) {
+            console.error('Error:', error);
+            alert('회원가입 중 오류가 발생했습니다.');
+          }
         } else if (isValid === 'notExecuteIdDuplicate') {
           alert('아이디 중복검사를 실행해주세요');
         } else if (isValid === 'reCheck') {
@@ -274,9 +331,14 @@
         }
 
         try {
-          const response = await axios.post('checkLoginid', {
-            loginId,
+          const response = await axios({
+            method: 'post',
+            url: '/user/checkLoginid',
+            data: {
+              loginId,
+            },
           });
+          // console.log('중복검사' + response.data.result);
 
           if (response.data.result === true) {
             alert('이미 사용 중인 아이디입니다.');
@@ -404,6 +466,7 @@
               <input type="email" class="email" name="email" />
             </label>
           </div>
+          <div class="emailGuide">*이메일 형식이 맞지 않습니다.</div>
 
           <div>
             <label>
