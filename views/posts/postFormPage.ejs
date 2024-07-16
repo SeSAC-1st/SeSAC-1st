@@ -7,20 +7,67 @@
     <%- include('../include/head.ejs') %>
     <link rel="stylesheet" href="/css/toastui-editor.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-</head>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css"/>
+    <link real="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css"/>
+    <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
+  </head>
 <body>
-    <div id="editor"></div>
+  
+
+  <form action="" class="w-full p-5 ml-5">
+    <input type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold    required">
+  </form>
+  <div class="border-t border-4 border-black w-24 mb-6 ml-10  "></div>
+
+  <div id="editor" class="  px-10 h-full " ></div>
+
+  <!-- Tost UI Edit CDN -->
   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-  <!-- <script src="/js/toastui-editor-all.min.js"></script> -->
+  <!-- Tost UI code-syntax-highligh CDN -->
+  <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+
+
+  <div class="fixed w-full h-20 bg-white rounded-lg shadow-xl shadow-top-only ">
+    <div class=" mx-auto max-w-screen-xl p-4 ">
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+    </span>
+    <ul class="flex justify-between items-center mt-3 mx-4 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+        <li>
+          <button class="ml-3">
+              <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
+              <a href="/" class="">나가기</a>
+          </button>
+        </li>
+        <li >
+          <button class="">
+            <button type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button
+          </button>
+        </li>
+        
+    </ul>
+    </div>
+  </div>
+
+  
+</body>
+
   <script>
+    // Tast UI Editor
     document.addEventListener('DOMContentLoaded', function () {
-      const editor = new toastui.Editor({
+      const { Editor } = toastui;
+      const { codeSyntaxHighlight } = Editor.plugin;
+
+      const editor = new Editor({
         el: document.querySelector('#editor'),
-        height: '500px',
+        height: 'auto',
+        minHeight: '460px',
         initialEditType: 'markdown',
         previewStyle: 'vertical',
+        plugins: [codeSyntaxHighlight],
+        viewer: true,
 
-        // 이미지 hooks
+        // 이미지 객체 변환 hooks
         hooks: {
             addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
                 console.log(blob);
@@ -28,7 +75,21 @@
             }
         }
       });
+      console.log(editor);
     });
+
+
+    // const instance = new Editor({
+    //   plugins: [codeSyntaxHighlight]
+    // });
+
+  </script>
+
+<!-- 게시물 등록 폼 -->
+  <script>
+    async function savePost() {
+
+    }
   </script>
 </body>
 </html>
