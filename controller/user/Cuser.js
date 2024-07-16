@@ -3,8 +3,8 @@ const { hashPw, comparePw } = require('../../utils/passwordUtils');
 
 // 회원가입 페이지
 exports.registerPage = (req, res) => {
-    res.render('user/registerPage');
-  };
+  res.render('user/registerPage');
+};
 
 /**
  * 회원가입
@@ -62,7 +62,7 @@ exports.userRegister = async (req, res) => {
 
     res.json(newUser);
     // 회원가입 완료 시 회원가입 완료 페이지로 이동
-    // if (newUser) res.render('user/registerCompletePage')
+    // if (newUser) res.redirect('/register/complete')
     //   else res.status(500).send('Internal Server Error');
 
     //   {
@@ -85,8 +85,8 @@ exports.userRegister = async (req, res) => {
 
 // 로그인 페이지
 exports.loginPage = (req, res) => {
-    res.render('user/loginPage');
-}
+  res.render('user/loginPage');
+};
 
 // 로그인 로직
 /**
@@ -278,3 +278,8 @@ exports.userLogout = async (req, res) => {
 //     res.render('user/profilePage', { user, sessionUser:req.session.user });
 //   } else res.redirect('/user/login');
 // };
+
+// 회원가입 페이지 이동
+exports.getRegisterCompletePage = (req, res) => {
+  res.render('user/registerCompletePage');
+};
