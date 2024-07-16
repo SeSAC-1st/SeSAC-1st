@@ -40,19 +40,18 @@
           </button>
         </li>
         <li >
-          <button onclick="insertPost()">
-            <button type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button
-          </button>
+          <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button>
         </li>
         
     </ul>
     </div>
   </div>
 
-  
-</body>
+
 
   <script>
+    let editor;
+
     // Tast UI Editor
     document.addEventListener('DOMContentLoaded', function () {
       const { Editor } = toastui;
@@ -64,9 +63,8 @@
         minHeight: '460px',
         initialEditType: 'markdown',
         previewStyle: 'vertical',
-        plugins: [codeSyntaxHighlight],
-        viewer: true,
-
+        initialValue: '제목, 내용',
+        
         // 이미지 객체 변환 hooks
         hooks: {
             addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
@@ -75,31 +73,27 @@
             }
         }
       });
-      console.log(editor);
+
     });
 
+    
 
-    // const instance = new Editor({
-    //   plugins: [codeSyntaxHighlight]
-    // });
-
-  </script>
-
-<!-- 게시물 등록 폼 -->
-  <script>
     async function insertPost() {
 
+      console.log('클릭');
       const postTitle = document.querySelector('#postTitle').value;
-      const postContent = document.getElementById('postContent').value;
+      const postContent = editor.getHTML();
 
 
-      if (editor.getMarkdown().length < 1) {
+      if (editor.getHTML().length < 1) {
         alert('본문을 입력해 주세요.')
         throw new Error('Content is empty!');
       }
 
-      console.log(editor.getMarkdown());
+      console.log(editor.getHTML());
+      console.log(postTitle);
       
+      const userId = 1;
       // req.body : {postTitle, postContent},
       // userId → 세션에서 가져오기
       try {
@@ -121,11 +115,9 @@
             alert('게시 완료!');
             document.location.href = '/';
           }
-        } catch (error) {
+          } catch (error) {
           console.error(error);
         }
-      }
-    
     }
   </script>
 </body>
