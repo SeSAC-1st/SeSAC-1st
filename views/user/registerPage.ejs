@@ -308,6 +308,10 @@
                 birthday,
               },
             });
+            console.log(response);
+            if (response.data.result) {
+              window.location.href = '/user/register/complete';
+            }
           } catch (error) {
             console.error('Error:', error);
             alert('회원가입 중 오류가 발생했습니다.');
