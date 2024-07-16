@@ -1,4 +1,4 @@
-const { Comment } = require('../../models/index');
+const { Comment, User } = require('../../models/index');
 
 //댓글, 대댓글 목록 조회 - 게시글 상세 밑에 쓴 쿼리
 // exports.getCommentList = async (req, res) => {
@@ -103,10 +103,17 @@ exports.insertComment = async (req, res) => {
       postId,
       userId,
     });
-    res.json({ insertCom });
+    const insertUser = await User.findOne({
+      where: {
+        userId,
+      },
+      attributes: ['userNick'],
+    });
+    res.json({ insertCom, insertUser });
     // 댓글 등록이 되면 해당 댓글을 댓글 목록 밑에 추가(화면 이동 안하고 바로 밑에 출력해줘야하기 때문에 좀더 생각)
-    // if (insertCom) res.send({insertCom})
-    //   else res.status(500).send({ error: '' });
+    // if (insertCom)
+    //   res.send({ insertCom, insertUser, sessionUser: req.session.user });
+    // else res.status(500).send({ error: '' });
 
     // {
     //     "isDeleted": false,
@@ -224,22 +231,28 @@ exports.deleteCommentReply = async (req, res) => {
 // 대댓글 등록
 exports.insertReply = async (req, res) => {
   try {
-    if (req.session.user) {
-      // userId는 세션에서 가져오고, parentComId 는 답글달기 버튼 눌렀을 때 해당 댓글의 comId 넣기
-      // const {userId} = req.session.user
-      const { comId } = req.params;
-      const { postId, userId, comContent } = req.body;
-      const insertReply = await Comment.create({
-        comContent,
-        postId,
+    // if (req.session.user) {
+    // userId는 세션에서 가져오고, parentComId 는 답글달기 버튼 눌렀을 때 해당 댓글의 comId 넣기
+    // const {userId} = req.session.user
+    const { comId } = req.params;
+    const { postId, userId, comContent } = req.body;
+    const insertReply = await Comment.create({
+      comContent,
+      postId,
+      userId,
+      parentComId: comId,
+    });
+    const insertUser = await User.findOne({
+      where: {
         userId,
-        parentComId: comId,
-      });
-      res.json(insertReply);
-      // 대댓글 등록 완료되면 등록된 대댓글을 댓글 목록에 추가
-      // if (insertReply) res.send({insertReply})
-      // else res.status(500).send({ error: '' });
-    } else res.redirect('/user/login');
+      },
+      attributes: ['userNick'],
+    });
+    res.json({ insertReply, insertUser });
+    // 대댓글 등록 완료되면 등록된 대댓글을 댓글 목록에 추가
+    // if (insertReply) res.send({insertReply, insertUser, sessionUser: req.session.user})
+    // else res.status(500).send({ error: '' });
+    // } else res.redirect('/user/login');
 
     // {
     //     "isDeleted": false,
