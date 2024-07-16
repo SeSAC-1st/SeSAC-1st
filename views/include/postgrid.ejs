@@ -1,7 +1,7 @@
-<div class=" book grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8 md:gap-x-32 xl:gap-x-80  px-4 sm:px-6 lg:px-52 pt-20 ">
+<div class=" book grid grid-cols-1 tems-stretch md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-x-32 xl:gap-x-80  px-4 sm:px-6 lg:px-52 pt-20  lg:-ml-32 ">
   <% postList.forEach(post=> { %>
-    <div class="group relative flex flex-col justify-around min-w-60
-    w-full h-[330px] xl:w-[320px] 
+    <div class="group relative flex flex-col  min-w-60
+    w-full h-[330px] lg:w-[320px] xl:w-[320px] 
    shadow-md hover:shadow-lg rounded-md overflow-hidden transform origin-bottom transition duration-400 hover:scale-105 p-5 ease-in  bg-gray-100 dark:bg-gray-500">
     <!-- <div class="flex flex-col w-full bg-bg-element1 rounded-md shadow-md transition-all duration-250 ease-in hover:shadow-lg hover:scale-105"> -->
       
@@ -15,7 +15,7 @@
           <%= post.postContent.length> 100 ? post.postContent.slice(0, 100) + '...' : post.postContent %>
         </h3>
       </div>
-      <div class="border-t border-gray-300 pt-2 mt-2 mt-auto">
+      <div class="border-t border-gray-300 pt-2  mt-auto">
         <p class="font-medium  text-gray-500 text-sm mb-2 dark:text-white">by <%= post.User.userNick %>
         </p>
         <div class="flex justify-between items-center text-gray-400 text-xs mt-1 dark:text-white">
