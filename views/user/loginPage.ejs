@@ -182,28 +182,43 @@
         key.value = key.value.replace(/[^0-9a-zA-Z]/gi, '');
       }
 
-      function submitForm() {
-        const data = {
-          loginId: document.querySelector("input[name = 'loginId']").value,
-          userPw: document.querySelector("input[name = 'userPw']").value,
-        };
-        axios({
-          method: 'POST',
-          url: '/',
-          data,
-        })
-          .then((res) => {
-            if (res.data.success) {
-              // 서버측 코드에서 id, pw가 맞다면 res.send({ success: true }) 반환하도록 부탁드려요
-              window.location.href = '/postsPage';
-            } else {
-              document.getElementById('errorMessage').textContent =
-                '아이디 또는 비밀번호를 다시 확인해주세요';
-            }
-          })
-          .catch((error) => {
-            console.error('로그인 중 오류 발생:', error);
+      async function submitForm() {
+        try {
+          const data = {
+            loginId: document.querySelector('.loginId').value,
+            userPw: document.querySelector('.userPw').value,
+          };
+          // console.log('데이터', data);
+          const res = await axios({
+            method: 'POST',
+            url: '/user/login',
+            data,
           });
+          console.log(res);
+          if (res.data.result) {
+            // 서버측 코드에서 id, pw가 맞다면 res.send({ success: true }) 반환하도록 부탁드려요
+            window.location.href = '/';
+          } else {
+            document.getElementById('errorMessage').textContent =
+              '아이디 또는 비밀번호를 다시 확인해주세요';
+          }
+        } catch (error) {
+          console.log('error', error);
+        }
+
+        // .then((res) => {
+        //   console.log('엑시오스', res);
+        //   // if (res.data.success) {
+        //   //   // 서버측 코드에서 id, pw가 맞다면 res.send({ success: true }) 반환하도록 부탁드려요
+        //   //   window.location.href = '/postsPage';
+        //   // } else {
+        //   //   document.getElementById('errorMessage').textContent =
+        //   //     '아이디 또는 비밀번호를 다시 확인해주세요';
+        //   // }
+        // })
+        // .catch((error) => {
+        //   console.error('로그인 중 오류 발생:', error);
+        // });
       }
     </script>
   </body>
