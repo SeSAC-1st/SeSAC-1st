@@ -62,21 +62,8 @@ exports.userRegister = async (req, res) => {
 
     res.json(newUser);
     // 회원가입 완료 시 회원가입 완료 페이지로 이동
-    if (newUser) res.send({ result: true });
-    else res.send({ result: false });
-
-    //   {
-    //     "userId": 6,
-    //     "userName": "가힣당",
-    //     "loginId": "ijoijmm1",
-    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
-    //     "email": "urlend@gamil.com",
-    //     "address": "seoul",
-    //     "userNick": "lion",
-    //     "birthday": "1996-06-21",
-    //     "updatedAt": "2024-07-13T12:27:30.884Z",
-    //     "createdAt": "2024-07-13T12:27:30.884Z"
-    // }
+    // if (newUser) res.send({ result: true });
+    // else res.send({ result: false });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -130,20 +117,6 @@ exports.userLogin = async (req, res) => {
     // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
     // if (!req.session.user) res.send({ result: false });
     // res.send({ result: true });
-
-    //   {
-    //     "userId": 6,
-    //     "userName": "가힣당",
-    //     "loginId": "ijoijmm1",
-    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
-    //     "email": "urlend@gamil.com",
-    //     "address": "seoul",
-    //     "profileImg": null,
-    //     "userNick": "lion",
-    //     "birthday": "1996-06-21",
-    //     "createdAt": "2024-07-13T12:27:30.000Z",
-    //     "updatedAt": "2024-07-13T12:27:30.000Z"
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -185,7 +158,8 @@ exports.updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
     // const { userId } = req.session.user;
-    const { email, address, profileImg, userNick } = req.body;
+    const { email, address, birthday, userNick } = req.body;
+    const profileImg = req.file ? req.file.filename : null;
 
     const user = await User.findOne({
       where: { userId },
@@ -199,6 +173,7 @@ exports.updateUser = async (req, res) => {
     if (address) updatedData.address = address;
     if (profileImg) updatedData.profileImg = profileImg;
     if (userNick) updatedData.userNick = userNick;
+    if (birthday) updatedData.birthday = birthday;
 
     await User.update(updatedData, {
       where: { userId },
@@ -219,20 +194,6 @@ exports.updateUser = async (req, res) => {
     // 회원 정보 수정을 완료하면 업데이트된 정보를 가지고 마이페이지에 다시 출력
     // if (updatedUser) res.send({ updatedUser, sessionUser: req.session.user });
     // else res.status(500).send('Internal Server Error');
-
-    //   {
-    //     "userId": 6,
-    //     "userName": "가힣당",
-    //     "loginId": "ijoijmm1",
-    //     "userPw": "$2b$10$EGg.XW4SHXhM5qvMsGsZ4eFd7QNXQZWi1yRrrfCmqbTaWoHEIZlFO",
-    //     "email": "ranikun@gamil.com",
-    //     "address": "raniland wio",
-    //     "profileImg": "babocat.jpg",
-    //     "userNick": "babo",
-    //     "birthday": "1996-06-21",
-    //     "createdAt": "2024-07-13T12:27:30.000Z",
-    //     "updatedAt": "2024-07-13T13:12:35.000Z"
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -265,19 +226,19 @@ exports.userLogout = async (req, res) => {
 };
 
 // 마이페이지 이동
-// exports.getProfilePage = async (req, res) => {
-//   // 페이지 이동시 로그인 상태인지 확인
-//   if (req.session.user) {
-//     const { userId } = req.session.user;
+exports.getProfilePage = async (req, res) => {
+  // 페이지 이동시 로그인 상태인지 확인
+  if (req.session.user) {
+    const { userId } = req.session.user;
 
-//     const user = await User.findOne({
-//       where: { userId },
-//     });
-//     if (!user) return res.status(404).json({ error: 'User not found' });
-//     // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
-//     res.render('user/profilePage', { user, sessionUser:req.session.user });
-//   } else res.redirect('/user/login');
-// };
+    const user = await User.findOne({
+      where: { userId },
+    });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
+    res.render('user/profilePage', { user, sessionUser: req.session.user });
+  } else res.redirect('/user/login');
+};
 
 // 회원가입 완료 페이지 이동
 exports.getRegisterCompletePage = (req, res) => {
