@@ -1,68 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>문서</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <main>
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
       <h1><%= user.userName %></h1>
-      <input type="file" name="thumbnail" id="thumbnail" />
-      <input type="text" id="userNick" placeholder="닉네임을 입력하세요" />
-      <input type="text" id="email" placeholder="이메일을 입력하세요" />
-      <input type="text" id="address" placeholder="주소를 입력하세요" />
-      <input type="date" id="birthday" placeholder="생일을 입력하세요" max="" />
-
-      <button type="button" onclick="updateUser(<%= user %>);">수정</button>
-      <br />
       <img
-        src="<%= user.profileImg ? `/uploads/${user.profileImg}` : 'https://cdn-icons-png.flaticon.com/512/1077/1077012.png' %>"
-        alt="Profile Image"
-      /><br />
+        id="profileImg"
+        src="<%= user.profileImg && user.profileImg.trim() !== '' ? `/uploads/${user.profileImg}` : '/uploads/user.png' %>"
+        alt="프로필 이미지"
+        class="w-32 h-32"
+      />
+      <br />
+
+      <form onsubmit="handleFormSubmit(event)">
+        <label for="thumbnail">프로필 이미지</label>
+        <input
+          type="file"
+          name="thumbnail"
+          id="thumbnail"
+          onchange="previewImage();"
+        />
+        <br />
+        <label for="userNick">닉네임</label>
+        <input
+          type="text"
+          id="userNick"
+          placeholder="닉네임을 입력하세요"
+          value="<%= user.userNick %>"
+        />
+        <br />
+        <label for="email">이메일</label>
+        <input
+          type="text"
+          id="email"
+          placeholder="이메일을 입력하세요"
+          value="<%= user.email %>"
+        />
+        <br />
+        <label for="address">주소</label>
+        <input
+          type="text"
+          id="address"
+          placeholder="주소를 입력하세요"
+          value="<%= user.address %>"
+        />
+        <br />
+        <label for="birthday">생일</label>
+        <input
+          type="date"
+          id="birthday"
+          placeholder="생일을 입력하세요"
+          value="<%= user.birthday %>"
+          max=""
+        />
+        <br />
+        <button type="submit">수정</button>
+      </form>
+      <!-- <button type="button" onclick="resetImage();">이미지 초기화</button> -->
+      <br />
     </main>
     <script>
-      // birthday 현재 날짜 이후 선택 안 되도록
+      // 생일 필드는 현재 날짜 이후 선택할 수 없도록 설정
       var now_utc = Date.now();
       var timeOff = new Date().getTimezoneOffset() * 60000;
-      var today = new Date(now_utc - timeOff).toISOString().split('T')[0];
-      document.getElementById('birthday').setAttribute('max', today);
+      var today = new Date(now_utc - timeOff).toISOString().split("T")[0];
+      document.getElementById("birthday").setAttribute("max", today);
+
+      let isImageReset = false;
+
+      function previewImage() {
+        const fileInput = document.querySelector("#thumbnail");
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = function () {
+          document.querySelector("#profileImg").src = reader.result;
+        };
+
+        if (file) {
+          reader.readAsDataURL(file);
+          isImageReset = false; // 이미지 초기화 상태 초기화
+        }
+      }
+
+      function resetImage() {
+        const defaultImageUrl = "uploads/user.png";
+        document.querySelector("#profileImg").src = defaultImageUrl;
+        document.querySelector("#thumbnail").value = ""; // 파일 입력 필드 초기화
+        isImageReset = true; // 이미지가 초기화 되었음을 표시
+      }
+
+      function handleFormSubmit(event) {
+        event.preventDefault(); // 새로고침 방지
+        const user = <%- JSON.stringify(user) %>;
+        updateUser(user);
+      }
 
       async function updateUser(user) {
         const formData = new FormData();
-        const fileInput = document.querySelector('#thumbnail');
-        const userNick = document.querySelector('#userNick').value;
-        const email = document.querySelector('#email').value;
-        const address = document.querySelector('#address').value;
-        const birthday = document.querySelector('#birthday').value;
+        const fileInput = document.querySelector("#thumbnail");
+        const userNick = document.querySelector("#userNick").value;
+        const email = document.querySelector("#email").value;
+        const address = document.querySelector("#address").value;
+        const birthday = document.querySelector("#birthday").value;
 
-        formData.append('profileImg', fileInput.files[0]);
-        formData.append('userNick', userNick);
-        formData.append('email', email);
-        formData.append('address', address);
-        formData.append('birthday', birthday);
+        if (fileInput.files.length > 0 && !isImageReset) {
+          formData.append("profileImg", fileInput.files[0]);
+        } else {
+          const defaultImageUrl = "uploads/user.png";
+          // 기본 이미지 파일의 경로를 직접 추가합니다.
+          formData.append("profileImg", defaultImageUrl);
+        }
+
+        formData.append("userNick", userNick);
+        formData.append("email", email);
+        formData.append("address", address);
+        formData.append("birthday", birthday);
 
         axios({
-          method: 'PATCH',
+          method: "PATCH",
           url: `/user/${user.userId}`,
           data: formData,
           headers: {
-            'Content-Type': 'multipart/form-data', // enctype="multipart/form-data"
+            "Content-Type": "multipart/form-data", // enctype="multipart/form-data"
           },
         })
           .then(function (res) {
             console.log(res.data); // 업데이트된 사용자 정보
-            // img 태그의 src 속성값에 이미지 주소를 부여
-            document.querySelector(
-              'img'
-            ).src = `/uploads/${res.data.updatedUser.profileImg}`;
-            // img 태그에 thumbnail 클래스명 부여
-            document.querySelector('img').classList.add('thumbnail');
+            const updatedUser = res.data.updatedUser;
+            if (updatedUser.profileImg) {
+              document.querySelector(
+                "#profileImg"
+              ).src = `/uploads/${updatedUser.profileImg}`;
+            }
+            document.querySelector("#profileImg").classList.add("thumbnail");
           })
           .catch(function (error) {
             console.error(error);
           });
+
+        // 파일 입력 필드 초기화
+        document.getElementById("thumbnail").value = ""; // 파일 입력 필드 초기화
       }
     </script>
   </body>
