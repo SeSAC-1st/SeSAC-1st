@@ -20,8 +20,8 @@
    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
    <!-- Tost UI code-syntax-highligh CDN -->
    <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
-   
-   
+
+
   <div class="px-5 ml-5">
 
     <form action="" class="w-full pt-5 ">
@@ -29,7 +29,8 @@
     </form>
     <div class="border-t border-4 border-black w-24 mb-6   "></div>
 
-    <div id="editor" class="h-full " ></div>
+    <!-- 해결하기: 글이 길어지면 푸터가 가려서 임시로 해놓음 -->
+    <div id="editor" class="h-full fixed" ></div>
 
    
   </div>
@@ -59,23 +60,32 @@
       const Editor = toastui.Editor;
       const { codeSyntaxHighlight } = Editor.plugin;
 
-      const editor = new Editor({
-        el: document.querySelector('#editor'),
-        height: 'auto',
-        minHeight: '460px',
-        initialEditType: 'markdown',
-        previewStyle: 'vertical',
-        
-        // 이미지 객체 변환 hooks
-        hooks: {
-            addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
-                console.log('blob, callback =>', blob, callback);
-                let formData = new FormData();
-            		formData.append('image', blob); 
-            }
-        }
-      });
+        const width = window.innerWidth;
+        const initialEditTypeRes = width > 768 ? 'markdown' : 'wysiwyg';
 
+        const height = window.innerHeight;
+        const minHeightRes = width > 420  ?  '480px' :'380px'
+  
+
+        const editor = new Editor({
+          el: document.querySelector('#editor'),
+          height: 'auto',
+          minHeight: minHeightRes,
+          initialEditType: initialEditTypeRes,
+          previewStyle: 'vertical',
+        });
+        
+        // // 이미지 객체 변환 hooks
+        // hooks: {
+        //     addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
+        //         console.log('blob, callback =>', blob, callback);
+        //         let formData = new FormData();
+        //     		formData.append('image', blob); 
+        //     }
+        // }
+        // });
+
+    // 게시물 게시 함수
     async function insertPost() {
 
       console.log('클릭');
@@ -120,6 +130,7 @@
           console.error(error);
         }
     }
+  
   </script>
 </body>
 </html>
