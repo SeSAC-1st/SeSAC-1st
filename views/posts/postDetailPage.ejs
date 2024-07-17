@@ -60,13 +60,12 @@
 </body>
 
 <script>
-    // 수정 버튼 클릭 시
-    // console.log('commList >>>', commList);
+    // 게시물 수정
     async function editPost(postId) {
         let postTitleElement = document.getElementById('postTitle').textContent.trim();
         let postContentElement = document.getElementById('postContent').textContent.trim();
-        console.log(postTitleElement);
-        console.log(postContentElement);
+        // console.log(postTitleElement);
+        // console.log(postContentElement);
         try {
             const res = await axios({
                 method: 'post',
@@ -83,7 +82,7 @@
     }
 
 
-    // 삭제 버튼 클릭시
+    // 게시물 삭제
     async function deletePost(postId, userId) {
         try {
             if (window.confirm('게시물을 삭제하시겠습니까?')) {
@@ -160,7 +159,7 @@
                 updatedComments.data.forEach((comment) => {
                     addCommentElement(comment);
                 });
-                console.log(comment);
+                // console.log(comment);
                 commentForm.reset(); // 폼 초기화
             } else {
                 console.error('댓글 작성 실패:', res.data.error);
@@ -198,12 +197,11 @@
                     <p class="text-gray-600 text-sm">${new Date(comment.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div>
-                    <button id="edit-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
+                    <button onclick="editBtn(${comment.comId})" id="edit-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
                     <button onclick="deletBtn(${comment.comId})" id="delete-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
                 </div>
             </div>
-            <p class="text-gray-600 pb-1">${comment.comContent}</p>
-            <p class="text-gray-600 pb-1">${comment.comId}</p>
+            <p id="comContent-${comment.comId}" class="text-gray-600 pb-1">${comment.comContent}</p>
             <button type="button" id="reply-btn" class="bg-gray-200 py-0.5 px-1 text-xs md:py-1 md:px-3 rounded">답글</button>
             <form id="replyForm" name="replyForm" class="hidden mt-2">
                 <textarea id="reply" name="text" class="w-full p-2 border rounded mb-2" placeholder="대댓글 입력"></textarea>
@@ -252,7 +250,7 @@
 
         if (window.confirm('댓글을 삭제하시겠습니까?')) {
             try {
-                console.log('comId >>', comId);
+                // console.log('comId >>', comId);
                 const res = await axios({
                     method: 'patch',
                     url: `/comment/delete/${comId}`
@@ -260,19 +258,19 @@
                 if (res.data.result) {
                     // 댓글 삭제 성공 시 댓글 요소 제거
                     const commentElement = document.querySelector(`[data-comment-id="${comId}"]`);
-                    // console.log('삭제할 요소:', commentElement);
+                    // console.log('commentElement:', commentElement);
 
                     if (commentElement) {
                         commentElement.remove(); // 댓글 요소 제거
                     }
 
-                    // 댓글 목록이 비어있는 경우 "댓글이 없습니다." 메시지 표시
-                    if (commentSection.children.length === 0) {
-                        const noComments = document.createElement('p');
-                        noComments.id = 'no-comments';
-                        noComments.textContent = '댓글이 없습니다.';
-                        commentSection.appendChild(noComments);
-                    }
+                    // // 댓글 목록이 비어있는 경우 "댓글이 없습니다." 메시지 표시
+                    // if (commentSection.children.length === 0) {
+                    //     const noComments = document.createElement('p');
+                    //     noComments.id = 'no-comments';
+                    //     noComments.textContent = '댓글이 없습니다.';
+                    //     commentSection.appendChild(noComments);
+                    // }
                 } else {
                     console.error('댓글 삭제 실패:', res.data.error);
                 }
@@ -283,74 +281,72 @@
     }
 
 
+    // 댓글 수정 (백에서 result값 send 추가 필요할듯)
+    async function editBtn(comId) {
+        // 수정할 댓글 요소 선택
+        let comContentElement = document.getElementById(`comContent-${comId}`);
+        let comContent = comContentElement.textContent.trim();
+        // console.log(comContent);
 
+        // 수정 폼 생성
+        const editForm = document.createElement('form');
+        editForm.classList.add('commentEdit-form');
 
+        const editInput = document.createElement('textarea');
+        editInput.classList.add('commentEdit-input');
+        editInput.value = comContent;
 
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = '수정';
 
-    // // 댓글 수정 버튼 클릭시
-    // const commentEditBtns = commentElement.querySelectorAll('.edit-btn');
-    // commentEditBtns.forEach((btn) => {
-    //     btn.addEventListener('click', () => {
-    //         const commentItem = btn.closest('li');
-    //         const commentContent = commentItem.querySelector('.comment-content');
-    //         const commentText = commentContent.textContent.trim();
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.textContent = '취소';
+        cancelBtn.classList.add('cancel-btn');
 
-    //         // 수정 폼 생성
-    //         const editForm = document.createElement('form');
-    //         editForm.classList.add('edit-form');
+        editForm.appendChild(editInput);
+        editForm.appendChild(submitBtn);
+        editForm.appendChild(cancelBtn);
 
-    //         const editInput = document.createElement('textarea');
-    //         editInput.classList.add('edit-input');
-    //         editInput.value = commentText;
+        // 기존 댓글 내용 감추기
+        comContentElement.style.display = 'none';
 
-    //         const submitBtn = document.createElement('button');
-    //         submitBtn.type = 'submit';
-    //         submitBtn.textContent = '수정';
+        // 수정폼 삽입
+        comContentElement.parentNode.insertBefore(editForm, comContentElement.nextSibling);
 
-    //         const cancelBtn = document.createElement('button');
-    //         cancelBtn.type = 'button';
-    //         cancelBtn.textContent = '취소';
-    //         cancelBtn.classList.add('cancel-btn');
+        // 취소 버튼 클릭 시 수정 폼 제거 및 기존 댓글 내용 표시
+        cancelBtn.addEventListener('click', () => {
+            editForm.remove();
+            comContentElement.style.display = 'block';
+        });
 
-    //         editForm.appendChild(editInput);
-    //         editForm.appendChild(submitBtn);
-    //         editForm.appendChild(cancelBtn);
-
-    //         // 기존 댓글 내용 감추기
-    //         commentContent.style.display = 'none';
-
-    //         // 수정 폼 삽입
-    //         commentItem.insertBefore(editForm, commentContent.nextSibling);
-
-    //         // 취소 버튼 클릭 시 수정 폼 제거 및 기존 댓글 내용 표시
-    //         cancelBtn.addEventListener('click', () => {
-    //             editForm.remove();
-    //             commentContent.style.display = 'block';
-    //         });
-
-    //         // 수정 폼 제출 시 댓글 수정 처리
-    //         editForm.addEventListener('submit', async (event) => {
-    //             event.preventDefault();
-    //             const updatedText = editInput.value.trim();
-    //             try {
-    //                 const commentId = btn.dataset.commentId;
-    //                 const res = await axios.patch(`/update/${comId}`, { comId, updatedComment }); // 수정필요
-    //                 if (res.data.success) {
-    //                     // 수정된 댓글 내용 업데이트
-    //                     commentContent.textContent = updatedText;
-    //                     editForm.remove();
-    //                     commentContent.style.display = 'block';
-    //                 } else {
-    //                     console.error('댓글 수정 실패:', res.data.error);
-    //                 }
-    //             } catch (error) {
-    //                 console.error('댓글 수정 중 오류 발생:', error);
-    //             }
-    //         });
-    //     });
-    // });
-
-
+        // 제출 버튼 클릭 시 처리
+        editForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const updatedText = editInput.value.trim();
+            // console.log('updatedText >>', updatedText);
+            try {
+                const res = await axios({
+                    method: 'patch',
+                    url: `/comment/update/${comId}`,
+                    data: {
+                        comContent: updatedText
+                    }
+                });
+                // console.log('res.data >>', res.data);
+                if (res.data.result) {
+                    comContentElement.textContent = updatedText;
+                    editForm.remove();
+                    comContentElement.style.display = 'block';
+                } else {
+                    console.error('댓글 수정 실패:', res.data.error);
+                }
+            } catch (error) {
+                console.error('댓글 수정 중 오류 발생:', error);
+            }
+        });
+    }
 </script>
 
 </html>
