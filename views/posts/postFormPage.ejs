@@ -8,53 +8,55 @@
     <link rel="stylesheet" href="/css/toastui-editor.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css"/>
     <link real="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css"/>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
   </head>
 <body>
-  
+   <!-- Tost UI Edit CDN -->
+   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+   <!-- Tost UI code-syntax-highligh CDN -->
+   <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+   
+   
+  <div class="px-5 ml-5">
 
-  <form action="" class="w-full p-5 ml-5">
-    <input id="postTitle" type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold    required">
-  </form>
-  <div class="border-t border-4 border-black w-24 mb-6 ml-10  "></div>
+    <form action="" class="w-full pt-5 ">
+      <input id="postTitle" type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold    required">
+    </form>
+    <div class="border-t border-4 border-black w-24 mb-6   "></div>
 
-  <div id="editor" class="  px-10 h-full " ></div>
+    <div id="editor" class="h-full " ></div>
 
-  <!-- Tost UI Edit CDN -->
-  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-  <!-- Tost UI code-syntax-highligh CDN -->
-  <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
-
-
-  <div class="fixed w-full h-20 bg-white rounded-lg shadow-xl shadow-top-only ">
-    <div class=" mx-auto max-w-screen-xl p-4 ">
-      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-    </span>
-    <ul class="flex justify-between items-center mt-3 mx-4 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-        <li>
-          <button class="ml-3">
-              <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
-              <a href="/" class="">나가기</a>
-          </button>
-        </li>
-        <li >
-          <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button>
-        </li>
-        
-    </ul>
-    </div>
+   
   </div>
+  <div class="fixed bottom-0 w-full h-20 bg-white rounded-lg shadow-xl shadow-top-only ">
+      <div class=" mx-auto max-w-screen-xl p-4 ">
+        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+      </span>
+      <ul class="flex justify-between items-center mt-3  text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+          <li>
+            <button class="ml-3">
+                <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
+                <a href="/" class="">나가기</a>
+            </button>
+          </li>
+          <li >
+            <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button>
+          </li>
+          
+      </ul>
+      </div>
+    </div>
 
 
 
   <script>
-    let editor;
-
     // Tast UI Editor
-    document.addEventListener('DOMContentLoaded', function () {
-      const { Editor } = toastui;
+      const Editor = toastui.Editor;
       const { codeSyntaxHighlight } = Editor.plugin;
 
       const editor = new Editor({
@@ -63,32 +65,32 @@
         minHeight: '460px',
         initialEditType: 'markdown',
         previewStyle: 'vertical',
-        initialValue: '제목, 내용',
         
         // 이미지 객체 변환 hooks
         hooks: {
             addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
-                console.log(blob);
-                console.log(callback);
+                console.log('blob, callback =>', blob, callback);
+                let formData = new FormData();
+            		formData.append('image', blob); 
             }
         }
       });
 
-    });
-
-    
-
     async function insertPost() {
 
       console.log('클릭');
-      const postTitle = document.querySelector('#postTitle').value;
-      const postContent = editor.getHTML();
+      const postTitle = document.querySelector('#postTitle').value.trim();
+      const postContent = [editor.getHTML()];
 
 
-      if (editor.getHTML().length < 1) {
-        alert('본문을 입력해 주세요.')
-        throw new Error('Content is empty!');
+      if (postTitle.length < 1) {
+        alert('제목을 입력해 주세요.')
+        throw new Error('Title is empty!');
       }
+      // if (postContent.length < 1) {
+      //   alert('본문을 입력해 주세요.')
+      //   throw new Error('Content is empty!');
+      // }
 
       console.log(editor.getHTML());
       console.log(postTitle);
@@ -103,13 +105,12 @@
             data: {
               postTitle,
               postContent,
-              userId
+              userId,
+
             },
           });
 
           console.log(postTitle, postContent); 
-          console.log('res', res);
-
           const { data } = res;
           if (data) {
             alert('게시 완료!');
