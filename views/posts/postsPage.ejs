@@ -8,14 +8,13 @@
     <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
     <%- include('../include/head.ejs') %>
     <style>
+        
+
+        /* 페이지 로드시 카드 애니메이션 */
         .card {
             opacity: 0;
             transform: translateY(-50px) rotate(0deg);
             animation: slideUpDown 1s ease-in-out forwards;
-        }
-
-        .card-shake:hover {
-            animation: shake  0.5s ease-in-out;
         }
 
         @keyframes slideUpDown {
@@ -31,6 +30,11 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* 카드 호버시 쉐이킹 */
+        .card-shake:hover {
+            animation: shake  0.5s ease-in-out;
         }
 
         @keyframes shake {
@@ -53,24 +57,12 @@
 
 
 <body class="bg-white dark:bg-gray-800">
-
-
-
-
-
     <%- include('../include/header.ejs') %>
-    <div id="grid-Wrapper " 
-    class="mt-8 w-full">
+    <div id="grid-Wrapper"  class="mt-8">
 
-    <%- include('../include/postgrid.ejs') %>
-      
-      
+        <%- include('../include/postgrid.ejs') %>
     </div>
-            <%- include('../include/footer.ejs') %>
+    <%- include('../include/footer.ejs') %>
+
 </body>
-
 </html>
-
-
-
-
