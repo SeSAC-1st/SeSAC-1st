@@ -22,20 +22,20 @@
                             <%= new Date(post.createdAt).toLocaleDateString() %>
                         </span>
                     </div>
-                    <% if (sessionUser && sessionUser.userId===post.userId) { %>
-                        <div>
-                            <button type="button"
-                                class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600"
-                                onclick="editPost('<%= post.postId %>')">
-                                수정
-                            </button>
-                            <button type="button"
-                                class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600"
-                                onclick="deletePost('<%= post.postId %>', '<%= post.userId %>')">
-                                삭제
-                            </button>
-                        </div>
-                        <% } %>
+
+                    <div>
+                        <button type="button"
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600"
+                            onclick="editPost('<%= post.postId %>')">
+                            수정
+                        </button>
+                        <button type="button"
+                            class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded hover:bg-red-600"
+                            onclick="deletePost('<%= post.postId %>', '<%= post.userId %>')">
+                            삭제
+                        </button>
+                    </div>
+
                 </div>
                 <hr class="border border-gray-300 my-2">
             </div>
@@ -55,12 +55,30 @@
                         작성</button>
                 </div>
             </form>
+
             <div id="comment-section"></div>
         </main>
         <%- include('../include/footer.ejs') %>
 </body>
-
 <script>
+    // 댓글 입력폼 선택시 로그인이 안되어있으면 로그인페이지로
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const commentForm = document.getElementById('commentForm');
+
+    //     const sessionUser = null;
+
+    //     const commentTextArea = document.getElementById('comment');
+
+    //     commentTextArea.addEventListener('focus', () => {
+    //         if (!sessionUser) {
+    //             // sessionUser 값이 null이면 로그인 페이지로 리다이렉트
+    //             window.location.href = '/user/login';
+    //         }
+    //     });
+    // });
+
+
+
     // 게시물 수정
     async function editPost(postId) {
         let postTitleElement = document.getElementById('postTitle').textContent.trim();
@@ -127,9 +145,9 @@
         } catch (error) {
             console.error('댓글 데이터 가져오기 실패:', error);
         }
-
     });
 
+    // 댓글 등록
     // 댓글 작성 폼 선택
     const commentForm = document.getElementById('commentForm');
 
@@ -151,8 +169,8 @@
                 }
             });
 
+            // 댓글 작성 성공 시 서버에서 업데이트된 댓글 데이터 가져오기
             if (res.data.insertCom) {
-                // 댓글 작성 성공 시 서버에서 업데이트된 댓글 데이터 가져오기
                 const updatedComments = await axios({
                     method: 'get',
                     url: `/comment/list/${postId}`
@@ -170,83 +188,78 @@
         }
     });
 
-    // const currentUserId = document.body.getAttribute('data-current-user-id');
-    // console.log(currentUserId);
-
-    // 댓글 동작 추가 함수
+    // 댓글 등록 추가 함수
     function addCommentElement(comment) {
         // console.log(comment);
         const commentSection = document.getElementById('comment-section');
+        // 중복인지 확인하기 위해 요소 선택
+        const existingComment = commentSection.querySelector(`[data-comment-id="${comment.comId}"]`);
 
         // // "댓글이 없습니다." 메시지 숨김
         // if (noComments) {
         //     noComments.style.display = 'none';
         // }
 
-        // 댓글요소 li 생성
-        const commentElement = document.createElement('li');
-        commentElement.classList.add(...['list-none', 'mb-4']); // commentElement에 클래스 추가
-
-        // // 댓글 작성자와 로그인한 사용자가 동일할 때만 수정, 삭제 버튼 표시
-        // // const isAuthor = commList.User.userId === currentUserId;
-
-        commentElement.innerHTML = `
-        <div class="bg-white rounded-lg shadow-md p-4 mb-4 mt-8" data-comment-id="${comment.comId}">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
-                    <p class="text-gray-700 font-semibold mr-2">${comment.User.userNick}</p>
-                    <p class="text-gray-600 text-sm">${new Date(comment.createdAt).toLocaleDateString()}</p>
-                </div>
-                <div>
-                    ${sessionUser && sessionUser.userId === comment.userId ? `
-                    < button onclick = "editBtn(${comment.comId})" id = "edit-btn" type = "button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400" > 수정</button >
-                    <button onclick="deletBtn(${comment.comId})" id="delete-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
-                     ` : ''}
-                </div>
-            </div>
-            <p id="comContent-${comment.comId}" class="text-gray-600 pb-1">${comment.comContent}</p>
-            <button type="button" id="reply-btn" class="bg-gray-200 py-0.5 px-1 text-xs md:py-1 md:px-3 rounded">답글</button>
-            <form id="replyForm" name="replyForm" class="hidden mt-2">
-                <textarea id="reply" name="text" class="w-full p-2 border rounded mb-2" placeholder="대댓글 입력"></textarea>
-                <button type="submit" id="replyEdit-btn" class="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600">등록</button>
-            </form>
-        </div>
-        ${comment.replies && comment.replies.length > 0 ? `
-        <ul>
-            ${comment.replies.map(reply => `
-            <li>
-                <div class="bg-gray-100 rounded-lg shadow-md p-4 ml-8 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.49 12l3.75 3.75m0 0l-3.75 3.75m3.75-3.75H3.74V4.499" />
-                            </svg>
-                            <p class="text-gray-700 font-semibold mr-2">${reply.User.userNick}</p>
-                            <p class="text-gray-600 text-sm">${new Date(reply.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <div>
-                            ${sessionUser && sessionUser.userId === reply.userId ? `
-                            <button id="replyEdit-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
-                            <button id="replyDelete-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
-                            ` : ''}
-                        </div>
+        // 댓글요소 li 생성 (중복 확인)
+        if (!existingComment) {
+            const commentElement = document.createElement('li');
+            commentElement.classList.add(...['list-none', 'mb-4']);
+            commentElement.innerHTML = `
+            <div class="bg-white rounded-lg shadow-md p-4 mb-4 mt-8" data-comment-id="${comment.comId}">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                        <p class="text-gray-700 font-semibold mr-2">${comment.User.userNick}</p>
+                        <p class="text-gray-600 text-sm">${new Date(comment.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <p class="text-gray-600 pb-1">${reply.comContent}</p>
+                    <div>
+                        <button onclick="editBtn(${comment.comId})" id = "edit-btn-${comment.comId}" type = "button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400" >수정</button >
+                        <button onclick="deletBtn(${comment.comId})" id = "delete-btn-${comment.comId}" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                    </div>
                 </div>
-            </li>`).join('')}
-        </ul>` : ''}
-    `;
+                <p id="comContent-${comment.comId}" class="text-gray-600 pb-1">${comment.comContent}</p>
+                <button type="button" id="reply-btn" class="bg-gray-200 py-0.5 px-1 text-xs md:py-1 md:px-3 rounded">답글</button>
+                <form id="replyForm" name="replyForm" class="hidden mt-2">
+                    <textarea id="reply" name="text" class="w-full p-2 border rounded mb-2" placeholder="대댓글 입력"></textarea>
+                    <button type="submit" id="replyEdit-btn" class="bg-green-500 text-white font-semibold py-1 px-3 rounded hover:bg-green-600">등록</button>
+                </form>
+            </div>
+            ${comment.replies && comment.replies.length > 0 ? `
+            <ul>
+                ${comment.replies.map(reply => `
+                <li>
+                    <div class="bg-gray-100 rounded-lg shadow-md p-4 ml-8 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.49 12l3.75 3.75m0 0l-3.75 3.75m3.75-3.75H3.74V4.499" />
+                                </svg>
+                                <p class="text-gray-700 font-semibold mr-2">${reply.User.userNick}</p>
+                                <p class="text-gray-600 text-sm">${new Date(reply.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <div>
 
-        commentSection.appendChild(commentElement);
+                                <button id="replyEdit-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-400">수정</button>
+                                <button id="replyDelete-btn" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
+                
+                            </div>
+                        </div>
+                        <p class="text-gray-600 pb-1">${reply.comContent}</p>
+                    </div>
+                </li>`).join('')}
+            </ul>` : ''}
+        `;
 
-        // 답글 버튼 클릭 이벤트 리스너 추가
-        const replyBtns = commentElement.querySelectorAll('#reply-btn');
-        replyBtns.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const replyForm = btn.nextElementSibling;
-                replyForm.classList.toggle('hidden');
+            commentSection.appendChild(commentElement);
+
+            // 답글 버튼 클릭 이벤트 리스너 추가
+            const replyBtns = commentElement.querySelectorAll('#reply-btn');
+            replyBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const replyForm = btn.nextElementSibling;
+                    replyForm.classList.toggle('hidden');
+                });
             });
-        });
+        };
     };
 
     // 댓글 삭제
@@ -260,8 +273,8 @@
                     method: 'patch',
                     url: `/comment/delete/${comId}`
                 });
+                // 댓글 삭제 성공 시 댓글 요소 제거
                 if (res.data.result) {
-                    // 댓글 삭제 성공 시 댓글 요소 제거
                     const commentElement = document.querySelector(`[data-comment-id="${comId}"]`);
                     // console.log('commentElement:', commentElement);
 
@@ -269,13 +282,13 @@
                         commentElement.remove(); // 댓글 요소 제거
                     }
 
-                    // // 댓글 목록이 비어있는 경우 "댓글이 없습니다." 메시지 표시
-                    // if (commentSection.children.length === 0) {
-                    //     const noComments = document.createElement('p');
-                    //     noComments.id = 'no-comments';
-                    //     noComments.textContent = '댓글이 없습니다.';
-                    //     commentSection.appendChild(noComments);
-                    // }
+                    //         // // 댓글 목록이 비어있는 경우 "댓글이 없습니다." 메시지 표시
+                    //         // if (commentSection.children.length === 0) {
+                    //         //     const noComments = document.createElement('p');
+                    //         //     noComments.id = 'no-comments';
+                    //         //     noComments.textContent = '댓글이 없습니다.';
+                    //         //     commentSection.appendChild(noComments);
+                    //         // }
                 } else {
                     console.error('댓글 삭제 실패:', res.data.error);
                 }
@@ -286,33 +299,44 @@
     }
 
 
-    // 댓글 수정 (백에서 result값 send 추가 필요할듯)
+    // 댓글 수정
     async function editBtn(comId) {
         // 수정할 댓글 요소 선택
         let comContentElement = document.getElementById(`comContent-${comId}`);
         let comContent = comContentElement.textContent.trim();
         // console.log(comContent);
 
+        // 기존의 수정/삭제 버튼 숨기기
+        let editBtn = document.getElementById(`edit-btn-${comId}`);
+        let deletBtn = document.getElementById(`delete-btn-${comId}`);
+        editBtn.style.display = 'none';
+        deletBtn.style.display = 'none';
+
         // 수정 폼 생성
         const editForm = document.createElement('form');
         editForm.classList.add('commentEdit-form');
 
         const editInput = document.createElement('textarea');
-        editInput.classList.add('commentEdit-input');
+        editInput.classList.add('commentEdit-input', 'border', 'rounded-lg', 'resize-none', 'w-full', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
         editInput.value = comContent;
+        editForm.appendChild(editInput);
+
+        const butContainer = document.createElement('div');
+        butContainer.classList.add('flex', 'justify-end', 'space-x-2', 'mt-2');
 
         const submitBtn = document.createElement('button');
         submitBtn.type = 'submit';
         submitBtn.textContent = '수정';
+        submitBtn.classList.add('submit-btn', 'py-0.5', 'px-1', 'rounded', 'text-xs', 'bg-gray-500', 'text-white', 'hover:bg-green-600');
+        butContainer.appendChild(submitBtn);
 
         const cancelBtn = document.createElement('button');
         cancelBtn.type = 'button';
         cancelBtn.textContent = '취소';
-        cancelBtn.classList.add('cancel-btn');
+        cancelBtn.classList.add('cancel-btn', 'py-0.5', 'px-1', 'rounded', 'text-xs', 'bg-gray-500', 'text-white', 'hover:bg-red-600');
+        butContainer.appendChild(cancelBtn);
 
-        editForm.appendChild(editInput);
-        editForm.appendChild(submitBtn);
-        editForm.appendChild(cancelBtn);
+        editForm.appendChild(butContainer);
 
         // 기존 댓글 내용 감추기
         comContentElement.style.display = 'none';
@@ -324,9 +348,11 @@
         cancelBtn.addEventListener('click', () => {
             editForm.remove();
             comContentElement.style.display = 'block';
+            editBtn.style.display = 'inline-block';
+            deletBtn.style.display = 'inline-block';
         });
 
-        // 제출 버튼 클릭 시 처리
+        // 수정 버튼 클릭 시 처리
         editForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const updatedText = editInput.value.trim();
@@ -340,10 +366,12 @@
                     }
                 });
                 // console.log('res.data >>', res.data);
-                if (res.data.result) {
+                if (res.data.updatedComment) {
                     comContentElement.textContent = updatedText;
                     editForm.remove();
                     comContentElement.style.display = 'block';
+                    editBtn.style.display = 'inline-block';
+                    deletBtn.style.display = 'inline-block';
                 } else {
                     console.error('댓글 수정 실패:', res.data.error);
                 }
