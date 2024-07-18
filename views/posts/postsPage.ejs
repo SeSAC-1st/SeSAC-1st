@@ -12,8 +12,8 @@
 
 
         .wrap {
-            width: 150vw;
-            height: 150vh;
+            width: 100vw;
+            height: 350vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,8 +22,8 @@
         }
 
         .circle {
-            width: 200vw;
-            height: 200vw;
+            width: 120vw;
+            height: 120vw;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -128,12 +128,35 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .circle {
-                width: 90vw;
-                height: 90vw;
+        /* 작은 데스크탑 및 큰 태블릿 (최대 너비 ) */
+        @media only screen and (min-width: 400px) and (max-width: 768px) {
+            .wrap {
+                height: 180vh; /* 원하는 값으로 변경 */
             }
         }
+
+        /* 작은 데스크탑 및 큰 태블릿 (최대 너비 1200px) */
+        @media only screen and (min-width: 768px) and (max-width: 1025px) {
+            .wrap {
+                height: 180vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 태블린 세로 (최대 너비 1025px) */
+        @media only screen and (min-width: 1025px) and (max-width: 1280px) {
+            .wrap {
+                height: 130vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 큰 데스크탑 및 27인치 모니터 (최대 너비 2560px) */
+        @media only screen and (min-width: 1280px) and (max-width: 2560px) {
+            .wrap {
+                height: 120vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+
 
 
         /* 페이지 로드시 카드 애니메이션 */
@@ -195,6 +218,7 @@
         <div class="flex wrap">
             <div id="postgrid">
                 <%- include('../include/postgrid.ejs') %>
+                <%- include('../include/pagination.ejs') %>
             </div>
             <div class="circle">
                 <div class="wave wave-one"></div>
