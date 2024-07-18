@@ -42,7 +42,7 @@ const userModel = (sequelize, DataTypes) => {
         freezeTableName: true
     })
 
-    return User
-}
+  return User;
+};
 
 module.exports = userModel;
