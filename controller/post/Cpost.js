@@ -113,6 +113,7 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
+
     const pageCount = Math.ceil(postCount / pageSize);
     res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
@@ -569,18 +570,19 @@ exports.insertPost = async (req, res) => {
 // };
 
 // 게시물 폼 페이지 이동(등록, 수정을 한 메서드에)
-// exports.getPostFormPage = (req, res) => {
-//   if(req.session.user){
-//     const { postId } = req.params;
-//     const { postTitle, postContent } = req.body;
+exports.getPostFormPage = (req, res) => {
+  // if(req.session.user){
+    // const { postId } = req.params;
+    // const { postTitle, postContent } = req.body;
 
-//     if (postId) {
-//       // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
-//       res.render('posts/postFormPage', { postTitle, postContent });
-//     } else {
-//       // 등록은 그냥 페이지 이동
-//         res.render('posts/postFormPage')
-//     }
+    // if (postId) {
+      // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
+      // res.render('posts/postFormPage', { postTitle, postContent });
+    // } else {
+      // 등록은 그냥 페이지 이동
+        console.log('postFormPage Render')
+        res.render('posts/postFormPage')
+    // }
 
-//   } else res.redirect('/user/login');
-// };
+  // } else res.redirect('/user/login');
+};

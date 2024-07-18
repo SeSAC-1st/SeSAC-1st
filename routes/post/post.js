@@ -20,7 +20,7 @@ router.get('/list/:userId/:page/:size', controller.getUserPostList);
 // router.get('/countByMonth', controller.getMonthlyPostCounts);
 
 // 게시물 조회
-router.get('/:postId', controller.getPost);
+// router.get('/:postId', controller.getPost);
 
 // 게시물 수정
 router.patch('/:postId', controller.updatePost);
@@ -35,7 +35,7 @@ router.post('/', controller.insertPost);
 // router.get('/search', controller.getSearchPage);
 
 // 게시물 등록 폼 페이지 이동
-// router.get('/form', controller.getPostFormPage);
+router.get('/form', controller.getPostFormPage);
 
 // 게시물 수정 폼 페이지 이동
 // router.post('/form/:postId', controller.getPostFormPage)
