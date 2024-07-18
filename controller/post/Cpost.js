@@ -356,7 +356,6 @@ exports.updatePost = async (req, res) => {
       res.json(postUpdate[0]);
       // 수정 버튼 눌렀을때 수정완료 되면 상세 페이지로 redirect
       // if (postUpdate[0] === 1) res.send({result:true})
-      //   // res.redirect(`/post/${postId}`)
       // else res.send({result:false})    // 수정 실패
       // 리턴을 업데이트된 행의 개수 - 1
     } else res.redirect('/user/login');
@@ -384,7 +383,6 @@ exports.deletePost = async (req, res) => {
 
       res.json({ postDelete, commentDelete });
       // if (postDelete[0] === 1) res.send({result:true})
-      //   // res.redirect(`/post/list/user`)
       //   else res.send({result:false})    // 삭제 실패
       // 삭제 완료 되면 사용자 게시물 목록 페이지로 이동
     } else res.redirect('/user/login');
@@ -410,7 +408,6 @@ exports.insertPost = async (req, res) => {
       res.json(postcreate);
       // 등록 완료 하면 사용자 게시물 목록으로 이동
       // if (postcreate) res.send({result:true})
-      //   // res.redirect(`/post/list/user`)
       //   else res.status(400).send({ error: 'Failed to create post' });
     } else res.redirect('/user/login');
   } catch (error) {
@@ -424,49 +421,36 @@ exports.getSearchPage = (req, res) => {
   res.render('search/searchPage');
 };
 
-// 게시물 폼 페이지 이동(등록, 수정을 한 메서드에)
-// exports.getPostFormPage = (req, res) => {
-//   if(req.session.user){
-//     const { postId } = req.params;
-//     const { postTitle, postContent } = req.body;
-
-//     if (postId) {
-//       // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
-//       res.render('posts/postFormPage', { postTitle, postContent });
-//     } else {
-//       // 등록은 그냥 페이지 이동
-//         res.render('posts/postFormPage')
-//     }
-
-//   } else res.redirect('/user/login');
-// };
-
 // 게시물 등록 폼 페이지 이동
-// exports.getPostFormCreatePage = (req, res) => {
-//   res.render('posts/postCreateFormPage');
-// };
+exports.getCreatePostPage = (req, res) => {
+  if (req.session.user) {
+    res.render('posts/createPostPage');
+  } else res.redirect('/user/login');
+};
 
 // 게시물 수정 폼 페이지 이동
-// exports.getPostFormUpdatePage = async (req, res) => {
-//   const { postId } = req.params;
-//   try {
-//     const post = await Post.findOne({
-//       where: {
-//         postId,
-//       },
-//       attributes: ['postTitle', 'postContent'],
-//     });
+exports.getEditPostPage = async (req, res) => {
+  try {
+    if (req.session.user) {
+      const { postId } = req.params;
+      const post = await Post.findOne({
+        where: {
+          postId,
+        },
+        attributes: ['postTitle', 'postContent'],
+      });
 
-//     if (!post) {
-//       // 해당 postId의 게시물이 없는 경우 처리
-//       return res.status(404).send('게시물을 찾을 수 없습니다.');
-//     }
+      if (!post) {
+        // 해당 postId의 게시물이 없는 경우 처리
+        return res.status(404).send('게시물을 찾을 수 없습니다.');
+      }
 
-//     res.json(post);
-//     // 게시물 정보를 렌더링하는 페이지로 이동
-//     // res.render('posts/postUpdateForm', { post });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
+      res.json(post);
+      // 게시물 정보를 렌더링하는 페이지로 이동
+      res.render('posts/editPostPage', { post });
+    } else res.redirect('/user/login');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
