@@ -113,7 +113,8 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
-
+    
+    
     const pageCount = Math.ceil(postCount / pageSize);
     res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
@@ -125,6 +126,7 @@ exports.getPostList = async (req, res) => {
     //   sessionUser: req.session.user ? req.session.user : null
     // });
 
+
     //   {
     //     "postList": [
     //         {
@@ -134,7 +136,7 @@ exports.getPostList = async (req, res) => {
     //             "userId": 1,
     //             "createdAt": "2024-07-11T07:12:26.000Z",
     //             "commentCount": 7,
-    //             "User": {
+    //             "User": {f
     //                 "userNick": "babocat"
     //             }
     //         },
