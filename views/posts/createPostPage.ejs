@@ -131,6 +131,29 @@
         }
     }
   
+
+    function reloadOnWidthChange() {
+            let previousWidth = window.innerWidth;
+
+            window.onresize = function() {
+                let currentWidth = window.innerWidth;
+
+                if (previousWidth > 768 && currentWidth <= 768) {
+                    // 화면 너비가 768px 이하로 변경될 때 페이지를 다시 로드
+                    location.reload();
+                }
+                if (previousWidth < 768 && currentWidth >= 768) {
+                    // 화면 너비가 768px 이상으로 변경될 때 페이지를 다시 로드
+                    location.reload();
+                }
+
+
+                previousWidth = currentWidth;
+            };
+        }
+
+      // 페이지 로드 시 체크
+      window.onload = reloadOnWidthChange;
   </script>
 </body>
 </html>
