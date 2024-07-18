@@ -114,16 +114,16 @@ exports.getPostList = async (req, res) => {
       });
     }
 
-    // 다시살려*************************
-    // res.json({ postList, postCount });
-
-
+    const pageCount = Math.ceil(postCount / pageSize);
+    res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    res.render('posts/postsPage', {
-      postList,
-      postCount,
-      sessionUser: req.session.user ? req.session.user : null
-    });
+    // res.render('posts/postsPage', {
+    //   postList,
+    //   postCount,
+    //   pageCount,
+    //   currentPage: pageNumber,
+    //   sessionUser: req.session.user ? req.session.user : null
+    // });
 
     //   {
     //     "postList": [
@@ -215,13 +215,21 @@ exports.getUserPostList = async (req, res) => {
       });
 
       const cntPostGroupMonth = await this.getMonthlyPostCounts(userId);
+      const pageCount = Math.ceil(userPostCount / pageSize);
 
-      res.json({ userPostList, userPostCount, cntPostGroupMonth });
+      res.json({
+        userPostList,
+        userPostCount,
+        pageCount,
+        cntPostGroupMonth,
+        currentPage: pageNumber,
+      });
       // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
       // res.render('posts/myPostsPage', {
       //   userPostList,
       //   userPostCount,
       //   cntPostGroupMonth,
+      //   currentPage: pageNumber,
       //   sessionUser: req.session.user,
       // });
     } else res.redirect('/user/login');
