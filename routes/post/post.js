@@ -10,14 +10,7 @@ router.get('/list/:page/:size', controller.getPostList);
 router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
 
 // 사용자 게시물 목록 조회
-// router.get('/list/user/:page/:size', controller.getUserPostList);
 router.get('/list/:userId/:page/:size', controller.getUserPostList);
-
-// 사용자 게시물 목록 조회(페이징 제외) - 생략 가능
-// router.get('/list/user', controller.getUserPostList);
-
-// 월별 게시물 개수 조회
-// router.get('/countByMonth', controller.getMonthlyPostCounts);
 
 // 게시물 조회
 // router.get('/:postId', controller.getPost);
@@ -32,12 +25,12 @@ router.patch('/:postId/delete', controller.deletePost);
 router.post('/', controller.insertPost);
 
 // 검색 페이지 이동
-// router.get('/search', controller.getSearchPage);
+router.get('/search', controller.getSearchPage);
 
 // 게시물 등록 폼 페이지 이동
-router.get('/form', controller.getPostFormPage);
+// router.get('/form', controller.getCreatePostPage);
 
 // 게시물 수정 폼 페이지 이동
-// router.post('/form/:postId', controller.getPostFormPage)
+// router.get('/form/:postId', controller.getEditPostPage);
 
 module.exports = router;

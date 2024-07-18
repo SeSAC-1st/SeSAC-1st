@@ -113,8 +113,7 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
-    
-    
+
     const pageCount = Math.ceil(postCount / pageSize);
     res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
@@ -154,6 +153,7 @@ exports.getPostList = async (req, res) => {
     //     ],
     //     "postCount": 14
     // }
+
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -235,41 +235,6 @@ exports.getUserPostList = async (req, res) => {
       //   sessionUser: req.session.user,
       // });
     } else res.redirect('/user/login');
-
-    //   {
-    //     "userPostList": [
-
-    //         {
-    //             "postId": 13,
-    //             "postTitle": "ㄹㅇㄴㄹㄹ553.0.가",
-    //             "postContent": "urlend's content3",
-    //             "userId": 1,
-    //             "createdAt": "2024-06-13T06:24:14.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "dog"
-    //             }
-    //         }
-    //     ],
-    //     "userPostCount": 19,
-    //     "cntPostGroupMonth": [
-    //         {
-    //             "year": 2024,
-    //             "month": 1,
-    //             "count": 2
-    //         },
-    //         {
-    //             "year": 2024,
-    //             "month": 11,
-    //             "count": 1
-    //         },
-    //         {
-    //             "year": 2024,
-    //             "month": 12,
-    //             "count": 0
-    //         }
-    //     ]
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -401,64 +366,6 @@ exports.getPost = async (req, res) => {
     //   commList,
     //   sessionUser: req.session.user ? req.session.user : null,
     // });
-
-    //   {
-    //     "post": {
-    //         "postId": 1,
-    //         "postTitle": "urlend's title",
-    //         "postContent": "urlend's content",
-    //         "userId": 1,
-    //         "isDeleted": false,
-    //         "createdAt": "2024-07-13T05:15:13.000Z",
-    //         "updatedAt": "2024-07-13T05:15:13.000Z",
-    //         "User": {
-    //             "userNick": "dog"
-    //         }
-    //     },
-    //     "commList": [
-    //         {
-    //             "comId": 1,
-    //             "comContent": "urlendcomment",
-    //             "postId": 1,
-    //             "userId": 1,
-    //             "parentComId": null,
-    //             "isDeleted": false,
-    //             "createdAt": "2024-07-13T05:16:07.000Z",
-    //             "updatedAt": "2024-07-13T05:16:07.000Z",
-    //             "User": {
-    //                 "userNick": "dog"
-    //             },
-    //             "replies": [
-    //                 {
-    //                     "comId": 2,
-    //                     "comContent": "reply7",
-    //                     "postId": 1,
-    //                     "userId": 1,
-    //                     "parentComId": 1,
-    //                     "isDeleted": false,
-    //                     "createdAt": "2024-07-13T05:17:14.000Z",
-    //                     "updatedAt": "2024-07-13T05:17:14.000Z",
-    //                     "User": {
-    //                         "userNick": "dog"
-    //                     }
-    //                 },
-    //                 {
-    //                     "comId": 3,
-    //                     "comContent": "reply7-",
-    //                     "postId": 1,
-    //                     "userId": 2,
-    //                     "parentComId": 1,
-    //                     "isDeleted": false,
-    //                     "createdAt": "2024-07-13T05:17:50.000Z",
-    //                     "updatedAt": "2024-07-13T05:17:50.000Z",
-    //                     "User": {
-    //                         "userNick": "dog"
-    //                     }
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -480,13 +387,8 @@ exports.updatePost = async (req, res) => {
       res.json(postUpdate[0]);
       // 수정 버튼 눌렀을때 수정완료 되면 상세 페이지로 redirect
       // if (postUpdate[0] === 1) res.send({result:true})
-      //   // res.redirect(`/post/${postId}`)
       // else res.send({result:false})    // 수정 실패
       // 리턴을 업데이트된 행의 개수 - 1
-
-      // [
-      //   1
-      // ]
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -512,19 +414,9 @@ exports.deletePost = async (req, res) => {
 
       res.json({ postDelete, commentDelete });
       // if (postDelete[0] === 1) res.send({result:true})
-      //   // res.redirect(`/post/list/user`)
       //   else res.send({result:false})    // 삭제 실패
       // 삭제 완료 되면 사용자 게시물 목록 페이지로 이동
     } else res.redirect('/user/login');
-
-    // {
-    //   "postDelete": [
-    //       1
-    //   ],
-    //   "commentDelete": [
-    //       1
-    //   ]
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -547,19 +439,8 @@ exports.insertPost = async (req, res) => {
       res.json(postcreate);
       // 등록 완료 하면 사용자 게시물 목록으로 이동
       // if (postcreate) res.send({result:true})
-      //   // res.redirect(`/post/list/user`)
       //   else res.status(400).send({ error: 'Failed to create post' });
     } else res.redirect('/user/login');
-
-    // {
-    //   "isDeleted": false,
-    //   "postId": 29,
-    //   "postTitle": "test 13",
-    //   "postContent": "test 13",
-    //   "userId": 5,
-    //   "updatedAt": "2024-07-10T08:05:08.190Z",
-    //   "createdAt": "2024-07-10T08:05:08.190Z"
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -567,24 +448,40 @@ exports.insertPost = async (req, res) => {
 };
 
 // 검색 페이지 이동
-// exports.getSearchPage = (req, res) => {
-//   res.render('search/searchPage');
-// };
+exports.getSearchPage = (req, res) => {
+  res.render('search/searchPage');
+};
 
-// 게시물 폼 페이지 이동(등록, 수정을 한 메서드에)
-exports.getPostFormPage = (req, res) => {
-  // if(req.session.user){
-    // const { postId } = req.params;
-    // const { postTitle, postContent } = req.body;
+// 게시물 등록 폼 페이지 이동
+exports.getCreatePostPage = (req, res) => {
+  if (req.session.user) {
+    res.render('posts/createPostPage');
+  } else res.redirect('/user/login');
+};
 
-    // if (postId) {
-      // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
-      // res.render('posts/postFormPage', { postTitle, postContent });
-    // } else {
-      // 등록은 그냥 페이지 이동
-        console.log('postFormPage Render')
-        res.render('posts/postFormPage')
-    // }
+// 게시물 수정 폼 페이지 이동
+exports.getEditPostPage = async (req, res) => {
+  try {
+    if (req.session.user) {
+      const { postId } = req.params;
+      const post = await Post.findOne({
+        where: {
+          postId,
+        },
+        attributes: ['postTitle', 'postContent'],
+      });
 
-  // } else res.redirect('/user/login');
+      if (!post) {
+        // 해당 postId의 게시물이 없는 경우 처리
+        return res.status(404).send('게시물을 찾을 수 없습니다.');
+      }
+
+      res.json(post);
+      // 게시물 정보를 렌더링하는 페이지로 이동
+      res.render('posts/editPostPage', { post });
+    } else res.redirect('/user/login');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 };
