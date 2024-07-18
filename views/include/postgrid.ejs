@@ -1,9 +1,8 @@
-
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-52 pt-20">
   <% postList.forEach(post=> { %>
     <div
       class="group relative shadow-md rounded-lg overflow-hidden transform transition duration-500 hover:scale-105 p-4 flex flex-col justify-between bg-gray-100 dark:bg-gray-500">
-      <a href="/<%= post.postId %>">
+      <a href="/post/<%= post.postId %>">
         <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2 dark:text-white">
           <%= post.postTitle %>
         </h2>

@@ -69,6 +69,7 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     } else {
+      // 검색 안한 버전
       postCount = await Post.count({
         where: {
           isDeleted: false,
@@ -112,9 +113,16 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
-    res.json({ postList, postCount });
+    const pageCount = Math.ceil(postCount / pageSize);
+    res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    // res.render('posts/postsPage', {postList, postCount})
+    // res.render('posts/postsPage', {
+    //   postList,
+    //   postCount,
+    //   pageCount,
+    //   currentPage: pageNumber,
+    //   sessionUser: req.session.user ? req.session.user : null
+    // });
 
     //   {
     //     "postList": [
@@ -140,116 +148,6 @@ exports.getPostList = async (req, res) => {
     //                 "userNick": "babocat"
     //             }
     //         },
-    //         {
-    //             "postId": 4,
-    //             "postTitle": "postTitle4",
-    //             "postContent": "postContent4",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:13:58.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 5,
-    //             "postTitle": "postTitle5",
-    //             "postContent": "postContent5",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:04.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 6,
-    //             "postTitle": "postTitle6",
-    //             "postContent": "postContent6",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:11.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 7,
-    //             "postTitle": "postTitle7",
-    //             "postContent": "postContent7",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:18.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 8,
-    //             "postTitle": "postTitle8",
-    //             "postContent": "postContent8",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:25.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 9,
-    //             "postTitle": "postTitle9",
-    //             "postContent": "postContent9",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:30.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 10,
-    //             "postTitle": "postTitle10",
-    //             "postContent": "postContent10",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:37.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 11,
-    //             "postTitle": "postTitle11",
-    //             "postContent": "postContent11",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:44.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 12,
-    //             "postTitle": "postTitle12",
-    //             "postContent": "postContent12",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:51.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 13,
-    //             "postTitle": "postTitle13",
-    //             "postContent": "postContent13",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:14:57.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         }
     //     ],
     //     "postCount": 14
     // }
@@ -259,77 +157,115 @@ exports.getPostList = async (req, res) => {
   }
 };
 
-// 사용자 게시물 목록 조회 메서드, 전체 개수도 출력
-// 차트도 같은 화면에 출력
+// 사용자 게시물 목록 조회 메서드, 전체 개수도 출력, 차트도 같은 화면에 출력
 exports.getUserPostList = async (req, res) => {
   try {
-    // userId는 session에서 가져오기로 변경
-    const { userId, page, size } = req.params;
+    // 페이지 이동시 로그인 상태인지 확인
+    if (req.session.user) {
+      // const { userId } = req.session.user;
+      const { userId, page, size } = req.params;
 
-    const pageNumber = page ? parseInt(page, 10) : 1;
-    const pageSize = size ? parseInt(size, 10) : 12;
-    const offset = (pageNumber - 1) * pageSize;
+      const pageNumber = page ? parseInt(page, 10) : 1;
+      const pageSize = size ? parseInt(size, 10) : 12;
+      const offset = (pageNumber - 1) * pageSize;
 
-    const userPostCount = await Post.count({
-      where: {
-        isDeleted: false,
-        userId,
-      },
-    });
-    const userPostList = await Post.findAll({
-      where: {
-        isDeleted: false,
-        userId,
-      },
-      limit: pageSize,
-      offset: offset,
-      attributes: [
-        'postId',
-        'postTitle',
-        'postContent',
-        'userId',
-        'createdAt',
-        [fn('COALESCE', fn('COUNT', col('Comments.comId')), 0), 'commentCount'],
-      ],
-      include: [
-        {
-          model: Comment,
-          as: 'Comments',
-          where: {
-            isDeleted: false,
+      const userPostCount = await Post.count({
+        where: {
+          isDeleted: false,
+          userId,
+        },
+      });
+      const userPostList = await Post.findAll({
+        where: {
+          isDeleted: false,
+          userId,
+        },
+        limit: pageSize,
+        offset: offset,
+        attributes: [
+          'postId',
+          'postTitle',
+          'postContent',
+          'userId',
+          'createdAt',
+          [
+            fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
+            'commentCount',
+          ],
+        ],
+        include: [
+          {
+            model: Comment,
+            as: 'Comments',
+            where: {
+              isDeleted: false,
+            },
+            required: false,
+            attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
           },
-          required: false,
-          attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
-        },
-        {
-          model: User,
-          as: 'User',
-          attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
-        },
-      ],
-      group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
-      subQuery: false, // 서브쿼리를 사용하지 않도록 설정
-    });
+          {
+            model: User,
+            as: 'User',
+            attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
+          },
+        ],
+        group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
+        subQuery: false, // 서브쿼리를 사용하지 않도록 설정
+      });
 
-    res.json({ userPostList, userPostCount });
-    // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
-    // res.render('posts/myPostsPage', {userPostList, userPostCount})
+      const cntPostGroupMonth = await this.getMonthlyPostCounts(userId);
+      const pageCount = Math.ceil(userPostCount / pageSize);
+
+      res.json({
+        userPostList,
+        userPostCount,
+        pageCount,
+        cntPostGroupMonth,
+        currentPage: pageNumber,
+      });
+      // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
+      // res.render('posts/myPostsPage', {
+      //   userPostList,
+      //   userPostCount,
+      //   cntPostGroupMonth,
+      //   currentPage: pageNumber,
+      //   sessionUser: req.session.user,
+      // });
+    } else res.redirect('/user/login');
 
     //   {
     //     "userPostList": [
+
     //         {
-    //             "postId": 16,
-    //             "postTitle": "ejkim's title",
-    //             "postContent": "ejkim's content",
-    //             "userId": 4,
-    //             "createdAt": "2024-07-13T04:33:50.000Z",
-    //             "commentCount": 1,
+    //             "postId": 13,
+    //             "postTitle": "ㄹㅇㄴㄹㄹ553.0.가",
+    //             "postContent": "urlend's content3",
+    //             "userId": 1,
+    //             "createdAt": "2024-06-13T06:24:14.000Z",
+    //             "commentCount": 0,
     //             "User": {
     //                 "userNick": "dog"
     //             }
     //         }
     //     ],
-    //     "userPostCount": 1
+    //     "userPostCount": 19,
+    //     "cntPostGroupMonth": [
+    //         {
+    //             "year": 2024,
+    //             "month": 1,
+    //             "count": 2
+    //         },
+    //         {
+    //             "year": 2024,
+    //             "month": 11,
+    //             "count": 1
+    //         },
+    //         {
+    //             "year": 2024,
+    //             "month": 12,
+    //             "count": 0
+    //         }
+    //     ]
     // }
   } catch (error) {
     console.error(error);
@@ -338,11 +274,8 @@ exports.getUserPostList = async (req, res) => {
 };
 
 // 월별 게시물 개수 조회 메서드
-exports.getMonthlyPostCounts = async (req, res) => {
+exports.getMonthlyPostCounts = async (userId) => {
   try {
-    // session에서 가져오는걸로 고치기
-    const { userId } = req.body;
-
     // 현재 연도 가져오기
     const currentYear = new Date().getFullYear();
 
@@ -378,7 +311,6 @@ exports.getMonthlyPostCounts = async (req, res) => {
       result.get({ plain: true })
     );
 
-    // const currentMonth = new Date().getMonth() + 1; // 월은 0부터 시작하므로 +1
     // 1 ~ 12월까지의 모든 월에 대해 기본 값을 설정
     const allMonths = [];
     for (let month = 1; month <= 12; month++) {
@@ -401,70 +333,7 @@ exports.getMonthlyPostCounts = async (req, res) => {
       }
     }
 
-    // res.json(allMonths);
     return allMonths;
-    //   [
-    //     {
-    //         "year": 2024,
-    //         "month": 1,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 2,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 3,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 4,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 5,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 6,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 7,
-    //         "count": 14
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 8,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 9,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 10,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 11,
-    //         "count": 0
-    //     },
-    //     {
-    //         "year": 2024,
-    //         "month": 12,
-    //         "count": 0
-    //     }
-    // ]
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -487,7 +356,6 @@ exports.getPost = async (req, res) => {
     });
 
     // 해당 postId에 해당하는 댓글과 대댓글 목록
-    // 상세 페이지에서 댓글 수 보여주는지 화면 설계 보고 쿼리 수정
     const commList = await Comment.findAll({
       where: {
         // 댓글은 postId에 해당하고 상위 댓글이 없고 삭제되지 않은것 조회
@@ -525,7 +393,11 @@ exports.getPost = async (req, res) => {
 
     res.json({ post, commList });
     // 각 게시물 제목 클릭하면 조회해서 게시물 상세 페이지로 데이터 가지고 이동, 댓글/대댓글 리스트 포함
-    // res.render('posts/postDetailPage', { post, commList });
+    // res.render('posts/postDetailPage', {
+    //   post,
+    //   commList,
+    //   sessionUser: req.session.user ? req.session.user : null,
+    // });
 
     //   {
     //     "post": {
@@ -593,23 +465,26 @@ exports.getPost = async (req, res) => {
 // 게시물 수정 매서드
 exports.updatePost = async (req, res) => {
   try {
-    const { postId } = req.params;
-    const { postTitle, postContent } = req.body;
+    if (req.session.user) {
+      const { postId } = req.params;
+      const { postTitle, postContent } = req.body;
 
-    const postUpdate = await Post.update(
-      { postTitle, postContent },
-      { where: { postId } }
-    );
+      const postUpdate = await Post.update(
+        { postTitle, postContent },
+        { where: { postId } }
+      );
 
-    res.json(postUpdate[0]);
-    // 수정 버튼 눌렀을때 수정완료 되면 상세 페이지로 redirect
-    // if (postUpdate[0] === 1) res.redirect(`/post/${postId}`)
-    // else res.send({result:false})    // 수정 실패
-    // 리턴을 업데이트된 행의 개수 - 1
+      res.json(postUpdate[0]);
+      // 수정 버튼 눌렀을때 수정완료 되면 상세 페이지로 redirect
+      // if (postUpdate[0] === 1) res.send({result:true})
+      //   // res.redirect(`/post/${postId}`)
+      // else res.send({result:false})    // 수정 실패
+      // 리턴을 업데이트된 행의 개수 - 1
 
-    // [
-    //   1
-    // ]
+      // [
+      //   1
+      // ]
+    } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -619,22 +494,25 @@ exports.updatePost = async (req, res) => {
 // 게시물 삭제 메서드
 exports.deletePost = async (req, res) => {
   try {
-    const { postId } = req.params;
+    if (req.session.user) {
+      const { postId } = req.params;
 
-    const postDelete = await Post.update(
-      { isDeleted: true },
-      { where: { postId } }
-    );
+      const postDelete = await Post.update(
+        { isDeleted: true },
+        { where: { postId } }
+      );
 
-    const commentDelete = await Comment.update(
-      { isDeleted: true },
-      { where: { postId } }
-    );
+      const commentDelete = await Comment.update(
+        { isDeleted: true },
+        { where: { postId } }
+      );
 
-    res.json({ postDelete, commentDelete });
-    // if (postDelete[0] === 1) res.redirect(`/post/list/${req.session.userId}/1/12`)
-    //   else res.send({result:false})    // 삭제 실패
-    // 삭제 완료 되면 사용자 게시물 목록 페이지로 이동, userId는 session에서 가져와서
+      res.json({ postDelete, commentDelete });
+      // if (postDelete[0] === 1) res.send({result:true})
+      //   // res.redirect(`/post/list/user`)
+      //   else res.send({result:false})    // 삭제 실패
+      // 삭제 완료 되면 사용자 게시물 목록 페이지로 이동
+    } else res.redirect('/user/login');
 
     // {
     //   "postDelete": [
@@ -653,19 +531,22 @@ exports.deletePost = async (req, res) => {
 // 게시글 등록 메서드
 exports.insertPost = async (req, res) => {
   try {
-    // userId는 차후 session에서 가져오는 것으로 수정
-    const { postTitle, postContent, userId } = req.body;
+    if (req.session.user) {
+      // const {userId} = req.session.user
+      const { postTitle, postContent, userId } = req.body;
 
-    const postcreate = await Post.create({
-      postTitle,
-      postContent,
-      userId,
-    });
+      const postcreate = await Post.create({
+        postTitle,
+        postContent,
+        userId,
+      });
 
-    res.json(postcreate);
-    // 등록 완료 하면 사용자 게시물 목록으로 이동
-    // if (postcreate) res.redirect(`/post/list/${req.session.userId}/1/12`)
-    //   else res.status(400).send({ error: 'Failed to create post' });
+      res.json(postcreate);
+      // 등록 완료 하면 사용자 게시물 목록으로 이동
+      // if (postcreate) res.send({result:true})
+      //   // res.redirect(`/post/list/user`)
+      //   else res.status(400).send({ error: 'Failed to create post' });
+    } else res.redirect('/user/login');
 
     // {
     //   "isDeleted": false,
@@ -689,14 +570,17 @@ exports.insertPost = async (req, res) => {
 
 // 게시물 폼 페이지 이동(등록, 수정을 한 메서드에)
 // exports.getPostFormPage = (req, res) => {
-//   const { postId } = req.params;
-//   const { postTitle, postContent } = req.body;
+//   if(req.session.user){
+//     const { postId } = req.params;
+//     const { postTitle, postContent } = req.body;
 
-//   if (postId) {
-//     // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
-//     res.render('posts/postFormPage', { postTitle, postContent });
-//   } else {
-//     // 등록은 그냥 페이지 이동
-//       res.render('posts/postFormPage')
-//   }
+//     if (postId) {
+//       // 수정은 상세 페이지가 가지고 있는 post를 가지고 있고 그걸 그대로 넘겨주기
+//       res.render('posts/postFormPage', { postTitle, postContent });
+//     } else {
+//       // 등록은 그냥 페이지 이동
+//         res.render('posts/postFormPage')
+//     }
+
+//   } else res.redirect('/user/login');
 // };
