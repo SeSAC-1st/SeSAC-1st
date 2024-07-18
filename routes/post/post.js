@@ -13,7 +13,7 @@ router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
 router.get('/list/:userId/:page/:size', controller.getUserPostList);
 
 // 게시물 조회
-router.get('/:postId', controller.getPost);
+// router.get('/:postId', controller.getPost);
 
 // 게시물 수정
 router.patch('/:postId', controller.updatePost);

@@ -9,7 +9,7 @@ router.get('/register', controller.registerPage);
 // // 회원가입 로직
 router.post('/register', controller.userRegister);
 
-// // 로그인 페이지
+// 로그인 페이지
 router.get('/login', controller.loginPage);
 
 // // 로그인 로직

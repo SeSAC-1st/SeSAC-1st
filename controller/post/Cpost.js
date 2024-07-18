@@ -113,6 +113,7 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
+
     const pageCount = Math.ceil(postCount / pageSize);
     res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
@@ -123,6 +124,36 @@ exports.getPostList = async (req, res) => {
     //   currentPage: pageNumber,
     //   sessionUser: req.session.user ? req.session.user : null
     // });
+
+
+    //   {
+    //     "postList": [
+    //         {
+    //             "postId": 2,
+    //             "postTitle": "postTitle2update",
+    //             "postContent": "",
+    //             "userId": 1,
+    //             "createdAt": "2024-07-11T07:12:26.000Z",
+    //             "commentCount": 7,
+    //             "User": {f
+    //                 "userNick": "babocat"
+    //             }
+    //         },
+    //         {
+    //             "postId": 3,
+    //             "postTitle": "postTitle3",
+    //             "postContent": "postContent3",
+    //             "userId": 1,
+    //             "createdAt": "2024-07-11T07:13:52.000Z",
+    //             "commentCount": 0,
+    //             "User": {
+    //                 "userNick": "babocat"
+    //             }
+    //         },
+    //     ],
+    //     "postCount": 14
+    // }
+
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

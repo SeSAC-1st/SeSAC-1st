@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>검색 페이지</title>
+    <script
+      src="https://kit.fontawesome.com/635c39890e.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <%- include('../include/head.ejs') %>
+  </head>
+
+  <body>
+    <main class="mx-auto px-4 sm:px-24 md:px-36 lg:px-80 pt-20">
+      <div>
+        <input
+          type="text"
+          name="postTitle"
+          class="searchText"
+          placeholder="검색어를 입력하세요"
+        />
+        <button class="searchButton" onclick="searchForm()">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <div></div>
+        <!-- </form> -->
+      </div>
+    </main>
+  </body>
+
+  <script>
+    async function searchForm() {
+      const searchText = document.querySelector('.searchText').value;
+      console.log('서치텍스트', searchText);
+      if (!searchText === '') {
+        alert('검색어를 입력해주세요');
+      } else {
+        // router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
+        try {
+          const res = await axios({
+            method: 'GET',
+            url: `/post/list/1/12?postTitle=${searchText}`,
+          });
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    }
+  </script>
+</html>
