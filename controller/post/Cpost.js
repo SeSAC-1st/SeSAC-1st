@@ -115,15 +115,15 @@ exports.getPostList = async (req, res) => {
     }
 
     const pageCount = Math.ceil(postCount / pageSize);
-    res.json({ postList, postCount, pageCount, currentPage: pageNumber });
+    // res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    // res.render('posts/postsPage', {
-    //   postList,
-    //   postCount,
-    //   pageCount,
-    //   currentPage: pageNumber,
-    //   sessionUser: req.session.user ? req.session.user : null
-    // });
+    res.render('posts/postsPage', {
+      postList,
+      postCount,
+      pageCount,
+      currentPage: pageNumber,
+      sessionUser: req.session.user ? req.session.user : null
+    });
 
 
     //   {
