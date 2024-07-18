@@ -32,6 +32,10 @@ app.use('/comment', commentRouter);
 app.use('/static', express.static(__dirname + '/static'));
 
 
+// app.get('/post/form', function (req, res) {
+//     res.render('posts/postFormPage');
+// });
+
 app.get('*', (req, res) => {
     res.render('404')
 })
