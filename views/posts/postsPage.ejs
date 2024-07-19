@@ -9,11 +9,9 @@
     <%- include('../include/head.ejs') %>
     <style>
         /* 물결 선 애니메이션 */
-
-
         .wrap {
-            width: 150vw;
-            height: 150vh;
+            width: 100vw;
+            height: 350vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,8 +20,8 @@
         }
 
         .circle {
-            width: 200vw;
-            height: 200vw;
+            width: 120vw;
+            height: 120vw;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -55,71 +53,71 @@
         .wave-one {
             width: 100%;
             height: 100%;
-            border-color: rgba(67, 163, 207, 0.8);
-            animation-duration: 6s;
+            border-color: rgba(67, 163, 207, 0.2);
+            animation-duration: 18s;
         }
 
         .wave-two {
             width: 120%;
             height: 120%;
-            border-color: rgba(99, 184, 255, 0.5);
-            animation-duration: 10s;
+            border-color: rgba(99, 184, 255, 0.3);
+            animation-duration: 30s;
         }
 
         .wave-three {
             width: 81.25%;
             height: 81.25%;
-            border-color: rgba(30, 144, 255, 0.7);
-            animation-duration: 14s;
+            border-color: rgba(30, 144, 255, 0.3);
+            animation-duration: 36s;
         }
 
         .wave-four {
             width: 81.25%;
             height: 81.25%;
             border-color: rgba(70, 130, 180, 0.1);
-            animation-duration: 14s;
+            animation-duration: 52s;
         }
 
         .wave-five {
             width: 112.5%;
             height: 112.5%;
-            border-color: rgba(173, 216, 230, 0.6);
-            animation-duration: 8s;
+            border-color: rgba(173, 216, 230, 0.1);
+            animation-duration: 24s;
         }
 
         .wave-six {
             width: 137.5%;
             height: 137.5%;
-            border-color: rgba(135, 206, 235, 0.5);
-            animation-duration: 12s;
+            border-color: rgba(135, 206, 235, 0.2);
+            animation-duration: 36s;
         }
 
         .wave-seven {
             width: 93.75%;
             height: 93.75%;
-            border-color: rgba(0, 191, 255, 0.7);
-            animation-duration: 16s;
+            border-color: rgba(0, 191, 255, 0.3);
+            animation-duration: 48s;
         }
 
         .wave-eight {
             width: 118.75%;
             height: 118.75%;
-            border-color: rgba(0, 0, 255, 0.4);
-            animation-duration: 18s;
+            border-color: rgba(0, 0, 255, 0.2);
+            animation-duration: 52s;
         }
 
         .wave-nine {
             width: 131.25%;
             height: 131.25%;
-            border-color: rgba(25, 25, 112, 0.5);
-            animation-duration: 20s;
+            border-color: rgba(25, 25, 112, 0.1);
+            animation-duration: 50s;
         }
 
         .wave-ten {
             width: 143.75%;
             height: 143.75%;
-            border-color: rgba(72, 61, 139, 0.6);
-            animation-duration: 22s;
+            border-color: rgba(72, 61, 139, 0.2);
+            animation-duration: s;
         }
 
         @keyframes move {
@@ -128,12 +126,63 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .circle {
-                width: 90vw;
-                height: 90vw;
+        /* 아이폰 SE */
+        @media only screen and (min-width: 100px)  and (max-width: 380px) {
+            .wrap {
+                height: 710vh; /* 원하는 값으로 변경 */
             }
         }
+        /* 아이폰 12Pro */
+        @media only screen and (min-width: 380px) and (max-width: 400px) {
+            .wrap {
+                height: 560vh; /* 원하는 값으로 변경 */
+            }
+        }
+        /* 아이폰 XR */
+        @media only screen and (min-width: 400px) and (max-width: 420px) {
+            .wrap {
+                height: 525vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 아이폰 14 Pro Max */
+        @media only screen and (min-width: 420px) and (max-width: 768px) {
+            .wrap {
+                height: 505vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 작은 데스크탑 및 큰 태블릿 세로 (최대 너비 1200px) */
+        @media only screen and (min-width: 768px) and (max-width: 830px) {
+            .wrap {
+                height: 240vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 작은 데스크탑 및 큰 태블릿 (최대 너비 1200px) */
+        @media only screen and (min-width: 830px) and (max-width: 1025px) {
+            .wrap {
+                height: 330vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+         
+
+        /* iPad Mini 세로, 768px */
+        @media only screen and (min-width: 1025px) and (max-width: 1280px) {
+            .wrap {
+                height: 230vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 큰 데스크탑 및 27인치 모니터 (최대 너비 2560px) */
+        @media only screen and (min-width: 1280px) and (max-width: 2560px) {
+            .wrap {
+                height: 180vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+
 
 
         /* 페이지 로드시 카드 애니메이션 */
@@ -195,6 +244,7 @@
         <div class="flex wrap">
             <div id="postgrid">
                 <%- include('../include/postgrid.ejs') %>
+                <%- include('../include/pagination.ejs') %>
             </div>
             <div class="circle">
                 <div class="wave wave-one"></div>
@@ -209,8 +259,8 @@
                 <div class="wave wave-ten"></div>
             </div>
         </div>
+        <%- include('../include/footer.ejs') %>
     </div>
-    <%- include('../include/footer.ejs') %>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
