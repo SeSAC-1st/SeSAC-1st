@@ -64,12 +64,15 @@
       if (!searchText) {
         alert('검색어를 입력해주세요');
       } else {
-        // router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
         try {
           const res = await axios({
             method: 'GET',
-            url: `/post/list/1/12?postTitle=${searchText}`,
+            url: `/post/search/title`,
           });
+          console.log('res---', res.data.result);
+          if (res.data.result) {
+            window.location.href = `/post/list/1/12?postTitle=${searchText}`;
+          }
         } catch (error) {
           console.error('Error:', error);
         }
