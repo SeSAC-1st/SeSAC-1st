@@ -37,9 +37,6 @@
                   name="userName"
                   required
                 />
-                <!-- oninput="checkField(this)" -->
-
-                <!-- <span class="inputguide">*이름을 입력하세요.</span> -->
               </label>
             </div>
             <div class="userNameGuide hidden mb-[20px] text-[red]">
@@ -55,9 +52,6 @@
                   name="loginId"
                   required
                 />
-                <!-- oninput="checkField(this)" -->
-
-                <!-- <span class="inputguide">*아이디를 입력하세요.</span> -->
               </label>
               <input
                 type="button"
@@ -80,10 +74,6 @@
                   name="userPw"
                   required
                 />
-                <!-- oninput="checkField(this)" -->
-                <!-- oninput="pwCheck()" -->
-
-                <!-- <span class="inputguide">*비밀번호를 입력하세요.</span> -->
               </label>
             </div>
             <div class="userPwGuide hidden mb-[20px] text-[red]">
@@ -102,7 +92,6 @@
                   oninput="userPwRecheck()"
                   required
                 />
-                <!-- oninput="pwCheck()" -->
               </label>
             </div>
             <div class="userPwCheckGuide hidden mb-[20px] text-[red]">
@@ -118,9 +107,6 @@
                   name="userNick"
                   required
                 />
-                <!-- oninput="checkField(this)" -->
-
-                <!-- <span class="inputguide">*별명을 입력하세요.</span> -->
               </label>
             </div>
             <div class="userNickGuide hidden mb-[20px] text-[red]">
@@ -274,7 +260,7 @@
           }
         });
 
-        // 이메일 유효성 검사
+        // 완료 - 이메일 유효성 검사
         let emailField = document.querySelector('.email');
         let emailGuide = document.querySelector('.emailGuide');
         emailField.addEventListener('input', function () {
@@ -290,6 +276,55 @@
 
         //
       });
+
+      // 완성 - 아이디 중복확인 함수 (= 중복확인 버튼 눌렀을 때 함수)
+      async function idDuplicateCheck() {
+        const loginId = document.querySelector('.loginId').value;
+
+        if (!loginId) {
+          alert('아이디를 입력해주세요.');
+          return;
+        }
+
+        try {
+          const response = await axios({
+            method: 'post',
+            url: '/user/checkLoginid',
+            data: {
+              loginId,
+            },
+          });
+
+          if (response.data.result === true) {
+            alert('이미 사용 중인 아이디입니다.');
+          } else if (response.data.result === false) {
+            alert('사용 가능한 아이디입니다.');
+            idDuplicate = true;
+          } else {
+            alert('아이디 중복 검사에 실패했습니다.');
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 409) {
+            alert('이미 사용 중인 아이디입니다.');
+          } else {
+            console.error('Error:', error);
+            alert('아이디 중복 검사 중 오류가 발생했습니다.');
+          }
+        }
+      }
+
+      // 완성 - 비밀번호 확인 함수 (실시간)
+      function userPwRecheck() {
+        let userPw = document.querySelector('.userPw').value;
+        let userPwCheck = document.querySelector('.userPwCheck').value;
+        if (userPw != userPwCheck) {
+          document.querySelector('.userPwCheckGuide').style.display = 'block';
+          return false;
+        } else {
+          document.querySelector('.userPwCheckGuide').style.display = 'none';
+          return true;
+        }
+      }
 
       function validateForm() {
         let isValid = true;
@@ -337,14 +372,14 @@
           let userNick = document.querySelector('.userNick').value;
           let email = document.querySelector('.email').value;
           let address = document.querySelector('.address').value;
-          let birthday = document.querySelector('.birthday').value;
-          console.log(userName);
-          console.log(loginId);
-          console.log(userPw);
-          console.log(userNick);
-          console.log(email);
-          console.log(address);
-          console.log(birthday);
+          let birthday;
+          if (document.querySelector('.birthday').value === '') {
+            birthday = null;
+          } else {
+            birthday = document.querySelector('.birthday').value;
+          }
+          console.log('생일머야', birthday);
+
           try {
             const response = await axios({
               method: 'post',
@@ -359,7 +394,6 @@
                 birthday,
               },
             });
-            console.log(response);
             if (response.data.result) {
               window.location.href = '/user/register/complete';
             }
@@ -373,58 +407,6 @@
           alert('(*)필수 항목들을 제대로 입력하지 않았습니다.');
         } else {
           alert('알 수 없는 오류');
-        }
-      }
-
-      // 아이디 중복확인 함수 (= 중복확인 버튼 눌렀을 때 함수)
-      async function idDuplicateCheck() {
-        const loginId = document.querySelector('.loginId').value;
-
-        if (!loginId) {
-          alert('아이디를 입력해주세요.');
-          return;
-        }
-
-        try {
-          const response = await axios({
-            method: 'post',
-            url: '/user/checkLoginid',
-            data: {
-              loginId,
-            },
-          });
-          // console.log('중복검사' + response.data.result);
-
-          if (response.data.result === true) {
-            alert('이미 사용 중인 아이디입니다.');
-          } else if (response.data.result === false) {
-            alert('사용 가능한 아이디입니다.');
-            idDuplicate = true;
-          } else {
-            alert('아이디 중복 검사에 실패했습니다.');
-          }
-        } catch (error) {
-          if (error.response && error.response.status === 409) {
-            alert('이미 사용 중인 아이디입니다.');
-          } else {
-            console.error('Error:', error);
-            alert('아이디 중복 검사 중 오류가 발생했습니다.');
-          }
-        }
-      }
-
-      // 완성 - 비밀번호 확인 함수 (실시간)
-      function userPwRecheck() {
-        let userPw = document.querySelector('.userPw').value;
-        let userPwCheck = document.querySelector('.userPwCheck').value;
-        if (userPw != userPwCheck) {
-          //   document.querySelector('.userPwCheckGuide').innerHTML =
-          //     '비밀번호가 일치하지 않습니다';
-          document.querySelector('.userPwCheckGuide').style.display = 'block';
-          return false;
-        } else {
-          document.querySelector('.userPwCheckGuide').style.display = 'none';
-          return true;
         }
       }
     </script>
