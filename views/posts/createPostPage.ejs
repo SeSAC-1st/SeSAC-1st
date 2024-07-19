@@ -16,42 +16,42 @@
     <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
   </head>
 <body>
-   <!-- Tost UI Edit CDN -->
-   <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-   <!-- Tost UI code-syntax-highligh CDN -->
-   <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+  <div class="px-5 m-5">
+      <!-- Title Input -->
+      <form action="" class="w-full pt-5 ">
+        <input id="postTitle" type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold required">
+      </form>
 
+      <!-- Title, Content 구분선 -->
+      <div class="border-t border-4 border-black w-24 mb-6"></div>
 
-  <div class="px-5 ml-5">
-
-    <form action="" class="w-full pt-5 ">
-      <input id="postTitle" type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold    required">
-    </form>
-    <div class="border-t border-4 border-black w-24 mb-6   "></div>
-
-    <!-- 해결하기: 글이 길어지면 푸터가 가려서 임시로 해놓음 -->
-    <div id="editor" class="h-full fixed" ></div>
-
-   
-  </div>
-  <div class="fixed bottom-0 w-full h-20 bg-white rounded-lg shadow-xl shadow-top-only ">
-      <div class=" mx-auto max-w-screen-xl p-4 ">
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-      </span>
-      <ul class="flex justify-between items-center mt-3  text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
-          <li>
-            <button class="ml-3">
-                <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
-                <a href="/" class="">나가기</a>
-            </button>
-          </li>
-          <li >
-            <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Commit</button>
-          </li>
-          
-      </ul>
-      </div>
+       <!-- Tost UI Edit CDN -->
+      <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+      <!-- Tost UI code-syntax-highligh CDN -->
+      <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+      
+      <!-- 해결하기: 글이 길어지면 푸터가 가려서 임시로 해놓음 -->
+      <!-- Toast UI Editor -->
+      <div id="editor"></div>
     </div>
+    <!-- Footer -->
+      <div class=" bottom-0 bg-white rounded-lg shadow-xl shadow-top-only ">
+        <div class="mx-auto max-w-screen-xl  p-4 ">
+          <div class="flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+            <div class=" left-0 mx-5">
+              <button class="ml-3 rounded-lg px-5 py-2.5 me-2 mb-2  focus:outline-none  hover:bg-gray-100">
+                  <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
+                  <a href="/" class="">Home</a>
+              </button>
+            </div>
+            <div class=" right-0 mx-5">
+              <button onclick="stashPost()" type="button" class="text-sky-500 hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  focus:outline-none">Commit</button>
+              <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
 
 
 
@@ -60,16 +60,15 @@
       const Editor = toastui.Editor;
       const { codeSyntaxHighlight } = Editor.plugin;
 
-        const width = window.innerWidth;
-        const initialEditTypeRes = width > 768 ? 'markdown' : 'wysiwyg';
+        const previousWidth = window.innerWidth;
+        const initialEditTypeRes = previousWidth > 1025 ? 'markdown' : 'wysiwyg';
 
         const height = window.innerHeight;
-        const minHeightRes = width > 420  ?  '480px' :'380px'
-  
+        const minHeightRes = previousWidth > 420  ?  '480px' :'380px'
 
         const editor = new Editor({
           el: document.querySelector('#editor'),
-          height: 'auto',
+          height: '72vh',
           minHeight: minHeightRes,
           initialEditType: initialEditTypeRes,
           previewStyle: 'vertical',
@@ -90,7 +89,7 @@
 
       console.log('클릭');
       const postTitle = document.querySelector('#postTitle').value.trim();
-      const postContent = [editor.getHTML()];
+      const postContent = editor.getHTML();
 
 
       if (postTitle.length < 1) {
@@ -116,7 +115,6 @@
               postTitle,
               postContent,
               userId,
-
             },
           });
 
@@ -130,30 +128,61 @@
           console.error(error);
         }
     }
-  
 
-    function reloadOnWidthChange() {
-            let previousWidth = window.innerWidth;
-
-            window.onresize = function() {
-                let currentWidth = window.innerWidth;
-
-                if (previousWidth > 768 && currentWidth <= 768) {
-                    // 화면 너비가 768px 이하로 변경될 때 페이지를 다시 로드
-                    location.reload();
-                }
-                if (previousWidth < 768 && currentWidth >= 768) {
-                    // 화면 너비가 768px 이상으로 변경될 때 페이지를 다시 로드
-                    location.reload();
-                }
+    // 임시 저장 함수
+    async function stashPost() {
+    const stashTitle = "Stash :" + document.querySelector('#postTitle').value.trim();
+    const postContent = editor.getHTML();
 
 
-                previousWidth = currentWidth;
-            };
+    if (postTitle.length < 1) {
+      // alert('제목을 입력해 주세요.')
+      throw new Error('Title is empty!');
+    }
+
+    const userId = 1;
+      // req.body : {postTitle, postContent},
+      // userId → 세션에서 가져오기
+      try {
+          const res = await axios({
+            method: 'post',
+            url: `/post`,
+            data: {
+              postTitle: stashTitle,
+              postContent,
+              userId,
+            },
+          });
+
+          console.log(postTitle, postContent); 
+          const { data } = res;
+          if (data) {
+            alert('게시 완료!');
+            // document.location.href = '/';
+          }
+          } catch (error) {
+          console.error(error);
         }
+  }
 
-      // 페이지 로드 시 체크
-      window.onload = reloadOnWidthChange;
+
+    // 페이지 로드시 && 임시저장
+    //  async function reloadOnWidthChange() {
+    //         window.onresize = function() {
+    //             let currentWidth = window.innerWidth;
+    //             // 화면 너비가 1025px 이하로 변경될 때 페이지를 다시 로드
+    //             if (previousWidth > 1025 && currentWidth <= 1025) location.reload();
+    //             // 화면 너비가 1025px 이상으로 변경될 때 페이지를 다시 로드
+    //             if (previousWidth < 1025 && currentWidth >= 1025) location.reload();
+
+    //             alert('임시 저장됬습니다.')
+    //             previousWidth = currentWidth;
+    //           };
+    //           await stashPost();
+    //       }
+
+    //   // 페이지 로드 시 체크
+    //   window.onload = reloadOnWidthChange;
   </script>
 </body>
 </html>
