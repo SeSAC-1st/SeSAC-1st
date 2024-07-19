@@ -74,61 +74,177 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     } else {
-      // 검색 안한 버전
-      postCount = await Post.count({
-        where: {
-          isDeleted: false,
-        },
-      });
-
-      postList = await Post.findAll({
-        where: {
-          isDeleted: false,
-        },
-        limit: pageSize,
-        offset: offset,
-        attributes: [
-          'postId',
-          'postTitle',
-          'postContent',
-          'userId',
-          'createdAt',
-          [
-            fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
-            'commentCount',
-          ],
-        ],
-        include: [
-          {
-            model: Comment,
-            as: 'Comments',
+      try {
+        const [postCount, postList] = await Promise.all([
+          Post.count({
             where: {
               isDeleted: false,
             },
-            required: false,
-            attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
-          },
-          {
-            model: User,
-            as: 'User',
-            attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
-          },
-        ],
-        group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
-        subQuery: false, // 서브쿼리를 사용하지 않도록 설정
-      });
-    }
-    const pageCount = Math.ceil(postCount / pageSize);
+          }),
+          Post.findAll({
+            where: {
+              isDeleted: false,
+            },
+            limit: pageSize,
+            offset: offset,
+            attributes: [
+              'postId',
+              'postTitle',
+              'postContent',
+              'userId',
+              'createdAt',
+              [
+                fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
+                'commentCount',
+              ],
+            ],
+            include: [
+              {
+                model: Comment,
+                as: 'Comments',
+                where: {
+                  isDeleted: false,
+                },
+                required: false,
+                attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
+              },
+              {
+                model: User,
+                as: 'User',
+                attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
+              },
+            ],
+            group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
+            subQuery: false, // 서브쿼리를 사용하지 않도록 설정
+          }),
+        ]);
+        const pageCount = Math.ceil(postCount / pageSize);
+        console.log('전체목록 req.session.user ->', req.session.user);
+        // res.json(postCount)
+
+        // res.json({postCount, postList})
+        res.render('posts/postsPage', {
+          postList,
+          postCount,
+          pageCount,
+          currentPage: pageNumber,
+          baseUrl: '/post/list',
+          sessionUser: req.session.user ? req.session.user : null
+        });
+
+
+        // console.log('postCount:', postCount);
+        // console.log('postList:', postList);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+
+
+
+
+
+
+      // 검색 안한 버전
+      // postCount = await Post.count({
+      //   where: {
+      //     isDeleted: false,
+      //   },
+      // });
+
+      // postList = await Post.findAll({
+      //   where: {
+      //     isDeleted: false,
+      //   },
+      //   limit: pageSize,
+      //   offset: offset,
+      //   attributes: [
+      //     'postId',
+      //     'postTitle',
+      //     'postContent',
+      //     'userId',
+      //     'createdAt',
+      //     [
+      //       fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
+      //       'commentCount',
+      //     ],
+      //   ],
+      //   include: [
+      //     {
+      //       model: Comment,
+      //       as: 'Comments',
+      //       where: {
+      //         isDeleted: false,
+      //       },
+      //       required: false,
+      //       attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
+      //     },
+      //     {
+      //       model: User,
+      //       as: 'User',
+      //       attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
+      //     },
+      //   ],
+      //   group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
+      //   subQuery: false, // 서브쿼리를 사용하지 않도록 설정
+      // });
+
+
+
+      // 합친거
+    //   const postList = await Post.findAndCountAll({
+    //     where: {
+    //       isDeleted: false,
+    //     },
+    //     limit: pageSize,
+    //     offset: offset,
+    //     attributes: [
+    //       'postId',
+    //       'postTitle',
+    //       'postContent',
+    //       'userId',
+    //       'createdAt',
+    //       [
+    //         fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
+    //         'commentCount',
+    //       ],
+    //     ],
+    //     include: [
+    //       {
+    //         model: Comment,
+    //         as: 'Comments',
+    //         where: {
+    //           isDeleted: false,
+    //         },
+    //         required: false,
+    //         attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
+    //       },
+    //       {
+    //         model: User,
+    //         as: 'User',
+    //         attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
+    //       },
+    //     ],
+    //     group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
+    //     subQuery: false, // 서브쿼리를 사용하지 않도록 설정
+    //   });
+      
+    //   // res.json(postList.rows)
+    //   res.json(postList)
+
+    // }
+    // const pageCount = Math.ceil(postCount / pageSize);
     
+
     // res.json({ postList, postCount, pageCount, currentPage: pageNumber });
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    res.render('posts/postsPage', {
-      postList,
-      postCount,
-      pageCount,
-      currentPage: pageNumber,
-      sessionUser: req.session.user ? req.session.user : null
-    });
+    // res.render('posts/postsPage', {
+    //   postList,
+    //   postCount,
+    //   pageCount,
+    //   currentPage: pageNumber,
+    //   sessionUser: req.session.user ? req.session.user : null
+    // });
+
 
 
     //   {
@@ -159,15 +275,16 @@ exports.getPostList = async (req, res) => {
     //     "postCount": 14
     // }
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    res.render('posts/postsPage', {
-      postList,
-      postCount,
-      pageCount,
-      currentPage: pageNumber,
-      baseUrl: `/post/list`,
-      // sessionUser: req.session.user ? req.session.user : null,
-    });
-  } catch (error) {
+    // res.render('posts/postsPage', {
+    //   postList,
+    //   postCount,
+    //   pageCount,
+    //   currentPage: pageNumber,
+    //   baseUrl: `/post/list`,
+    //   // sessionUser: req.session.user ? req.session.user : null,
+    // });
+    }}
+  catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
