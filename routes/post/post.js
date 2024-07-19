@@ -10,10 +10,16 @@ router.get('/list/:page/:size', controller.getPostList);
 router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
 
 // 사용자 게시물 목록 조회
-router.get('/list/:userId/:page/:size', controller.getUserPostList);
+router.get('/list/user/:page/:size', controller.getUserPostList);
+
+// 검색 페이지 이동
+router.get('/search', controller.getSearchPage);
+
+// 검색 페이지에서 검색
+router.get('/search/title', controller.getPostSearch);
 
 // 게시물 조회
-// router.get('/:postId', controller.getPost);
+router.get('/:postId', controller.getPost);
 
 // 게시물 수정
 router.patch('/:postId', controller.updatePost);
@@ -23,9 +29,6 @@ router.patch('/:postId/delete', controller.deletePost);
 
 // 게시물 등록
 router.post('/', controller.insertPost);
-
-// 검색 페이지 이동
-router.get('/search', controller.getSearchPage);
 
 // 게시물 등록 폼 페이지 이동
 // router.get('/form', controller.getCreatePostPage);
