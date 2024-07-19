@@ -9,8 +9,6 @@
     <%- include('../include/head.ejs') %>
     <style>
         /* 물결 선 애니메이션 */
-
-
         .wrap {
             width: 100vw;
             height: 350vh;
@@ -128,31 +126,59 @@
             }
         }
 
-        /* 작은 데스크탑 및 큰 태블릿 (최대 너비 ) */
-        @media only screen and (min-width: 400px) and (max-width: 768px) {
+        /* 아이폰 SE */
+        @media only screen and (min-width: 100px)  and (max-width: 380px) {
             .wrap {
-                height: 180vh; /* 원하는 값으로 변경 */
+                height: 710vh; /* 원하는 값으로 변경 */
+            }
+        }
+        /* 아이폰 12Pro */
+        @media only screen and (min-width: 380px) and (max-width: 400px) {
+            .wrap {
+                height: 560vh; /* 원하는 값으로 변경 */
+            }
+        }
+        /* 아이폰 XR */
+        @media only screen and (min-width: 400px) and (max-width: 420px) {
+            .wrap {
+                height: 525vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 아이폰 14 Pro Max */
+        @media only screen and (min-width: 420px) and (max-width: 768px) {
+            .wrap {
+                height: 505vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 작은 데스크탑 및 큰 태블릿 세로 (최대 너비 1200px) */
+        @media only screen and (min-width: 768px) and (max-width: 830px) {
+            .wrap {
+                height: 240vh; /* 원하는 값으로 변경 */
             }
         }
 
         /* 작은 데스크탑 및 큰 태블릿 (최대 너비 1200px) */
-        @media only screen and (min-width: 768px) and (max-width: 1025px) {
+        @media only screen and (min-width: 830px) and (max-width: 1025px) {
             .wrap {
-                height: 180vh; /* 원하는 값으로 변경 */
+                height: 330vh; /* 원하는 값으로 변경 */
             }
         }
 
-        /* 태블린 세로 (최대 너비 1025px) */
+         
+
+        /* iPad Mini 세로, 768px */
         @media only screen and (min-width: 1025px) and (max-width: 1280px) {
             .wrap {
-                height: 130vh; /* 원하는 값으로 변경 */
+                height: 230vh; /* 원하는 값으로 변경 */
             }
         }
 
         /* 큰 데스크탑 및 27인치 모니터 (최대 너비 2560px) */
         @media only screen and (min-width: 1280px) and (max-width: 2560px) {
             .wrap {
-                height: 150vh; /* 원하는 값으로 변경 */
+                height: 180vh; /* 원하는 값으로 변경 */
             }
         }
 
