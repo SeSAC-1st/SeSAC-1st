@@ -9,41 +9,70 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <%- include('../include/head.ejs') %>
   </head>
 
   <body>
-    <main class="mx-auto px-4 sm:px-24 md:px-36 lg:px-80 pt-20">
-      <div>
+    <div class="max-w-3xl mx-auto mt-24">
+      <label
+        for="default-search"
+        class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+        >Search</label
+      >
+      <div class="relative">
+        <div
+          class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
         <input
-          type="text"
+          type="search"
+          id="default-search"
+          class="searchText block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           name="postTitle"
-          class="searchText"
-          placeholder="검색어를 입력하세요"
+          placeholder="검색어를 입력해주세요"
+          required
         />
-        <button class="searchButton" onclick="searchForm()">
-          <i class="fa-solid fa-magnifying-glass"></i>
+        <button
+          class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 active:ring-4 acitve:outline-none active:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:ring-blue-800"
+          onclick="searchForm()"
+        >
+          검색
         </button>
-        <div></div>
-        <!-- </form> -->
       </div>
-    </main>
+    </div>
   </body>
 
   <script>
     async function searchForm() {
       const searchText = document.querySelector('.searchText').value;
       console.log('서치텍스트', searchText);
-      if (!searchText === '') {
+      if (!searchText) {
         alert('검색어를 입력해주세요');
       } else {
-        // router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
         try {
           const res = await axios({
             method: 'GET',
-            url: `/post/list/1/12?postTitle=${searchText}`,
+            url: `/post/search/title`,
           });
+          console.log('res---', res.data.result);
+          if (res.data.result) {
+            window.location.href = `/post/list/1/12?postTitle=${searchText}`;
+          }
         } catch (error) {
           console.error('Error:', error);
         }
