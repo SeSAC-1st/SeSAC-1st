@@ -1,5 +1,5 @@
 <!-- 로그인 후 헤더 -->
-<% if(sessionUser && sessionUser.userId===post.userId) { %>
+<% if(true) { %>
     <header
         class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
         <div class="flex flex-wrap justify-between items-center mx-auto py-1 px-4 md:px-10">
@@ -7,7 +7,7 @@
                 <img src="/static/image/logoImage.png" class="h-8 md:h-14" alt="blomit Logo" />
                 <!--세션 id랑 userid랑 같으면-->
                 <span class="text-gray-700 dark:text-white text-sm ml-2">
-                    <%= sessionUser.userNick %>
+                    닉네임
                 </span> <!--별명값 넣음.-->
             </a>
             <div class="flex items-center space-x-6 rtl:space-x-reverse">
