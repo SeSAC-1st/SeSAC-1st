@@ -22,10 +22,7 @@ router.post('/checkLoginid', controller.checkDuplicatedLoginid);
 // router.patch('/',upload.single('profileImg'), controller.updateUser);
 router.patch('/:userId', upload.single('profileImg'), controller.updateUser);
 
-// 회원 조회
-// router.get('/:userId', controller.getUser);
-
-// // 로그아웃 로직
+// 로그아웃 로직
 router.get('/logout', controller.userLogout);
 
 // 마이페이지 이동

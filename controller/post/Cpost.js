@@ -4,6 +4,11 @@ const { Post, Comment, User } = require('../../models/index');
 // literal: 원시 SQL 구문을 삽입하기 위해 사용
 const { Op, fn, col, literal } = require('sequelize');
 
+// 검색 페이지에서 검색
+exports.getPostSearch = (req, res) => {
+  res.send({ result: true });
+};
+
 // 전체 게시물 목록 조회 및 검색 메서드, 전체 개수, 댓글 수도 출력
 exports.getPostList = async (req, res) => {
   try {
@@ -113,47 +118,17 @@ exports.getPostList = async (req, res) => {
         subQuery: false, // 서브쿼리를 사용하지 않도록 설정
       });
     }
-
     const pageCount = Math.ceil(postCount / pageSize);
-    res.json({ postList, postCount, pageCount, currentPage: pageNumber });
+
     // 검색 후 메인페이지(전체 게시물 목록 페이지로 이동), 안에 리스트랑 count를 따로 보내줘도 됨
-    // res.render('posts/postsPage', {
-    //   postList,
-    //   postCount,
-    //   pageCount,
-    //   currentPage: pageNumber,
-    //   sessionUser: req.session.user ? req.session.user : null
-    // });
-
-
-    //   {
-    //     "postList": [
-    //         {
-    //             "postId": 2,
-    //             "postTitle": "postTitle2update",
-    //             "postContent": "",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:12:26.000Z",
-    //             "commentCount": 7,
-    //             "User": {f
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //         {
-    //             "postId": 3,
-    //             "postTitle": "postTitle3",
-    //             "postContent": "postContent3",
-    //             "userId": 1,
-    //             "createdAt": "2024-07-11T07:13:52.000Z",
-    //             "commentCount": 0,
-    //             "User": {
-    //                 "userNick": "babocat"
-    //             }
-    //         },
-    //     ],
-    //     "postCount": 14
-    // }
-
+    res.render('posts/postsPage', {
+      postList,
+      postCount,
+      pageCount,
+      currentPage: pageNumber,
+      baseUrl: `/post/list`,
+      // sessionUser: req.session.user ? req.session.user : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -164,9 +139,10 @@ exports.getPostList = async (req, res) => {
 exports.getUserPostList = async (req, res) => {
   try {
     // 페이지 이동시 로그인 상태인지 확인
+    console.log('사용자 게시물 목록', req.session.user);
     if (req.session.user) {
-      // const { userId } = req.session.user;
-      const { userId, page, size } = req.params;
+      const { userId } = req.session.user;
+      const { page, size } = req.params;
 
       const pageNumber = page ? parseInt(page, 10) : 1;
       const pageSize = size ? parseInt(size, 10) : 12;
@@ -219,21 +195,23 @@ exports.getUserPostList = async (req, res) => {
       const cntPostGroupMonth = await this.getMonthlyPostCounts(userId);
       const pageCount = Math.ceil(userPostCount / pageSize);
 
-      res.json({
-        userPostList,
-        userPostCount,
-        pageCount,
-        cntPostGroupMonth,
-        currentPage: pageNumber,
-      });
-      // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
-      // res.render('posts/myPostsPage', {
+      // res.json({
       //   userPostList,
       //   userPostCount,
+      //   pageCount,
       //   cntPostGroupMonth,
       //   currentPage: pageNumber,
-      //   sessionUser: req.session.user,
       // });
+      // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
+      res.render('posts/myPostsPage', {
+        userPostList,
+        userPostCount,
+        cntPostGroupMonth,
+        pageCount,
+        currentPage: pageNumber,
+        sessionUser: req.session.user,
+        baseUrl: `/post/list/user`,
+      });
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -311,8 +289,8 @@ exports.getMonthlyPostCounts = async (userId) => {
 // 단일 게시물 조회 매서드
 exports.getPost = async (req, res) => {
   try {
+    console.log('rewijonovsd>>>>>', req.session.user);
     const { postId } = req.params;
-
     const post = await Post.findOne({
       where: { postId },
       include: [
@@ -359,13 +337,13 @@ exports.getPost = async (req, res) => {
       ],
     });
 
-    res.json({ post, commList });
+    // res.json({ post, commList });
     // 각 게시물 제목 클릭하면 조회해서 게시물 상세 페이지로 데이터 가지고 이동, 댓글/대댓글 리스트 포함
-    // res.render('posts/postDetailPage', {
-    //   post,
-    //   commList,
-    //   sessionUser: req.session.user ? req.session.user : null,
-    // });
+    res.render('posts/postDetailPage', {
+      post,
+      commList,
+      sessionUser: req.session.user ? req.session.user : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

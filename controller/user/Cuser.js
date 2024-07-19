@@ -60,10 +60,10 @@ exports.userRegister = async (req, res) => {
       birthday,
     });
 
-    res.json(newUser);
+    // res.json(newUser);
     // 회원가입 완료 시 회원가입 완료 페이지로 이동
-    // if (newUser) res.send({ result: true });
-    // else res.send({ result: false });
+    if (newUser) res.send({ result: true });
+    else res.send({ result: false });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -109,14 +109,16 @@ exports.userLogin = async (req, res) => {
       userId: user.userId,
       profileImg: user.profileImg, // 프로필 이미지 없으면 null
       userNick: user.userNick,
-      isLoggedIn: true,
     };
-    // console.log(req.session.user);
+    console.log(req.session.user);
 
-    res.json(user);
-    // 로그인 완료하면 메인(전체 게시물 목록)페이지로 이동
-    // if (!req.session.user) res.send({ result: false });
-    // res.send({ result: true });
+    req.session.save(function (error) {
+      if (error) {
+        console.error('session error --', error);
+        return res.status(500).json({ error: 'Session 저장 실패' });
+      }
+      res.send({ result: true });
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -156,63 +158,55 @@ exports.checkDuplicatedLoginid = async (req, res) => {
 // 회원 정보 수정
 exports.updateUser = async (req, res) => {
   try {
-    const { userId } = req.params;
-    // const { userId } = req.session.user;
-    const { email, address, birthday, userNick } = req.body;
-    const profileImg = req.file ? req.file.filename : null;
-
+    const { userId } = req.session.user;
+    const { email, address, userNick, birthday } = req.body;
+    const defaultProfileImg = 'user.png';
     const user = await User.findOne({
       where: { userId },
     });
-
     if (!user) return res.status(404).json({ error: 'User not found' });
-
-    // 업데이트할 데이터 객체 생성
-    const updatedData = {};
-    if (email) updatedData.email = email;
-    if (address) updatedData.address = address;
-    if (profileImg) updatedData.profileImg = profileImg;
-    if (userNick) updatedData.userNick = userNick;
-    if (birthday) updatedData.birthday = birthday;
-
+    let profileImg = user.profileImg || defaultProfileImg;
+    // 파일이 업로드 되었을 경우
+    if (req.file) {
+      const allowedExtensions = ['image/png', 'image/jpeg', 'image/jpg'];
+      if (allowedExtensions.includes(req.file.mimetype)) {
+        profileImg = req.file.filename;
+      } else {
+        profileImg = user.profileImg || defaultProfileImg; // 잘못된 확장자의 경우, 기존 이미지 유지
+      }
+    } else if (req.body.profileImg === 'user.png') {
+      // 이미지 초기화 시 기본 이미지 설정
+      profileImg = defaultProfileImg;
+    } else if (req.body.profileImg === '') {
+      // 빈 문자열이 전달된 경우 기존 이미지 유지
+      profileImg = user.profileImg || defaultProfileImg;
+    }
+    const updatedData = {
+      email: email || user.email,
+      address: address || user.address,
+      profileImg: profileImg,
+      userNick: userNick || user.userNick,
+      birthday: birthday || user.birthday,
+    };
     await User.update(updatedData, {
       where: { userId },
     });
-
     const updatedUser = await User.findOne({
       where: { userId },
     });
-
     // 수정된 정보를 session에도 저장
     req.session.user = {
       ...req.session.user,
       profileImg: updatedUser.profileImg,
       userNick: updatedUser.userNick,
     };
-    // console.log('updateUserSession', req.session.user);
-    res.json(updatedUser);
-    // 회원 정보 수정을 완료하면 업데이트된 정보를 가지고 마이페이지에 다시 출력
-    // if (updatedUser) res.send({ updatedUser, sessionUser: req.session.user });
-    // else res.status(500).send('Internal Server Error');
+    if (updatedUser) res.send({ updatedUser, sessionUser: req.session.user });
+    else res.status(500).send('Internal Server Error');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
-
-// 회원 조회
-// exports.getUser = async (req, res) => {
-//   // userId는 session에서 가져오기로 변경
-//   const { userId } = req.params;
-
-//   const user = await User.findOne({
-//     where: { userId },
-//   });
-
-//   if (!user) return res.status(404).json({ error: 'User not found' });
-
-//   res.json(user);
-// };
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
@@ -229,6 +223,7 @@ exports.userLogout = async (req, res) => {
 exports.getProfilePage = async (req, res) => {
   // 페이지 이동시 로그인 상태인지 확인
   if (req.session.user) {
+    console.log('sessfoisjdofjfs----', req.session.user);
     const { userId } = req.session.user;
 
     const user = await User.findOne({
