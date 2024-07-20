@@ -18,6 +18,9 @@ router.get('/search', controller.getSearchPage);
 // 검색 페이지에서 검색
 router.get('/search/title', controller.getPostSearch);
 
+// 게시물 등록 폼 페이지 이동
+router.get('/form', controller.getCreatePostPage);
+
 // 게시물 조회
 router.get('/:postId', controller.getPost);
 
@@ -30,10 +33,7 @@ router.patch('/:postId/delete', controller.deletePost);
 // 게시물 등록
 router.post('/', controller.insertPost);
 
-// 게시물 등록 폼 페이지 이동
-// router.get('/form', controller.getCreatePostPage);
-
 // 게시물 수정 폼 페이지 이동
-// router.get('/form/:postId', controller.getEditPostPage);
+router.get('/form/:postId', controller.getEditPostPage);
 
 module.exports = router;

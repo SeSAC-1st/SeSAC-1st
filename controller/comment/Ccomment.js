@@ -38,7 +38,7 @@ exports.getCommentList = async (req, res) => {
       ],
     });
     // console.log('commlist', commList, 'session', req.session.user);
-    res.json(commList);
+    res.json({ commList, sessionUser: req.session.user });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -50,15 +50,19 @@ exports.insertComment = async (req, res) => {
   try {
     // 댓글 등록 입력창 누르면 로그인 상태인지 아닌지 확인
     const { postId } = req.params;
-    // const {userId} = req.session.user
+    const { userId } = req.session.user;
     // userId는 세션에서 가져오기
-    const { userId, comContent } = req.body;
+    const { comContent } = req.body;
     const insertCom = await Comment.create({
       comContent,
       postId,
       userId,
     });
-    res.json({ insertCom });
+    const commWithUser = await Comment.findOne({
+      where: { comId: insertCom.comId },
+      include: [{ model: User, attributes: ['userNick'] }], // User 정보 포함
+    });
+    res.json({ commWithUser });
     // 댓글 등록이 되면 해당 댓글을 댓글 목록 밑에 추가(화면 이동 안하고 바로 밑에 출력해줘야하기 때문에 좀더 생각)
     // if (insertCom) res.send({insertCom})
     //   else res.status(500).send({ error: '' });
@@ -67,6 +71,7 @@ exports.insertComment = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 // 댓글, 대댓글 수정
 exports.updateComment = async (req, res) => {
   try {
@@ -102,6 +107,7 @@ exports.updateComment = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 // 댓글 삭제
 exports.deleteComment = async (req, res) => {
   try {
@@ -179,7 +185,8 @@ exports.deleteCommentReply = async (req, res) => {
 exports.insertReply = async (req, res) => {
   try {
     const { comId } = req.params;
-    const { postId, userId, comContent } = req.body;
+    const { userId } = req.session.user;
+    const { postId, comContent } = req.body;
     const insertReply = await Comment.create({
       comContent,
       postId,

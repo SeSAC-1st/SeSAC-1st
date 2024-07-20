@@ -21,6 +21,7 @@
             </span>
           </div>
           <div>
+            <% if (sessionUser && sessionUser.userId === post.userId) { %>
             <button
               type="button"
               class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:text-sm md:py-1 md:px-3 rounded mr-0.5 md:mr-2 hover:bg-green-600"
@@ -35,6 +36,7 @@
             >
               삭제
             </button>
+            <% } %>
           </div>
         </div>
         <hr class="border border-gray-300 my-2" />
@@ -66,6 +68,23 @@
     <%- include('../include/footer.ejs') %>
   </body>
   <script>
+    // 댓글 입력폼 선택시 로그인이 안되어있으면 로그인페이지로
+    document.addEventListener('DOMContentLoaded', () => {
+      const commentForm = document.getElementById('commentForm');
+
+      const sessionUser = '<%= sessionUser %>';
+
+      const commentTextArea = document.getElementById('comment');
+
+      commentTextArea.addEventListener('focus', () => {
+        if (!sessionUser) {
+          // sessionUser 값이 null이면 로그인 페이지로 리다이렉트
+          window.location.href = '/user/login';
+        }
+      });
+    });
+
+    // 게시글 수정
     async function editPost(postId) {
       let postTitleElement = document
         .getElementById('postTitle')
@@ -84,6 +103,7 @@
       }
     }
 
+    // 게시글 삭제
     async function deletePost(postId, userId) {
       try {
         if (window.confirm('게시물을 삭제하시겠습니까?')) {
@@ -101,12 +121,14 @@
       }
     }
 
+    // 페이지 로드시 댓글, 대댓글 목록
     window.addEventListener('load', async () => {
       try {
         const postId = '<%= post.postId %>';
         const res = await axios.get(`/comment/list/${postId}`);
-        const comments = res.data;
-        comments.forEach((comment) => {
+        const { commList } = res.data;
+        console.log('res.data', res.data.commList);
+        commList.forEach((comment) => {
           addCommentElement(comment);
         });
       } catch (error) {
@@ -114,6 +136,7 @@
       }
     });
 
+    // 댓글 작성
     const commentForm = document.getElementById('commentForm');
     commentForm.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -121,11 +144,10 @@
       const postId = '<%= post.postId %>';
       try {
         const res = await axios.post(`/comment/${postId}`, {
-          userId: 1,
           comContent: commentText,
         });
-        if (res.data.insertCom) {
-          const comment = res.data.insertCom;
+        if (res.data.commWithUser) {
+          const comment = res.data.commWithUser;
           addCommentElement(comment);
           commentForm.reset();
         } else {
@@ -136,12 +158,15 @@
       }
     });
 
+    // 댓글 등록 추가 함수
     function addCommentElement(comment) {
       const commentSection = document.getElementById('comment-section');
       const commentElement = document.createElement('li');
       commentElement.classList.add('list-none', 'mb-4');
       commentElement.innerHTML = `
-            <div class="bg-white rounded-lg shadow-md p-4 mb-4 mt-8">
+            <div class="bg-white rounded-lg shadow-md p-4 mb-4 mt-8" data-comment-id="${
+              comment.comId
+            }">
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center">
                         <p class="text-gray-700 font-semibold mr-2">${
@@ -162,7 +187,7 @@
                         })" id="delete-btn-${
         comment.comId
       }" type="button" class="bg-gray-500 text-white font-semibold py-0.5 px-1 text-xs md:py-1 md:px-3 rounded hover:bg-red-600">삭제</button>
-                    </div>
+      </div>
                 </div>
                 <p id="comContent-${
                   comment.comId
@@ -184,7 +209,7 @@
             ${
               comment.replies && comment.replies.length > 0
                 ? `
-            <ul data-comment-id="${comment.comId}">
+            <ul data-reply-id="${comment.comId}">
                 ${comment.replies
                   .map(
                     (reply) => `
@@ -233,11 +258,13 @@
       commentSection.appendChild(commentElement);
     }
 
+    // 답글 버튼 토글
     function toggleReplyForm(commentId) {
       const replyForm = document.getElementById(`replyForm-${commentId}`);
       replyForm.classList.toggle('hidden');
     }
 
+    // 답글 등록
     async function submitReply(event, parentComId) {
       event.preventDefault();
       const replyText = document.getElementById(`reply-${parentComId}`).value;
@@ -245,7 +272,6 @@
       try {
         const res = await axios.post(`/comment/reply/${parentComId}`, {
           postId,
-          userId: 1, // 실제 사용자 ID로 변경 필요
           comContent: replyText,
         });
 
@@ -262,9 +288,11 @@
         console.error('대댓글 작성 중 오류 발생:', error);
       }
     }
+
+    // 답글 추가 함수
     function addReplyElement(reply) {
       const commentElement = document.querySelector(
-        `[data-comment-id="${reply.parentComId}"]`
+        `[data-reply-id="${reply.parentComId}"]`
       );
       if (commentElement) {
         // 찾은 댓글 요소 아래에 대댓글 리스트를 추가합니다.
@@ -311,24 +339,44 @@
       }
     }
 
-    async function deletBtn(comId) {
+    // 댓글 삭제
+    async function deletBtn(comment) {
       const commentSection = document.getElementById('comment-section');
       if (window.confirm('댓글을 삭제하시겠습니까?')) {
+        console.log('commnet', comment);
         try {
           const res = await axios.patch(`/comment/delete/${comId}`);
           if (res.data && res.data.deleteComm > 0) {
-            const commentElement = document.querySelector(
-              `[data-comment-id="${comId}"]`
-            );
-            if (commentElement) {
-              commentElement.remove();
-              if (commentSection.children.length === 0) {
-                const noComments = document.createElement('p');
-                noComments.id = 'no-comments';
-                noComments.textContent = '댓글이 없습니다.';
-                commentSection.appendChild(noComments);
+            const replies = comment.replies;
+            for (let i = 0; i < replies.length; i++) {
+              const reply = replies[i];
+              const commentElement = document.querySelectorAll(
+                `[data-reply-id="${reply}"], [data-comment-id="${comId}"]`
+              );
+
+              if (commentElement) {
+                commentElement.forEach((element) => element.remove()); // commentElement는 NodeList이므로 forEach로 제거
+                if (commentSection.children.length === 0) {
+                  const noComments = document.createElement('p');
+                  noComments.id = 'no-comments';
+                  noComments.textContent = '댓글이 없습니다.';
+                  commentSection.appendChild(noComments);
+                }
               }
             }
+            // const commentElement = document.querySelectorAll(
+            //   `[data-reply-id="${replies}"], [data-comment-id="${comId}"]`
+            // );
+
+            // if (commentElement) {
+            //   commentElement.remove();
+            //   if (commentSection.children.length === 0) {
+            //     const noComments = document.createElement('p');
+            //     noComments.id = 'no-comments';
+            //     noComments.textContent = '댓글이 없습니다.';
+            //     commentSection.appendChild(noComments);
+            //   }
+            // }
           } else {
             console.error('댓글 삭제 실패:', res.data.error || '삭제 실패');
           }
@@ -338,6 +386,7 @@
       }
     }
 
+    // 댓글 수정
     async function editBtn(comId) {
       let comContentElement = document.getElementById(`comContent-${comId}`);
       let comContent = comContentElement.textContent.trim();
@@ -424,6 +473,7 @@
       });
     }
 
+    // 답글 삭제
     async function deleteReply(comId) {
       const commentSection = document.getElementById('comment-section');
       if (window.confirm('대댓글을 삭제하시겠습니까?')) {
@@ -454,6 +504,8 @@
         }
       }
     }
+
+    // 답글 수정
     async function editReply(comId) {
       let comContentElement = document.querySelector(
         `[data-reply-id-edit="${comId}"]`
