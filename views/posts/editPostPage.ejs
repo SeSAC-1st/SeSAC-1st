@@ -52,7 +52,7 @@
             onmouseout="revertTextOnHoverOut()"
             class="hover-text-change text-sky-500 hover:shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
             Commit</button>
-            <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
+            <button onclick="updatePost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
             </div>
         </div>
         
@@ -93,8 +93,8 @@
  
     
 
-    // 게시물 게시 함수
-    async function insertPost() {
+    // 게시물 업데이트 함수
+    async function updatePost() {
       console.log('클릭');
       const postTitle = document.querySelector('#postTitle').value.trim();
       const postContent = editor.getHTML();
@@ -105,66 +105,32 @@
         throw new Error('Title is empty!');
       }
       
-      const userId = 1;
+      const postId = 22;
       // req.body : {postTitle, postContent},
       // userId → 세션에서 가져오기
       try {
           const res = await axios({
-            method: 'post',
-            url: `/post`,
+            method: 'patch',
+            url: `/post/${postId}`,
             data: {
               postTitle,
               postContent,
-              userId,
             },
           });
+
+          console.log(postContent);
+        //   alert('update 완료!')
 
         //   console.log(postTitle, postContent); 
-          const { data } = res;
-          if (data) {
-            alert('게시 완료!');
-            document.location.href = '/';
-          }
+        //   const { data } = res;
+        //   if (data) {
+        //     alert('게시 완료!');
+        //     document.location.href = '/';
+        //   }
           } catch (error) {
           console.error(error);
         }
     }
-
-    // 임시 저장 함수
-    async function stashPost() {
-    const stashTitle = "Stash :" + document.querySelector('#postTitle').value.trim();
-    const postContent = editor.getHTML();
-
-
-    if (postTitle.length < 1) {
-      // alert('제목을 입력해 주세요.')
-      throw new Error('Title is empty!');
-    }
-
-    const userId = 1;
-      // req.body : {postTitle, postContent},
-      // userId → 세션에서 가져오기
-      try {
-          const res = await axios({
-            method: 'post',
-            url: `/post`,
-            data: {
-              postTitle: stashTitle,
-              postContent,
-              userId,
-            },
-          });
-
-          console.log(postTitle, postContent); 
-          const { data } = res;
-          if (data) {
-            alert('게시 완료!');
-            // document.location.href = '/';
-          }
-          } catch (error) {
-          console.error(error);
-        }
-  }
 
     function changeTextOnHover() {
             const button = document.getElementById('hoverButton');
