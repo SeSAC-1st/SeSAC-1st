@@ -131,10 +131,6 @@ exports.getPostList = async (req, res) => {
           }),
         ]);
         const pageCount = Math.ceil(postCount / pageSize);
-        console.log('전체목록 req.session.user ->', req.session.user);
-        // res.json(postCount)
-
-        // res.json({postCount, postList})
         res.render('posts/postsPage', {
           postList,
           postCount,
@@ -158,7 +154,6 @@ exports.getPostList = async (req, res) => {
 exports.getUserPostList = async (req, res) => {
   try {
     // 페이지 이동시 로그인 상태인지 확인
-    console.log('사용자 게시물 목록', req.session.user);
     if (req.session.user) {
       const { userId } = req.session.user;
       const { page, size } = req.params;
@@ -228,59 +223,6 @@ exports.getUserPostList = async (req, res) => {
         console.error(error);
         res.status(500).send('Internal Server Error');
       }
-
-      // const userPostCount = await Post.count({
-      //   where: {
-      //     isDeleted: false,
-      //     userId,
-      //   },
-      // });
-      // const userPostList = await Post.findAll({
-      //   where: {
-      //     isDeleted: false,
-      //     userId,
-      //   },
-      //   limit: pageSize,
-      //   offset: offset,
-      //   attributes: [
-      //     'postId',
-      //     'postTitle',
-      //     'postContent',
-      //     'userId',
-      //     'createdAt',
-      //     [
-      //       fn('COALESCE', fn('COUNT', col('Comments.comId')), 0),
-      //       'commentCount',
-      //     ],
-      //   ],
-      //   include: [
-      //     {
-      //       model: Comment,
-      //       as: 'Comments',
-      //       where: {
-      //         isDeleted: false,
-      //       },
-      //       required: false,
-      //       attributes: [], // join에 필요한 컬럼이 없으므로 빈 배열로 설정
-      //     },
-      //     {
-      //       model: User,
-      //       as: 'User',
-      //       attributes: ['userNick'], // User 테이블에서 userNick 컬럼만 선택
-      //     },
-      //   ],
-      //   group: ['Post.postId', 'User.userNick'], // 그룹화 필드에 User.userNick 추가
-      //   subQuery: false, // 서브쿼리를 사용하지 않도록 설정
-      // });
-
-      // res.json({
-      //   userPostList,
-      //   userPostCount,
-      //   pageCount,
-      //   cntPostGroupMonth,
-      //   currentPage: pageNumber,
-      // });
-      // 내글 목록 버튼 눌렀을때 실행되어야함, 차트까지 같이 렌더
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -406,8 +348,6 @@ exports.getPost = async (req, res) => {
       ],
     });
 
-    // res.json({ post, commList });
-    // 각 게시물 제목 클릭하면 조회해서 게시물 상세 페이지로 데이터 가지고 이동, 댓글/대댓글 리스트 포함
     res.render('posts/postDetailPage', {
       post,
       commList,
@@ -432,10 +372,6 @@ exports.updatePost = async (req, res) => {
       );
 
       res.json(postUpdate[0]);
-      // 수정 버튼 눌렀을때 수정완료 되면 상세 페이지로 redirect
-      // if (postUpdate[0] === 1) res.send({result:true})
-      // else res.send({result:false})    // 수정 실패
-      // 리턴을 업데이트된 행의 개수 - 1
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -459,10 +395,8 @@ exports.deletePost = async (req, res) => {
         { where: { postId } }
       );
 
-      res.json({ postDelete, commentDelete });
-      // if (postDelete[0] === 1) res.send({result:true})
-      //   else res.send({result:false})    // 삭제 실패
-      // 삭제 완료 되면 사용자 게시물 목록 페이지로 이동
+      if (postDelete[0] === 1) res.send({ result: true });
+      else res.send({ result: false }); // 삭제 실패
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -484,9 +418,6 @@ exports.insertPost = async (req, res) => {
       });
 
       res.json(postcreate);
-      // 등록 완료 하면 사용자 게시물 목록으로 이동
-      // if (postcreate) res.send({result:true})
-      //   else res.status(400).send({ error: 'Failed to create post' });
     } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
@@ -523,7 +454,6 @@ exports.getEditPostPage = async (req, res) => {
         return res.status(404).send('게시물을 찾을 수 없습니다.');
       }
 
-      res.json(post);
       // 게시물 정보를 렌더링하는 페이지로 이동
       res.render('posts/editPostPage', { post });
     } else res.redirect('/user/login');

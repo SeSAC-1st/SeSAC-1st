@@ -9,13 +9,18 @@
   </head>
   <body>
     <%- include('../include/header.ejs') %>
-    <main class="px-4  sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
       <% if(userPostList.length > 0) { %>
       <article
         class="flex flex-col self-stretch my-auto max-md:mt-5 max-md:max-w-full"
       >
-        <div class="flex justify-center items-center ">
-          <canvas id="myChart" class="w-full max-w-lg h-full" width="500" height="250"></canvas>
+        <div class="flex justify-center items-center">
+          <canvas
+            id="myChart"
+            class="w-full max-w-lg h-full"
+            width="500"
+            height="250"
+          ></canvas>
         </div>
 
         <!-- 게시글 -->
@@ -31,12 +36,11 @@
           <button
             class="px-6 py-3 text-l text-black rounded-xl border border-solid border-zinc-300 max-md:px-5"
           >
-            <a href="">글 작성하기</a>
+            <a href="/post/form">글 작성하기</a>
           </button>
         </div>
       </article>
-      <% } %>
-      <%- include('../include/pagination.ejs') %>
+      <% } %> <%- include('../include/pagination.ejs') %>
     </main>
     <%- include('../include/footer.ejs') %>
 

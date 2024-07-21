@@ -60,8 +60,6 @@ exports.userRegister = async (req, res) => {
       birthday,
     });
 
-    // res.json(newUser);
-    // 회원가입 완료 시 회원가입 완료 페이지로 이동
     if (newUser) res.send({ result: true });
     else res.send({ result: false });
   } catch (error) {
@@ -110,7 +108,6 @@ exports.userLogin = async (req, res) => {
       profileImg: user.profileImg, // 프로필 이미지 없으면 null
       userNick: user.userNick,
     };
-    console.log(req.session.user);
 
     req.session.save(function (error) {
       if (error) {
@@ -210,12 +207,10 @@ exports.updateUser = async (req, res) => {
 
 // 로그아웃 로직
 exports.userLogout = async (req, res) => {
-  // console.log('session', req.session);
   req.session.destroy((err) => {
     if (err) return res.status(500).send('Failed to logout.');
     // 로그아웃 완료하면 메인(전체 게시물 목록)페이지로 이동
-    // res.redirect('/')
-    res.send('Logged out successfully.');
+    res.redirect('/');
   });
 };
 
@@ -223,7 +218,6 @@ exports.userLogout = async (req, res) => {
 exports.getProfilePage = async (req, res) => {
   // 페이지 이동시 로그인 상태인지 확인
   if (req.session.user) {
-    console.log('sessfoisjdofjfs----', req.session.user);
     const { userId } = req.session.user;
 
     const user = await User.findOne({

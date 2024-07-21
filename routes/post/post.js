@@ -6,7 +6,6 @@ const controller = require('../../controller/post/Cpost');
 router.get('/list/:page/:size', controller.getPostList);
 
 // 전체 게시물 목록 조회(제목으로 검색)
-// axios에서 url 은 `/list/${page}/${size}?postTitle=${searchKeyword}` 이런 형식으로 작성
 router.get('/list/:page/:size?postTitle=:keyword', controller.getPostList);
 
 // 사용자 게시물 목록 조회

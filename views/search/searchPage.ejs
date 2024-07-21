@@ -8,7 +8,6 @@
       src="https://kit.fontawesome.com/635c39890e.js"
       crossorigin="anonymous"
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <%- include('../include/head.ejs') %>
   </head>
 
@@ -60,7 +59,6 @@
   <script>
     async function searchForm() {
       const searchText = document.querySelector('.searchText').value;
-      console.log('서치텍스트', searchText);
       if (!searchText) {
         alert('검색어를 입력해주세요');
       } else {
@@ -69,7 +67,6 @@
             method: 'GET',
             url: `/post/search/title`,
           });
-          console.log('res---', res.data.result);
           if (res.data.result) {
             window.location.href = `/post/list/1/12?postTitle=${searchText}`;
           }

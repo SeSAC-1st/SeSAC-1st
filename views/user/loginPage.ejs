@@ -84,15 +84,12 @@
             loginId: document.querySelector('.loginId').value,
             userPw: document.querySelector('.userPw').value,
           };
-          // console.log('데이터', data);
           const res = await axios({
             method: 'POST',
             url: '/user/login',
             data,
           });
-          console.log(res);
           if (res.data.result) {
-            // 서버측 코드에서 id, pw가 맞다면 res.send({ success: true }) 반환하도록 부탁드려요
             window.location.href = '/';
           } else {
             document.getElementById('errorMessage').textContent =

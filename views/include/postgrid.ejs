@@ -15,7 +15,7 @@
             </a>
             <div class="mt-4">
                 <h3 class="text-sm text-gray-700 line-clamp-3 dark:text-white">
-                    <%= post.postContent.length> 100 ? post.postContent.slice(0, 100) + '...' : post.postContent %>
+                    <%- post.postContent.length> 100 ? post.postContent.slice(0, 100) + '...' : post.postContent %>
                 </h3>
             </div>
             <div class="absolute bottom-5 border-t border-gray-300 pt-2 mt-auto  ">    
@@ -29,7 +29,7 @@
                   </span>
                   <span class="absolute right-2 text-gray-400 text-xs  dark:text-white">
                     <%= post.commentCount %>
-                    <i class="fa-solid fa-heart"></i>777
+                    <i class="fa-solid fa-heart"></i>
                   </span>
                 </div>
               </div>
