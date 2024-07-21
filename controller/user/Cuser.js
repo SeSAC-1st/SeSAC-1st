@@ -226,7 +226,13 @@ exports.getProfilePage = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     // 회원 조회 한 후 조회한 데이터 가지고 마이페이지로 이동
     res.render('user/profilePage', { user, sessionUser: req.session.user });
-  } else res.redirect('/user/login');
+  } else
+    res.status(302).send(`
+    <script>
+      alert('로그인이 필요합니다.');
+      window.location.href = '/user/login';
+    </script>
+  `);
 };
 
 // 회원가입 완료 페이지 이동

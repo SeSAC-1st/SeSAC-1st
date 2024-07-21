@@ -223,7 +223,13 @@ exports.getUserPostList = async (req, res) => {
         console.error(error);
         res.status(500).send('Internal Server Error');
       }
-    } else res.redirect('/user/login');
+    } else
+      res.status(302).send(`
+      <script>
+        alert('로그인이 필요합니다.');
+        window.location.href = '/user/login';
+      </script>
+    `);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -372,7 +378,13 @@ exports.updatePost = async (req, res) => {
       );
 
       res.json(postUpdate[0]);
-    } else res.redirect('/user/login');
+    } else
+      res.status(302).send(`
+      <script>
+        alert('로그인이 필요합니다.');
+        window.location.href = '/user/login';
+      </script>
+    `);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -397,7 +409,13 @@ exports.deletePost = async (req, res) => {
 
       if (postDelete[0] === 1) res.send({ result: true });
       else res.send({ result: false }); // 삭제 실패
-    } else res.redirect('/user/login');
+    } else
+      res.status(302).send(`
+      <script>
+        alert('로그인이 필요합니다.');
+        window.location.href = '/user/login';
+      </script>
+    `);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -418,7 +436,13 @@ exports.insertPost = async (req, res) => {
       });
 
       res.json(postcreate);
-    } else res.redirect('/user/login');
+    } else
+      res.status(302).send(`
+      <script>
+        alert('로그인이 필요합니다.');
+        window.location.href = '/user/login';
+      </script>
+    `);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -434,7 +458,13 @@ exports.getSearchPage = (req, res) => {
 exports.getCreatePostPage = (req, res) => {
   if (req.session.user) {
     res.render('posts/createPostPage', { sessionUser: req.session.user });
-  } else res.redirect('/user/login');
+  } else
+    res.status(302).send(`
+    <script>
+      alert('로그인이 필요합니다.');
+      window.location.href = '/user/login';
+    </script>
+  `);
 };
 
 // 게시물 수정 폼 페이지 이동
@@ -456,7 +486,13 @@ exports.getEditPostPage = async (req, res) => {
 
       // 게시물 정보를 렌더링하는 페이지로 이동
       res.render('posts/editPostPage', { post });
-    } else res.redirect('/user/login');
+    } else
+      res.status(302).send(`
+      <script>
+        alert('로그인이 필요합니다.');
+        window.location.href = '/user/login';
+      </script>
+    `);
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
