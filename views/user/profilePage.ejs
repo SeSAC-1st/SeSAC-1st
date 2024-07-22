@@ -12,7 +12,7 @@
   </head>
   <body>
     <%- include('../include/header.ejs') %>
-    <main class="px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 ">
       <div class="flex flex-col items-center">
         <h1 class="text-xl font-bold mb-4"><%= user.userName %></h1>
         <img
@@ -27,10 +27,10 @@
             class="text-red-500 mb-4"
             style="display: none"
           ></div>
-          <div class="mb-4">
+          <div class="mb-4 border-slate-500 outline-none border-2 rounded-md p-2">
             <label
               for="thumbnail"
-              class="block text-gray-700 dark:text-gray-200"
+              class="block text-gray-700"
               >프로필 이미지</label
             >
             <input
@@ -41,8 +41,8 @@
               onchange="previewImage();"
             />
           </div>
-          <div class="mb-4">
-            <label for="userNick" class="block text-gray-700 dark:text-gray-200"
+          <div class="mb-4  border-slate-500 outline-none border-2 rounded-md p-2">
+            <label for="userNick" class="block text-gray-700"
               >닉네임</label
             >
             <input
@@ -53,8 +53,8 @@
               value="<%= user.userNick %>"
             />
           </div>
-          <div class="mb-4">
-            <label for="email" class="block text-gray-700 dark:text-gray-200"
+          <div class="mb-4  border-slate-500 outline-none border-2 rounded-md p-2">
+            <label for="email" class="block text-gray-700 "
               >이메일</label
             >
             <input
@@ -65,8 +65,8 @@
               value="<%= user.email %>"
             />
           </div>
-          <div class="mb-4">
-            <label for="address" class="block text-gray-700 dark:text-gray-200"
+          <div class="mb-4  border-slate-500 outline-none border-2 rounded-md p-2">
+            <label for="address" class="block text-gray-700 "
               >주소</label
             >
             <input
@@ -77,8 +77,8 @@
               value="<%= user.address %>"
             />
           </div>
-          <div class="mb-4">
-            <label for="birthday" class="block text-gray-700 dark:text-gray-200"
+          <div class="mb-4  border-slate-500 outline-none border-2 rounded-md p-2">
+            <label for="birthday" class="block text-gray-700"
               >생일</label
             >
             <input
@@ -96,13 +96,13 @@
           >
             수정
           </button>
-          <button
+          <!-- <button
             type="button"
             onclick="resetProfileImage()"
             class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-700 mt-4"
           >
             프로필 초기화
-          </button>
+          </button> -->
         </form>
       </div>
     </main>
