@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css"/>
     <link real="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css"/>
     
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
 
     <!-- Commit 버튼 style -->
@@ -163,9 +162,6 @@
       throw new Error('Title is empty!');
     }
 
-    const userId = 1;
-      // req.body : {postTitle, postContent},
-      // userId → 세션에서 가져오기
       try {
           const res = await axios({
             method: 'post',
@@ -173,7 +169,6 @@
             data: {
               postTitle: stashTitle,
               postContent,
-              userId,
             },
           });
 

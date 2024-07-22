@@ -8,15 +8,14 @@
       src="https://kit.fontawesome.com/635c39890e.js"
       crossorigin="anonymous"
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <%- include('../include/head.ejs') %>
   </head>
 
-  <body>
+  <body class="font-sans">
     <div class="max-w-3xl mx-auto mt-24">
       <label
         for="default-search"
-        class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+        class="mb-2 text-sm font-medium text-gray-900 sr-only"
         >Search</label
       >
       <div class="relative">
@@ -24,7 +23,7 @@
           class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
         >
           <svg
-            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            class="w-4 h-4 text-gray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -42,13 +41,13 @@
         <input
           type="search"
           id="default-search"
-          class="searchText block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          class="searchText block w-full h-16 p-4 ps-10 text-lg text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-blue-300 focus:border-none"
           name="postTitle"
           placeholder="검색어를 입력해주세요"
           required
         />
         <button
-          class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 active:ring-4 acitve:outline-none active:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:ring-blue-800"
+          class="text-white h-11 absolute end-2.5 bottom-2.5 bg-mainColor hover:bg-[#0d4a9b] active:ring-4 active:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
           onclick="searchForm()"
         >
           검색
@@ -60,7 +59,6 @@
   <script>
     async function searchForm() {
       const searchText = document.querySelector('.searchText').value;
-      console.log('서치텍스트', searchText);
       if (!searchText) {
         alert('검색어를 입력해주세요');
       } else {
@@ -69,7 +67,6 @@
             method: 'GET',
             url: `/post/search/title`,
           });
-          console.log('res---', res.data.result);
           if (res.data.result) {
             window.location.href = `/post/list/1/12?postTitle=${searchText}`;
           }

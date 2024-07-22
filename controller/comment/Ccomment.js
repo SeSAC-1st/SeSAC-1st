@@ -37,8 +37,10 @@ exports.getCommentList = async (req, res) => {
         ['replies', 'createdAt', 'ASC'], // 대댓글 순서대로 정렬
       ],
     });
-    // console.log('commlist', commList, 'session', req.session.user);
-    res.json({ commList, sessionUser: req.session.user });
+    res.json({
+      commList,
+      sessionUser: req.session.user ? req.session.user : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -62,10 +64,10 @@ exports.insertComment = async (req, res) => {
       where: { comId: insertCom.comId },
       include: [{ model: User, attributes: ['userNick'] }], // User 정보 포함
     });
-    res.json({ commWithUser });
-    // 댓글 등록이 되면 해당 댓글을 댓글 목록 밑에 추가(화면 이동 안하고 바로 밑에 출력해줘야하기 때문에 좀더 생각)
-    // if (insertCom) res.send({insertCom})
-    //   else res.status(500).send({ error: '' });
+    res.json({
+      commWithUser,
+      sessionUser: req.session.user ? req.session.user : null,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -95,13 +97,6 @@ exports.updateComment = async (req, res) => {
       // 업데이트 실패
       res.status(404).json({ error: '댓글을 찾을 수 없습니다.' });
     }
-    // 수정 완료 하면 업데이트된 댓글을 그대로 보내줌, 아니면 content만 보내줘도 됨
-    // if (updateComment[0] === 1) {
-    //   const updatedComment = await Comment.findByPk(comId);
-    //   res.send({updatedComment});
-    // }
-    // return : 1   업데이트된 행 개수
-    // } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -136,18 +131,6 @@ exports.deleteComment = async (req, res) => {
       }
     );
     res.json({ deleteComm: deleteComm[0], deleteReply: deleteReply[0] });
-    // 댓글 삭제가 완료되면 댓글 목록에서 해당 댓글이 없어져야함,대댓글도 같이 삭제, 프론트에서 다시 댓글 로드하는 방식??
-    // if (deleteComm[0] === 1) res.send({result:true})
-    //   else res.status(500).send({error:''})
-    // } else res.redirect('/user/login');
-    // {
-    //     "deleteComm": [
-    //         1   업데이트된 행 개수
-    //     ],
-    //     "deleteReply": [
-    //         2   업데이트된 행 개수
-    //     ]
-    // }
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -156,7 +139,6 @@ exports.deleteComment = async (req, res) => {
 // 대댓글 삭제
 exports.deleteCommentReply = async (req, res) => {
   try {
-    // if (req.session.user) {
     const { comId } = req.params;
     const deleteComm = await Comment.update(
       { isDeleted: true },
@@ -170,12 +152,7 @@ exports.deleteCommentReply = async (req, res) => {
     if (deleteComm[0] === 0) {
       return res.status(404).json({ error: '대댓글을 찾을 수 없습니다.' });
     }
-    // res.json(deleteComm[0]); // 리턴값 : 1  업데이트된 행개수
     res.json({ deleted: deleteComm[0] });
-    // 대댓글 삭제가 완료되면 댓글 목록에서 해당 대댓글이 없어져야함, 프론트에서 다시 댓글 로드하는 방식??
-    // if (deleteComm[0] === 1) res.send({result:true})
-    //   else res.status(500).send({error:''})
-    // } else res.redirect('/user/login');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -198,11 +175,7 @@ exports.insertReply = async (req, res) => {
       where: { comId: insertReply.comId },
       include: [{ model: User, attributes: ['userNick'] }], // User 정보 포함
     });
-    res.json(replyWithUser);
-    // 대댓글 등록 완료되면 등록된 대댓글을 댓글 목록에 추가
-    // if (insertReply) res.send({insertReply})
-    // else res.status(500).send({ error: '' });
-    // } else res.redirect('/user/login');
+    res.json({ replyWithUser, sessionUser: req.session.user });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
