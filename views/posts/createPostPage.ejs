@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블로그 게시물 작성페이지</title>
+    <%- include('../include/head.ejs') %>
+    <link rel="stylesheet" href="/css/toastui-editor.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css"/>
+    <link real="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css"/>
+    
+    <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
+
+    <!-- Commit 버튼 style -->
+    <style>
+     /* #hoverButton::after {
+            content: 'Commit';
+        }
+        #hoverButton:hover::after {
+            content: 'msg';
+        }
+        #hoverButton {
+            position: relative;
+            display: inline-block;
+        }
+        #hoverButton::after {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        } */
+  </style>
+  </head>
+<body>
+  <div class="px-5 m-5">
+      <!-- Title Input -->
+      <form action="" class="w-full pt-5 ">
+        <input id="postTitle" type="text" placeholder="제목을 입력해주세요" class="rounded-lg w-full h-16 text-4xl font-semibold required">
+      </form>
+
+      <!-- Title, Content 구분선 -->
+      <div class="border-t border-4 border-black w-24 mb-6"></div>
+
+       <!-- Tost UI Edit CDN -->
+      <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+      <!-- Tost UI code-syntax-highligh CDN -->
+      <script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+      
+      <!-- 해결하기: 글이 길어지면 푸터가 가려서 임시로 해놓음 -->
+      <!-- Toast UI Editor -->
+      <div id="editor"></div>
+    </div>
+    <!-- Footer -->
+      <div class=" bottom-0 bg-white rounded-lg  ">
+        <div class="mx-auto  p-4 ">
+          <div class="flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+            <div class="mx-5">
+              <button class="ml-3 rounded-lg px-5 py-2.5 me-2 mb-2  focus:outline-none  hover:bg-gray-100">
+                  <i class="fa-solid fa-arrow-left" class="hover:underline ml-5 text-lg  me-4 md:me-6"></i>
+                  <a href="/" class="">Home</a>
+              </button>
+            </div>
+            <div class="mx-5">
+              <button onclick="stashPost()" id="hoverButton" type="button" 
+              onmouseover="changeTextOnHover()" 
+              onmouseout="revertTextOnHoverOut()"
+              class="hover-text-change text-sky-500 hover:shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+              Commit</button>
+              <button onclick="insertPost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
+
+
+
+  <script>
+    // Tast UI Editor
+      const Editor = toastui.Editor;
+      const { codeSyntaxHighlight } = Editor.plugin;
+
+        const previousWidth = window.innerWidth;
+        const initialEditTypeRes = previousWidth > 1025 ? 'markdown' : 'wysiwyg';
+
+        const height = window.innerHeight;
+        const minHeightRes = previousWidth > 420  ?  '480px' :'380px'
+
+        const editor = new Editor({
+          el: document.querySelector('#editor'),
+          height: '72vh',
+          minHeight: minHeightRes,
+          initialEditType: initialEditTypeRes,
+          previewStyle: 'vertical',
+        });
+        
+        // // 이미지 객체 변환 hooks
+        // hooks: {
+        //     addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
+        //         console.log('blob, callback =>', blob, callback);
+        //         let formData = new FormData();
+        //     		formData.append('image', blob); 
+        //     }
+        // }
+        // });
+
+    // 게시물 게시 함수
+    async function insertPost() {
+
+      console.log('클릭');
+      const postTitle = document.querySelector('#postTitle').value.trim();
+      const postContent = editor.getHTML();
+
+
+      if (postTitle.length < 1) {
+        alert('제목을 입력해 주세요.')
+        throw new Error('Title is empty!');
+      }
+      // if (postContent.length < 1) {
+      //   alert('본문을 입력해 주세요.')
+      //   throw new Error('Content is empty!');
+      // }
+
+      console.log(editor.getHTML());
+      console.log(postTitle);
+      
+      // const userId = 1;
+      // req.body : {postTitle, postContent},
+      // userId → 세션에서 가져오기
+      try {
+          const res = await axios({
+            method: 'post',
+            url: `/post`,
+            data: {
+              postTitle,
+              postContent,
+            },
+          });
+
+          console.log(postTitle, postContent); 
+          const { data } = res;
+          if (data) {
+            alert('게시 완료!');
+            document.location.href = '/';
+          }
+          } catch (error) {
+          console.error(error);
+        }
+    }
+
+    // 임시 저장 함수
+    async function stashPost() {
+    const stashTitle = "Stash :" + document.querySelector('#postTitle').value.trim();
+    const postContent = editor.getHTML();
+
+
+    if (postTitle.length < 1) {
+      // alert('제목을 입력해 주세요.')
+      throw new Error('Title is empty!');
+    }
+
+      try {
+          const res = await axios({
+            method: 'post',
+            url: `/post`,
+            data: {
+              postTitle: stashTitle,
+              postContent,
+            },
+          });
+
+          console.log(postTitle, postContent); 
+          const { data } = res;
+          if (data) {
+            alert('게시 완료!');
+            // document.location.href = '/';
+          }
+          } catch (error) {
+          console.error(error);
+        }
+  }
+
+
+    // 페이지 로드시 && 임시저장
+    //  async function reloadOnWidthChange() {
+    //         window.onresize = function() {
+    //             let currentWidth = window.innerWidth;
+    //             // 화면 너비가 1025px 이하로 변경될 때 페이지를 다시 로드
+    //             if (previousWidth > 1025 && currentWidth <= 1025) location.reload();
+    //             // 화면 너비가 1025px 이상으로 변경될 때 페이지를 다시 로드
+    //             if (previousWidth < 1025 && currentWidth >= 1025) location.reload();
+
+    //             alert('임시 저장됬습니다.')
+    //             previousWidth = currentWidth;
+    //           };
+    //           await stashPost();
+    //       }
+
+    //   // 페이지 로드 시 체크
+    //   window.onload = reloadOnWidthChange;
+
+
+    function changeTextOnHover() {
+            const button = document.getElementById('hoverButton');
+            button.innerText = 'Message';
+        }
+
+        function revertTextOnHoverOut() {
+            const button = document.getElementById('hoverButton');
+            button.innerText = 'Commit';
+        }
+  </script>
+</body>
+</html>

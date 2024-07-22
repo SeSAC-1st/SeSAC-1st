@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
+    <%- include('../include/head.ejs') %>
+    <style>
+        /* 물결 선 애니메이션 */
+        .wrap {
+            width: 100vw;
+            height: 350vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .circle {
+            width: 120vw;
+            height: 120vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 7px solid white;
+            /* border-image: linear-gradient(#3c5aff, #52f2fd) 1; */
+            background-color: transparent;
+            position: relative;
+            z-index: -1;
+        }
+
+        .waves {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            
+        }
+
+        .wave {
+            border-radius: 45%;
+            border: 7px solid transparent;
+            background-color: transparent;
+            position: absolute;
+            animation: move infinite linear;
+        }
+
+        .wave-one {
+            width: 100%;
+            height: 100%;
+            border-color: rgba(67, 163, 207, 0.2);
+            animation-duration: 18s;
+        }
+
+        .wave-two {
+            width: 120%;
+            height: 120%;
+            border-color: rgba(99, 184, 255, 0.3);
+            animation-duration: 30s;
+        }
+
+        .wave-three {
+            width: 81.25%;
+            height: 81.25%;
+            border-color: rgba(30, 144, 255, 0.3);
+            animation-duration: 36s;
+        }
+
+        .wave-four {
+            width: 81.25%;
+            height: 81.25%;
+            border-color: rgba(70, 130, 180, 0.1);
+            animation-duration: 52s;
+        }
+
+        .wave-five {
+            width: 112.5%;
+            height: 112.5%;
+            border-color: rgba(173, 216, 230, 0.1);
+            animation-duration: 24s;
+        }
+
+        .wave-six {
+            width: 137.5%;
+            height: 137.5%;
+            border-color: rgba(135, 206, 235, 0.2);
+            animation-duration: 36s;
+        }
+
+        .wave-seven {
+            width: 93.75%;
+            height: 93.75%;
+            border-color: rgba(0, 191, 255, 0.3);
+            animation-duration: 48s;
+        }
+
+        .wave-eight {
+            width: 118.75%;
+            height: 118.75%;
+            border-color: rgba(0, 0, 255, 0.2);
+            animation-duration: 52s;
+        }
+
+        .wave-nine {
+            width: 131.25%;
+            height: 131.25%;
+            border-color: rgba(25, 25, 112, 0.1);
+            animation-duration: 50s;
+        }
+
+        .wave-ten {
+            width: 143.75%;
+            height: 143.75%;
+            border-color: rgba(72, 61, 139, 0.2);
+            animation-duration: s;
+        }
+
+        @keyframes move {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 아이폰 SE */
+        @media only screen and (min-width: 100px)  and (max-width: 380px) {
+            .wrap {
+                height: 710vh; /* 원하는 값으로 변경 */
+            }
+        }
+        /* 아이폰 12Pro */
+        @media only screen and (min-width: 380px) and (max-width: 400px) {
+            .wrap {
+                height: 560vh; /* 원하는 값으로 변경 */
+            }
+        }
+        /* 아이폰 XR */
+        @media only screen and (min-width: 400px) and (max-width: 420px) {
+            .wrap {
+                height: 525vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 아이폰 14 Pro Max */
+        @media only screen and (min-width: 420px) and (max-width: 768px) {
+            .wrap {
+                height: 505vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 작은 데스크탑 및 큰 태블릿 세로 (최대 너비 1200px) */
+        @media only screen and (min-width: 768px) and (max-width: 830px) {
+            .wrap {
+                height: 240vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 작은 데스크탑 및 큰 태블릿 (최대 너비 1200px) */
+        @media only screen and (min-width: 830px) and (max-width: 1025px) {
+            .wrap {
+                height: 330vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+         
+
+        /* iPad Mini 세로, 768px */
+        @media only screen and (min-width: 1025px) and (max-width: 1280px) {
+            .wrap {
+                height: 230vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+        /* 큰 데스크탑 및 27인치 모니터 (최대 너비 2560px) */
+        @media only screen and (min-width: 1280px) and (max-width: 2560px) {
+            .wrap {
+                height: 180vh; /* 원하는 값으로 변경 */
+            }
+        }
+
+
+
+
+        /* 페이지 로드시 카드 애니메이션 */
+        .card {
+            opacity: 0;
+            transform: translateY(-50px) rotate(0deg);
+            animation: slideUpDown 1s ease-in-out forwards;
+        }
+
+        @keyframes slideUpDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 카드 호버시 쉐이킹 */
+        .card-shake:hover {
+            animation: shake  0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(2deg);
+            }
+            50% {
+                transform: rotate(-2deg);
+            }
+            75% {
+                transform: rotate(2deg);
+            }
+        }
+        /* postgrid를 background로 설정 */
+        #postgrid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* background로 보내기 */
+        }
+
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-800">
+    <%- include('../include/header.ejs') %>
+    <div id="grid-Wrapper"  class="mt-8">
+        <div class="flex wrap">
+            <div id="postgrid">
+                <%- include('../include/postgrid.ejs') %>
+                <%- include('../include/pagination.ejs') %>
+            </div>
+            <div class="circle">
+                <div class="wave wave-one"></div>
+                <div class="wave wave-two"></div>
+                <div class="wave wave-three"></div>
+                <div class="wave wave-four"></div>
+                <div class="wave wave-five"></div>
+                <div class="wave wave-six"></div>
+                <div class="wave wave-seven"></div>
+                <div class="wave wave-eight"></div>
+                <div class="wave wave-nine"></div>
+                <div class="wave wave-ten"></div>
+            </div>
+        </div>
+        <%- include('../include/footer.ejs') %>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const waves = document.querySelectorAll('.wave');
+            waves.forEach(wave => {
+            const randomTop = Math.random() * 100 - 50; // -50% ~ 50% 사이의 값을 랜덤으로 생성
+            const randomLeft = Math.random() * 100 - 50; // -50% ~ 50% 사이의 값을 랜덤으로 생성
+            wave.style.top = `${randomTop}%`;
+            wave.style.left = `${randomLeft}%`;
+            });
+        });
+    </script>
+</body>
+</html>

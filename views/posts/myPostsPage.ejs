@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>사용자 게시글 조회 페이지</title>
+    <%- include('../include/head.ejs') %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <%- include('../include/header.ejs') %>
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
+      <% if(userPostList.length > 0) { %>
+      <article
+        class="flex flex-col self-stretch my-auto max-md:mt-5 max-md:max-w-full"
+      >
+        <div class="flex justify-center items-center">
+          <canvas
+            id="myChart"
+            class="w-full max-w-lg h-full"
+            width="500"
+            height="250"
+          ></canvas>
+        </div>
+
+        <!-- 게시글 -->
+        <!-- 외부 그리드 -->
+        <%- include('../include/postgrid.ejs', { postList: userPostList }) %>
+      </article>
+      <% } else { %>
+      <article>
+        <div class="mt-24 text-3xl text-black max-md:mt-10">
+          게시글이 없습니다.
+        </div>
+        <div class="flex justify-end mt-16 max-md:mt-10">
+          <button
+            class="px-6 py-3 text-l text-black rounded-xl border border-solid border-zinc-300 max-md:px-5"
+          >
+            <a href="/post/form">글 작성하기</a>
+          </button>
+        </div>
+      </article>
+      <% } %> <%- include('../include/pagination.ejs') %>
+    </main>
+    <%- include('../include/footer.ejs') %>
+
+    <script>
+      // 월별 게시물 수 데이터
+      const cntPostGroupMonth = <%- JSON.stringify(cntPostGroupMonth) %>;
+
+      // 콘솔에 데이터 출력 (디버깅 용도)
+      console.log(cntPostGroupMonth);
+
+      // 월별 게시물 수 배열 생성
+      const labels = cntPostGroupMonth.map(item => `${item.month}월`);
+      const data = cntPostGroupMonth.map(item => item.count > 10 ? 10 : item.count);
+
+      // 각 값에 대한 세분화된 데이터 생성
+      const datasets = [];
+      const colors = [
+        'rgba(255, 99, 132, 0.8)', // 빨강
+        'rgba(54, 162, 235, 0.8)', // 파랑
+        'rgba(255, 206, 86, 0.8)', // 노랑
+        'rgba(75, 192, 192, 0.8)', // 초록
+        'rgba(153, 102, 255, 0.8)', // 보라
+        'rgba(255, 159, 64, 0.8)', // 주황
+        'rgba(199, 199, 199, 0.8)'  // 회색
+      ];
+
+      for (let i = 0; i < 10; i++) {
+        const datasetData = data.map(count => (count > i ? 1 : 0));
+        datasets.push({
+          label: `${i + 1}`,
+          data: datasetData,
+          backgroundColor: colors[i % colors.length],
+          borderColor: 'rgba(0, 0, 0, 0)',
+          borderWidth: 2
+        });
+      }
+
+      // Chart.js 차트 생성
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const myChart = new Chart(ctx, {
+        type: 'bar', // 차트 유형: 막대 차트
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: false,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  // 툴팁에 표시될 레이블 커스터마이징
+                  const label = context.dataset.label || '';
+                  // const value = context.raw;
+                  return `${label}`;
+                }
+              }
+            },
+            legend: {
+              display: false
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 10, // y축 최대값 설정
+              stacked: true, // y축 스택 설정
+              grid: {
+                display: false // y축 그리드 숨기기
+              },
+            },
+            x: {
+              stacked: true, // x축 스택 설정
+              grid: {
+                display: false // x축 그리드 숨기기
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
