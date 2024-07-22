@@ -476,7 +476,7 @@ exports.getEditPostPage = async (req, res) => {
         where: {
           postId,
         },
-        attributes: ['postTitle', 'postContent'],
+        attributes: ['postId', 'postTitle', 'postContent'],
       });
 
       if (!post) {
@@ -497,4 +497,11 @@ exports.getEditPostPage = async (req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
+};
+
+// 게시물 상세에서 수정 버튼
+exports.getEditButton = (req, res) => {
+  const { postId } = req.params;
+  if (postId) res.send({ result: true });
+  else res.send({ result: false });
 };

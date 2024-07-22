@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css"/>
     <link real="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css"/>
     
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/880802bab5.js" crossorigin="anonymous"></script>
   </head>
 <body>
@@ -52,7 +51,7 @@
             onmouseout="revertTextOnHoverOut()"
             class="hover-text-change text-sky-500 hover:shadow-sm font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
             Commit</button>
-            <button onclick="updatePost()" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
+            <button onclick="updatePost('<%= post.postId %>')" type="button" class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-300 dark:hover:bg-blue-700 focus:outline-none">Push</button>
             </div>
         </div>
         
@@ -83,19 +82,9 @@
     console.log(postContent);
      editor.setHTML(postContent);
 
-    
-    // console.log('postContent ->', postContent);
-
-
-    // editor.setHTML(postContent);
-
-
- 
-    
 
     // 게시물 업데이트 함수
-    async function updatePost() {
-      console.log('클릭');
+    async function updatePost(postId) {
       const postTitle = document.querySelector('#postTitle').value.trim();
       const postContent = editor.getHTML();
 
@@ -105,9 +94,6 @@
         throw new Error('Title is empty!');
       }
       
-      const postId = 22;
-      // req.body : {postTitle, postContent},
-      // userId → 세션에서 가져오기
       try {
           const res = await axios({
             method: 'patch',
@@ -118,15 +104,13 @@
             },
           });
 
-          console.log(postContent);
-        //   alert('update 완료!')
-
-        //   console.log(postTitle, postContent); 
-        //   const { data } = res;
-        //   if (data) {
-        //     alert('게시 완료!');
-        //     document.location.href = '/';
-        //   }
+          if (res.data === 1){
+            alert('수정 완료')
+            window.location.href = `/post/${postId}`
+          }
+          else{
+            alert('수정 실패!!!')
+          }
           } catch (error) {
           console.error(error);
         }
@@ -141,9 +125,6 @@
             const button = document.getElementById('hoverButton');
             button.innerText = 'Commit';
         }
-
-
-
 
   </script>
 </body>

@@ -35,4 +35,7 @@ router.post('/', controller.insertPost);
 // 게시물 수정 폼 페이지 이동
 router.get('/form/:postId', controller.getEditPostPage);
 
+// 게시물 상세에서 수정 버튼
+router.get('/form/edit/:postId', controller.getEditButton);
+
 module.exports = router;

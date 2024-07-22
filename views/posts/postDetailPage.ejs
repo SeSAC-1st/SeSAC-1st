@@ -86,17 +86,29 @@
 
     // 게시글 수정
     async function editPost(postId) {
-      let postTitleElement = document
-        .getElementById('postTitle')
-        .textContent.trim();
-      let postContentElement = document
-        .getElementById('postContent')
-        .textContent.trim();
+      // let postTitleElement = document
+      //   .getElementById('postTitle')
+      //   .textContent.trim();
+      // let postContentElement = document
+      //   .getElementById('postContent')
+      //   .textContent.trim();
+      console.log('postId', postId);
       try {
-        const res = await axios.post(`/post/form/${postId}`, {
-          postTitle: postTitleElement,
-          postContent: postContentElement,
+        const res = await axios({
+          method: 'get',
+          url: `/post/form/edit/${postId}`,
         });
+        console.log('res.data.result', res.data.result);
+        if (res.data.result) {
+          window.location.href = `/post/form/${postId}`;
+        } else {
+          alert('해당 게시물이 존재하지 않습니다');
+        }
+
+        // .post(`/post/form/${postId}`, {
+        //   postTitle: postTitleElement,
+        //   postContent: postContentElement,
+        // });
       } catch (error) {
         console.error('update error>>', error);
       }
