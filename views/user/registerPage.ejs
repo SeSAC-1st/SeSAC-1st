@@ -6,156 +6,149 @@
     <title>회원가입</title>
     <%- include("../include/head.ejs") %>
   </head>
-  <body class="mt-16">
-    <main class="text-sm flex justify-center items-center bg-[#ffffff] mb-10">
+  <body class="m-5">
+    <main class="text-sm flex justify-center items-center bg-white mb-10">
       <div
-        class="registerBox flex justify-center items-center box-border bg-[#ffffff] shadow-[0_0_10px_4px_rgba(0,0,0,0.1)] rounded-lg w-[1120px] min-h-[1000px] max-h-[1400px] [&_label]:font-[700]"
+        class="registerBox flex justify-center items-center box-border bg-white rounded-lg w-full p-6 min-h-screen"
       >
-        <div
-          class="registerWrapper w-[500px] p-[30px] flex flex-col items-center"
-        >
-          <a href="/"
-            ><img
+        <div class="registerWrapper w-full sm:w-3/4 md:w-1/2 flex flex-col items-center">
+          <a href="/">
+            <img
               src="/static/image/logoImage.png"
               alt="logoImage"
-              width="100px"
-          /></a>
-          <hr class="w-[100%] mb-[20px] border-none h-[1px] bg-[#006eff]" />
+              class="w-24"
+            />
+          </a>
+          <hr class="w-full my-4 border-t border-blue-600" />
           <form
             id="registerForm"
-            class="w-[100%] flex flex-col items-center [&_div]:w-[100%] [&_input]:w-[100%] [&_input]:h-[48px] [&_input]:pb-[10px] [&_input]:box-border [&_input]:mb-[16px] [&_input]:bg-[#f6f6f6] [&_input]:rounded-[6px] [&_input]:pt-[10px]"
+            class="w-full flex flex-col items-center space-y-4"
           >
-            <div class="w-[100%]">
-              <label>
-                *이름
+            <div class="w-full">
+              <label class="font-bold">
+                이름
                 <br />
                 <input
                   type="text"
-                  class="userName focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="userName w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userName"
                   required
                 />
               </label>
             </div>
-            <div class="userNameGuide hidden mb-[20px] text-[red]">
-              *이름은 2~10글자의 한글, 영어만 사용 가능합니다.
+            <div class="userNameGuide hidden mb-4 text-red-500">
+              이름은 2~10글자의 한글, 영어만 사용 가능합니다.
             </div>
-            <div class="idBox flex justify-between items-end">
-              <label>
-                *아이디
+            <div class="w-full flex justify-between items-center">
+              <label class="flex-grow font-bold">
+                아이디
                 <br />
                 <input
                   type="text"
-                  class="loginId !w-[175%] focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="loginId w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="loginId"
                   required
                 />
               </label>
               <input
                 type="button"
-                class="idDuplicateCheckButton !w-[25%] text-[#fff] text-[16px] !bg-[#006eff] mt-[20px] cursor-pointer font-[600] active:!bg-[#0d4a9b]"
+                class="idDuplicateCheckButton w-1/4 m-2 h-12 text-white text-base bg-blue-600 cursor-pointer font-semibold active:bg-blue-800 rounded"
                 onclick="idDuplicateCheck()"
                 value="중복체크"
               />
             </div>
-            <div class="loginIdGuide hidden mb-[20px] text-[red]">
-              *아이디는 6~10글자의 영문, 숫자만 사용 가능합니다.
+            <div class="loginIdGuide hidden mb-4 text-red-500">
+              아이디는 6~10글자의 영문, 숫자만 사용 가능합니다.
             </div>
-
-            <div>
-              <label>
-                *비밀번호
+            <div class="w-full">
+              <label class="font-bold">
+                비밀번호
                 <br />
                 <input
                   type="password"
-                  class="userPw focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="userPw w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userPw"
                   required
                 />
               </label>
             </div>
-            <div class="userPwGuide hidden mb-[20px] text-[red]">
-              *비밀번호는 8~15글자의 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야
+            <div class="userPwGuide hidden mb-4 text-red-500">
+              비밀번호는 8~15글자의 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야
               합니다.
             </div>
-
-            <div>
-              <label>
-                *비밀번호 확인
+            <div class="w-full">
+              <label class="font-bold">
+                비밀번호 확인
                 <br />
                 <input
                   type="password"
-                  class="userPwCheck focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="userPwCheck w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userPwCheck"
                   oninput="userPwRecheck()"
                   required
                 />
               </label>
             </div>
-            <div class="userPwCheckGuide hidden mb-[20px] text-[red]">
-              *비밀번호가 일치하지 않습니다.
+            <div class="userPwCheckGuide hidden mb-4 text-red-500">
+              비밀번호가 일치하지 않습니다.
             </div>
-            <div>
-              <label>
-                *별명
+            <div class="w-full">
+              <label class="font-bold">
+                별명
                 <br />
                 <input
                   type="text"
-                  class="userNick focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="userNick w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userNick"
                   required
                 />
               </label>
             </div>
-            <div class="userNickGuide hidden mb-[20px] text-[red]">
+            <div class="userNickGuide hidden mb-4 text-red-500">
               별명은 2~10글자의 한글, 영어만 사용 가능합니다.
             </div>
-            <div>
-              <label>
+            <div class="w-full">
+              <label class="font-bold">
                 이메일
                 <br />
                 <input
                   type="email"
-                  class="email focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="email w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="email"
                 />
               </label>
             </div>
-            <div class="emailGuide hidden mb-[20px] text-[red]">
-              *이메일 형식이 맞지 않습니다.
+            <div class="emailGuide hidden mb-4 text-red-500">
+              이메일 형식이 맞지 않습니다.
             </div>
-
-            <div>
-              <label>
+            <div class="w-full">
+              <label class="font-bold">
                 주소
                 <br />
                 <input
                   type="text"
-                  class="address focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="address w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="address"
                 />
               </label>
             </div>
-
-            <div>
-              <label>
+            <div class="w-full">
+              <label class="font-bold">
                 생일
                 <br />
                 <input
                   type="date"
-                  class="birthday focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] pl-[8px]"
+                  class="birthday w-full h-12 px-2 mb-4 bg-gray-200 rounded  focus:border-sky-500 focus:outline-none focus:border-2"
                   name="birthday"
                 />
               </label>
             </div>
-
             <div class="errorMessage" id="errorMessage">
               <p></p>
             </div>
-
             <input
               type="button"
-              class="registerButton text-[#fff] text-[16px] !bg-[#006eff] mt-[20px] cursor-pointer font-[600] active:!bg-[#0d4a9b]"
+              class="registerButton w-full h-12 text-white text-base bg-blue-600 mt-6 cursor-pointer font-semibold active:bg-blue-800 rounded"
               value="회원가입"
               onclick="submitRegisterForm()"
             />
