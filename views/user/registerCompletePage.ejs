@@ -4,91 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include("../include/head.ejs") %>
-    <style>
-      body {
-        font-size: 14px;
-        font-family: 'Roboto', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* height: 100vh; */
-        background-color: #ffffff;
-      }
-      .registerCompleteBox {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-        background-color: #ffffff;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        width: 1120px;
-        height: 1000px;
-        /* position: absolute; */
-      }
-      .registerCompleteWrapper {
-        width: 400px;
-        padding: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .registerCompleteLetter {
-        display: inline-block;
-        font-size: 35px;
-        font-weight: 800;
-      }
-      .registerCompleteWrapper hr {
-        width: 100%;
-        margin-bottom: 20px;
-        /* position: ; */
-        border: 0;
-        height: 1.5px;
-        background-color: #c0c0c0ef;
-      }
-
-      .registerButton {
-        color: #fff;
-        font-size: 16px;
-        background-color: #006eff !important;
-        margin-top: 20px;
-        cursor: pointer;
-        font-weight: 600;
-        width: 100%;
-        height: 48px;
-        padding: 0 10px;
-        box-sizing: border-box;
-        margin-bottom: 16px;
-        border-radius: 6px;
-      }
-
-      .registerButton:active {
-        background-color: #0d4a9b !important;
-      }
-      /* 
-      .logoBox {
-        position: absolute;
-        top: 200px;
-        width: 100%;
-        
-      } 
-      */
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   </head>
-  <body>
-    <div class="registerCompleteBox">
-      <div class="registerCompleteWrapper">
-        <!-- <div class="logoBox"> -->
-        <a href="/"
-          ><img src="/static/image/logoImage.png" alt="logoImage" width="100px"
-        /></a>
-        <hr />
-        <!-- </div> -->
-        <span class="registerCompleteLetter">가입을 환영합니다!</span>
-
+  <body class="flex justify-center items-center bg-white min-h-screen font-roboto">
+    <div class="flex justify-center items-center bg-white rounded-lg p-6">
+      <div class="flex flex-col items-center">
+        <a href="/">
+          <img src="/static/image/Blomit-Logo.png" alt="logoImage" class="mb-4" />
+        </a>
+        <hr class="w-full mb-5 border-[#419BED]" />
+        <span class="text-2xl font-bold">가입을 환영합니다!</span>
         <input
           type="button"
-          class="registerButton"
+          class="w-full h-12 mt-5 mb-4 text-white text-lg bg-[#419BED] hover:bg-blue-700 cursor-pointer font-semibold rounded-md"
           value="로그인 하러 가기"
           onClick="location.href='/user/login'"
         />
