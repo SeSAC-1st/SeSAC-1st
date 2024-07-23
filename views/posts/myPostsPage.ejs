@@ -6,9 +6,9 @@
     <%- include('../include/head.ejs') %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <body>
+  <body class="flex flex-col min-h-screen">
     <%- include('../include/header.ejs') %>
-    <main class="px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
+    <main class="flex-1 px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
       <% if(userPostList.length > 0) { %>
       <article
         class="flex flex-col self-stretch my-auto max-md:mt-5 max-md:max-w-full"
@@ -27,13 +27,14 @@
         <%- include('../include/postgrid.ejs', { postList: userPostList }) %>
       </article>
       <% } else { %>
-      <article>
-        <div class="mt-24 text-3xl text-black max-md:mt-10">
+      <article class="flex flex-col items-center">
+        <img class="w-1/2" src="/static/image/noPost.png" alt="게시글 없음" />
+        <div class="text-2xl text-gray-400 max-md:mt-10">
           게시글이 없습니다.
         </div>
-        <div class="flex justify-end mt-16 max-md:mt-10">
+        <div class="flex justify-end mt-8 max-md:mt-10">
           <button
-            class="px-6 py-3 text-l text-black rounded-xl border border-solid border-zinc-300 max-md:px-5"
+            class="px-5 py-2 text-l text-white rounded-xl max-md:px-5 bg-[#419BED]"
           >
             <a href="/post/form">글 작성하기</a>
           </button>
