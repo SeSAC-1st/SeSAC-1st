@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>블로그 게시물 상세페이지</title>
     <%- include('../include/head.ejs') %>
   </head>
   <body>
@@ -12,7 +11,7 @@
       <h1 id="postTitle" class="text-3xl font-extrabold mb-10 text-center">
         <%= post.postTitle %>
       </h1>
-      <div class="text-gray-500 mb-5">
+      <div class="text-gray-500 mb-5 ">
         <div class="flex justify-between items-center">
           <div>
             <span class="font-semibold mr-2">by <%= post.User.userNick %></span>
@@ -41,7 +40,7 @@
         </div>
         <hr class="border border-gray-300 my-2" />
       </div>
-      <div class="mt-5">
+      <div class="mt-5 min-h-[50vh]">
         <p id="postContent"><%- post.postContent %></p>
       </div>
       <hr class="border border-gray-300 my-6" />
@@ -57,7 +56,7 @@
         <div class="flex justify-end">
           <button
             type="submit"
-            class="bg-blue-500 text-white font-semibold py-0.5 px-1 md:py-1 md:px-3 rounded hover:bg-blue-600"
+            class="bg-blue-500 text-white font-semibold py-1 p-1 md:py-1 md:px-3 rounded hover:bg-blue-600"
           >
             댓글 작성
           </button>

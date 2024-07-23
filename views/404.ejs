@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <%- include('./include/head.ejs') %>
+    <style>
+        .outline-text {
+          -webkit-text-stroke: 1px #0000ff; /* Change #0000ff to the desired outline color */
+          color: transparent;
+        }
+      </style>
 </head>
-<body>
-    <h1>404입니다</h1>
-</body>
+<body class="bg-white flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <a href="/">
+        <h1 class="text-9xl font-bold outline-text">PAGE NOT FOUND</h1>
+      </a>
+    </div>
+  </body>
 </html>
