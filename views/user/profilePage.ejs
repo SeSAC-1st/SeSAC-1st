@@ -48,7 +48,7 @@
               type="text"
               id="userNick"
               class="mt-1 block w-2/3"
-              placeholder="닉네임을 입력하세요"
+              placeholder="<%= user.userNick %>"
             />
           </div>
 
@@ -58,7 +58,7 @@
               type="text"
               id="email"
               class="mt-1 block w-2/3"
-              placeholder="이메일을 입력하세요"
+              placeholder="<%= user.email %>"
             />
           </div>
 
@@ -68,7 +68,7 @@
               type="text"
               id="address"
               class="mt-1 block w-2/3"
-              placeholder="주소를 입력하세요"
+              placeholder="<%= user.address %>"
             />
           </div>
 
@@ -78,7 +78,7 @@
               type="date"
               id="birthday"
               class="mt-1 block w-2/3"
-              placeholder="생일을 입력하세요"
+              value="<%= user.birthday %>"
             />
           </div>
 
