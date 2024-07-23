@@ -4,34 +4,36 @@
   <% postList.forEach(post=> { %>
     <div class="card back w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-3  ">
       <div class="w-full p-3">
-        <div class="bg-white border border-coolGray-100 shadow-dashboard rounded-md 
-          h-[330px] shadow-lg hover:shadow-xl overflow-hidden transform origin-bottom transition duration-400   ease-in 
-          min-w-60 relative card-shake ">
-          <div class="flex flex-col justify-center items-center px-4 pt-8 pb-6 ">
-            <a href="/post/<%= post.postId %>">
-                <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2 ">
-                    <%= post.postTitle %>
-                </h2>
-            </a>
-            <div class="mt-4">
-                <h3 class="text-sm text-gray-700 line-clamp-3 ">
-                    <%- post.postContent.length> 100 ? post.postContent.slice(0, 100) + '...' : post.postContent %>
-                </h3>
-            </div>
-            <div class="absolute bottom-5 border-t border-gray-300 pt-2 mt-auto  ">    
-              <div class="items-center  text-gray-400 text-xs mt-1 ">
-                <div class="flex space-x-2">
-                  <span class="font-medium  text-gray-400 text-sm">Dependency by <%= post.User.userNick %></span>
-                </div>
-                <div class="flex space-x-2"">
-                  <span>
-                    <%= new Date(post.createdAt).toLocaleDateString() %>
-                  </span>
-                </div>
+        <a href="/post/<%= post.postId %>">
+          <div class="bg-white border border-coolGray-100 shadow-dashboard rounded-md 
+            h-[330px] shadow-lg hover:shadow-xl overflow-hidden transform origin-bottom transition duration-400   ease-in 
+            min-w-60 relative card-shake ">
+            <div class="flex flex-col justify-center items-center px-4 pt-8 pb-6 ">
+              
+                  <h2 class="tracking-tight text-gray-900 text-lg font-bold hover:underline block mb-2 ">
+                      <%= post.postTitle %>
+                  </h2>
+              
+              <div class="mt-4">
+                  <h3 class="text-sm text-gray-700 line-clamp-3 ">
+                      <%- post.postContent.length> 100 ? post.postContent.slice(0, 100) + '...' : post.postContent %>
+                  </h3>
+              </div>
+              
+              <div class="absolute bottom-5 border-t border-gray-300 pt-2 mt-auto  ">    
+                  <div class="items-center  text-gray-400 text-xs mt-1 ">
+                    <div class="flex space-x-2">
+                      <span class="font-sm  text-gray-400 text-sm">
+                        <%= new Date(post.createdAt).toLocaleDateString().slice(2) %>
+                      </span>
+                      <span class="font-medium  text-gray-400 text-sm  dark:text-white">Dependency by <%= post.User.userNick %></span>
+                      
+                    </div>
+                  </div>  
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   <% }); %>
