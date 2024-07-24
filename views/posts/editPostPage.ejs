@@ -113,39 +113,42 @@
           console.error(error);
         }
     }
-    
-      // 게시물 임시저장 업데이트 함수
-      async function stashPost(postId) {
-        const stashTitle = "Stash :" + document.querySelector('#postTitle').value.trim();
-        const postContent = editor.getHTML();
 
 
-        if (postTitle.length < 1) {
-          alert('제목을 입력해 주세요.')
-          throw new Error('Title is empty!');
-        }
-        
-        try {
-            const res = await axios({
-              method: 'patch',
-              url: `/post/${postId}`,
-              data: {
-                postTitle: stashTitle,
-                postContent,
-              },
-            });
+     // 게시물 stash 업데이트 함수
+     async function stashPost(postId) {
+      const postTitle = document.querySelector('#postTitle').value.trim();
+      const postContent = editor.getHTML();
 
-            if (res.data === 1){
-              alert('수정 완료')
-              window.location.href = `/post/${postId}`
-            }
-            else{
-              alert('수정 실패!!!')
-            }
-            } catch (error) {
-            console.error(error);
-          }
+
+      if (postTitle.length < 1) {
+        alert('제목을 입력해 주세요.')
+        throw new Error('Title is empty!');
       }
+      
+      try {
+          const res = await axios({
+            method: 'patch',
+            url: `/post/${postId}`,
+            data: {
+              postTitle,
+              postContent,
+            },
+          });
+
+          if (res.data === 1){
+            alert('수정 완료')
+            window.location.href = `/post/${postId}`
+          }
+          else{
+            alert('수정 실패!!!')
+          }
+          } catch (error) {
+          console.error(error);
+        }
+    }
+    
+     
 
     
     function changeTextOnHover() {
