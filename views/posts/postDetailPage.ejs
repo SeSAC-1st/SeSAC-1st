@@ -11,7 +11,7 @@
       <h1 id="postTitle" class="text-3xl font-extrabold mb-10 text-center">
         <%= post.postTitle %>
       </h1>
-      <div class="text-gray-500 mb-5 ">
+      <div class="text-gray-500 mb-5">
         <div class="flex justify-between items-center">
           <div>
             <span class="font-semibold mr-2">by <%= post.User.userNick %></span>
@@ -85,29 +85,16 @@
 
     // 게시글 수정
     async function editPost(postId) {
-      // let postTitleElement = document
-      //   .getElementById('postTitle')
-      //   .textContent.trim();
-      // let postContentElement = document
-      //   .getElementById('postContent')
-      //   .textContent.trim();
-      console.log('postId', postId);
       try {
         const res = await axios({
           method: 'get',
           url: `/post/form/edit/${postId}`,
         });
-        console.log('res.data.result', res.data.result);
         if (res.data.result) {
           window.location.href = `/post/form/${postId}`;
         } else {
           alert('해당 게시물이 존재하지 않습니다');
         }
-
-        // .post(`/post/form/${postId}`, {
-        //   postTitle: postTitleElement,
-        //   postContent: postContentElement,
-        // });
       } catch (error) {
         console.error('update error>>', error);
       }
@@ -119,10 +106,10 @@
         if (window.confirm('게시물을 삭제하시겠습니까?')) {
           const res = await axios.patch(`/post/${postId}/delete`);
           if (res.data.result) {
-            console.log('Delete successful');
+            alert('삭제 성공!');
             window.location.href = `/post/list/user/1/12`;
           } else {
-            console.log('Delete failed');
+            alert('삭제 실패!');
             window.location.href = `/post/list/user/1/12`;
           }
         }

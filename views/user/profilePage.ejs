@@ -9,9 +9,9 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="flex flex-col min-h-screen">
     <%- include('../include/header.ejs') %>
-    <main class="px-4 sm:px-6 lg:px-52 pt-20">
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 flex-1 flex items-center justify-center">
       <div class="flex flex-col items-center">
         <h1 class="text-xl font-bold mb-4"><%= user.userName %></h1>
         <img
@@ -48,7 +48,8 @@
               type="text"
               id="userNick"
               class="mt-1 block w-2/3"
-              placeholder="<%= user.userNick %>"
+              value="<%= user.userNick %>"
+              required
             />
           </div>
 
@@ -58,7 +59,7 @@
               type="text"
               id="email"
               class="mt-1 block w-2/3"
-              placeholder="<%= user.email %>"
+              value="<%= user.email %>"
             />
           </div>
 
@@ -68,7 +69,7 @@
               type="text"
               id="address"
               class="mt-1 block w-2/3"
-              placeholder="<%= user.address %>"
+              value="<%= user.address %>"
             />
           </div>
 
@@ -82,7 +83,6 @@
             />
           </div>
 
-
           <button
             type="button"
             onclick="resetProfileImage()"
@@ -91,132 +91,157 @@
             프로필 초기화
           </button>
           <button
-          type="submit"
-          class="w-full bg-[#419BED] text-white py-2 rounded hover:bg-blue-500 mt-4"
-        >
-          수정
-        </button>
+            type="submit"
+            class="w-full bg-[#419BED] text-white py-2 rounded hover:bg-blue-500 mt-4"
+          >
+            수정
+          </button>
         </form>
       </div>
     </main>
     <%- include('../include/footer.ejs') %>
 
     <script>
-      let isImageReset = false; // 초기화 상태를 추적하는 플래그
+          let isImageReset = false; // 초기화 상태를 추적하는 플래그
 
-      // 생일 필드는 현재 날짜 이후 선택할 수 없도록 설정
-      const nowUtc = Date.now();
-      const timeOff = new Date().getTimezoneOffset() * 60000;
-      const today = new Date(nowUtc - timeOff).toISOString().split("T")[0];
-      document.getElementById("birthday").setAttribute("max", today);
+          // 생일 필드는 현재 날짜 이후 선택할 수 없도록 설정
+          const nowUtc = Date.now();
+          const timeOff = new Date().getTimezoneOffset() * 60000;
+          const today = new Date(nowUtc - timeOff).toISOString().split("T")[0];
+          document.getElementById("birthday").setAttribute("max", today);
 
-      const allowedExtensions = ['image/png', 'image/jpeg', 'image/jpg'];
+          const allowedExtensions = ['image/png', 'image/jpeg', 'image/jpg'];
 
-      function previewImage() {
-        const fileInput = document.querySelector("#thumbnail");
-        const file = fileInput.files[0];
-        const reader = new FileReader();
+          function previewImage() {
+            const fileInput = document.querySelector("#thumbnail");
+            const file = fileInput.files[0];
+            const reader = new FileReader();
 
-        reader.onloadend = function () {
-          document.querySelector("#profileImg").src = reader.result;
-        };
+            reader.onloadend = function () {
+              document.querySelector("#profileImg").src = reader.result;
+            };
 
-        if (file) {
-          if (allowedExtensions.includes(file.type)) {
-            reader.readAsDataURL(file);
-            isImageReset = false; // 이미지 초기화 상태 초기화
-            document.getElementById("error-message").style.display = "none"; // 오류 메시지 숨기기
-          } else {
-            displayErrorMessage('잘못된 파일 형식입니다. .png, .jpeg, .jpg 파일만 허용됩니다.');
-            fileInput.value = ""; // 파일 입력 필드 초기화
-            resetImage(); // 기본 이미지로 재설정
+            if (file) {
+              if (allowedExtensions.includes(file.type)) {
+                reader.readAsDataURL(file);
+                isImageReset = false; // 이미지 초기화 상태 초기화
+                document.getElementById("error-message").style.display = "none"; // 오류 메시지 숨기기
+              } else {
+                displayErrorMessage('잘못된 파일 형식입니다. .png, .jpeg, .jpg 파일만 허용됩니다.');
+                fileInput.value = ""; // 파일 입력 필드 초기화
+                resetImage(); // 기본 이미지로 재설정
+                isImageReset = true; // 이미지 초기화 상태 설정
+              }
+            } else {
+              // 파일이 선택되지 않은 경우 오류 메시지를 숨깁니다.
+              document.getElementById("error-message").style.display = "none";
+            }
+          }
+
+
+          function resetImage() {
+            const defaultImageUrl = "/uploads/user.png";
+            document.querySelector("#profileImg").src = defaultImageUrl;
+          }
+
+          function displayErrorMessage(message) {
+            const errorMessageElement = document.getElementById("error-message");
+            errorMessageElement.textContent = message;
+            errorMessageElement.style.display = "block";
+          }
+
+          async function handleFormSubmit(event) {
+            event.preventDefault(); // 새로고침 방지
+            const user = <%- JSON.stringify(user) %>;
+
+            // 이미지를 초기화한 경우, 빈 문자열을 설정합니다.
+            if (isImageReset) {
+              document.querySelector("#thumbnail").value = ""; // 파일 입력 필드 초기화
+            }
+
+             // 오류 메시지 요소
+      const errorMessageElement = document.getElementById("error-message");
+      errorMessageElement.style.display = "none"; // 초기 상태에서 숨김
+
+      // 별명 유효성 검사
+      const userNick = document.querySelector("#userNick").value;
+      const userNickPattern = /^[가-힣a-zA-Z]{2,10}$/; // 한글 또는 영어 2~10글자
+      if (!userNickPattern.test(userNick)) {
+          errorMessageElement.textContent = "별명은 한글 또는 영어로 2~10글자여야 합니다.";
+          errorMessageElement.style.display = "block"; // 오류 메시지 표시
+          return;
+      }
+
+      // 이메일 유효성 검사
+      const email = document.querySelector("#email").value;
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+      if (email && !emailPattern.test(email)) {
+          errorMessageElement.textContent = "유효한 이메일 형식이 아닙니다.";
+          errorMessageElement.style.display = "block"; // 오류 메시지 표시
+          return;
+      }
+
+      // 모든 유효성 검사를 통과한 경우 오류 메시지 숨김
+      errorMessageElement.style.display = "none";
+
+            await updateUser(user);
+          }
+
+          // 회원 정보 수정
+          async function updateUser(user) {
+            const formData = new FormData();
+            const fileInput = document.querySelector("#thumbnail");
+            const userNick = document.querySelector("#userNick").value;
+            const email = document.querySelector("#email").value;
+            const address = document.querySelector("#address").value;
+            const birthday = document.querySelector("#birthday").value;
+
+            if (fileInput.files.length > 0 && !isImageReset) {
+              const file = fileInput.files[0];
+              if (allowedExtensions.includes(file.type)) {
+                formData.append("profileImg", file);
+              } else {
+                return; // 잘못된 파일 형식일 경우 전송하지 않음
+              }
+            } else if (isImageReset) {
+              formData.append("profileImg", "user.png"); // 기본 이미지로 설정
+            } else {
+              formData.append("profileImg", ""); // 빈 문자열을 보내서 서버가 기존 이미지를 유지하도록 함
+            }
+
+            formData.append("userNick", userNick);
+            formData.append("email", email);
+            formData.append("address", address);
+            formData.append("birthday", birthday);
+
+            try {
+              const res = await axios({
+                method: "PATCH",
+                url: `/user/${user.userId}`,
+                data: formData,
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              });
+
+              const updatedUser = res.data.updatedUser;
+              if (updatedUser.profileImg) {
+                document.querySelector("#profileImg").src = `/uploads/${updatedUser.profileImg}`;
+              }
+              alert('수정이 완료되었습니다.');
+            } catch (error) {
+              console.error(error);
+              displayErrorMessage(error.response.data.message || '.png, .jpeg, .jpg 확장자만 업로드가 가능합니다.');
+            }
+
+            // 파일 입력 필드 초기화
+            document.getElementById("thumbnail").value = ""; // 파일 입력 필드 초기화
+          }
+
+          function resetProfileImage() {
             isImageReset = true; // 이미지 초기화 상태 설정
+            resetImage();
           }
-        } else {
-          // 파일이 선택되지 않은 경우 오류 메시지를 숨깁니다.
-          document.getElementById("error-message").style.display = "none";
-        }
-      }
-
-
-      function resetImage() {
-        const defaultImageUrl = "/uploads/user.png";
-        document.querySelector("#profileImg").src = defaultImageUrl;
-      }
-
-      function displayErrorMessage(message) {
-        const errorMessageElement = document.getElementById("error-message");
-        errorMessageElement.textContent = message;
-        errorMessageElement.style.display = "block";
-      }
-
-      async function handleFormSubmit(event) {
-        event.preventDefault(); // 새로고침 방지
-        const user = <%- JSON.stringify(user) %>;
-
-        // 이미지를 초기화한 경우, 빈 문자열을 설정합니다.
-        if (isImageReset) {
-          document.querySelector("#thumbnail").value = ""; // 파일 입력 필드 초기화
-        }
-
-        await updateUser(user);
-      }
-
-      // 회원 정보 수정
-      async function updateUser(user) {
-        const formData = new FormData();
-        const fileInput = document.querySelector("#thumbnail");
-        const userNick = document.querySelector("#userNick").value;
-        const email = document.querySelector("#email").value;
-        const address = document.querySelector("#address").value;
-        const birthday = document.querySelector("#birthday").value;
-
-        if (fileInput.files.length > 0 && !isImageReset) {
-          const file = fileInput.files[0];
-          if (allowedExtensions.includes(file.type)) {
-            formData.append("profileImg", file);
-          } else {
-            return; // 잘못된 파일 형식일 경우 전송하지 않음
-          }
-        } else if (isImageReset) {
-          formData.append("profileImg", "user.png"); // 기본 이미지로 설정
-        } else {
-          formData.append("profileImg", ""); // 빈 문자열을 보내서 서버가 기존 이미지를 유지하도록 함
-        }
-
-        formData.append("userNick", userNick);
-        formData.append("email", email);
-        formData.append("address", address);
-        formData.append("birthday", birthday);
-
-        try {
-          const res = await axios({
-            method: "PATCH",
-            url: `/user/${user.userId}`,
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-
-          const updatedUser = res.data.updatedUser;
-          if (updatedUser.profileImg) {
-            document.querySelector("#profileImg").src = `/uploads/${updatedUser.profileImg}`;
-          }
-          alert('수정이 완료되었습니다.');
-        } catch (error) {
-          console.error(error);
-          displayErrorMessage(error.response.data.message || '.png, .jpeg, .jpg 확장자만 업로드가 가능합니다.');
-        }
-
-        // 파일 입력 필드 초기화
-        document.getElementById("thumbnail").value = ""; // 파일 입력 필드 초기화
-      }
-
-      function resetProfileImage() {
-        isImageReset = true; // 이미지 초기화 상태 설정
-        resetImage();
-      }
     </script>
   </body>
 </html>

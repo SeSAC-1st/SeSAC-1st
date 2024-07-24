@@ -8,7 +8,7 @@
   </head>
   <body class="flex flex-col min-h-screen">
     <%- include('../include/header.ejs') %>
-    <main class="flex-1 px-4 sm:px-6 lg:px-52 pt-20 dark:bg-gray-900">
+    <main class="flex-1 px-4 sm:px-6 lg:px-52 pt-20">
       <% if(userPostList.length > 0) { %>
       <article
         class="flex flex-col self-stretch my-auto max-md:mt-5 max-md:max-w-full"
@@ -48,8 +48,6 @@
       // 월별 게시물 수 데이터
       const cntPostGroupMonth = <%- JSON.stringify(cntPostGroupMonth) %>;
 
-      // 콘솔에 데이터 출력 (디버깅 용도)
-      console.log(cntPostGroupMonth);
 
       // 월별 게시물 수 배열 생성
       const labels = cntPostGroupMonth.map(item => `${item.month}월`);
