@@ -9,9 +9,9 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="flex flex-col min-h-screen">
     <%- include('../include/header.ejs') %>
-    <main class="px-4 sm:px-6 lg:px-52 pt-20">
+    <main class="px-4 sm:px-6 lg:px-52 pt-20 flex-1 flex items-center justify-center">
       <div class="flex flex-col items-center">
         <h1 class="text-xl font-bold mb-4"><%= user.userName %></h1>
         <img

@@ -10,13 +10,11 @@
       <div
         class="registerBox flex justify-center items-center box-border bg-white rounded-lg w-full p-6 min-h-screen"
       >
-        <div class="registerWrapper w-full sm:w-3/4 md:w-2/5 flex flex-col justify-center items-center">
+        <div
+          class="registerWrapper w-full sm:w-3/4 md:w-2/5 flex flex-col justify-center items-center"
+        >
           <a href="/">
-            <img
-              src="/static/image/Blomit-Logo.png"
-              alt="logoImage"
-              class=""
-            />
+            <img src="/static/image/Blomit-Logo.png" alt="logoImage" class="" />
           </a>
           <hr class="w-full my-4 border-t border-sky-600" />
           <form
@@ -29,7 +27,7 @@
                 <br />
                 <input
                   type="text"
-                  class="userName w-full h-12 px-1  border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="userName w-full h-12 px-1 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userName"
                   placeholder="이름은 2~10글자의 한글, 영어만 사용 가능합니다"
                   required
@@ -39,24 +37,25 @@
             <div class="userNameGuide hidden text-red-500">
               2~10글자의 한글, 영어만 사용 가능합니다.
             </div>
-            <div class="w-full flex justify-between items-center">
-              <label class="flex-grow font-bold">
-                아이디
-                <br />
+
+            <div class="w-full flex flex-col justify-between items-center">
+              <label class="flex-grow font-bold text-left w-full">아이디</label>
+              <div class="flex items-center w-full gap-2">
                 <input
                   type="text"
-                  class="loginId w-full h-12 px-2  border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="loginId w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="loginId"
                   placeholder="6~10글자의 영문, 숫자만 사용 가능합니다"
                   required
                 />
-              </label>
-              <input
-                type="button"
-                class="idDuplicateCheckButton w-1/4 m-2 h-12 text-white text-base bg-sky-600 cursor-pointer font-semibold active:bg-blue-800 rounded"
-                onclick="idDuplicateCheck()"
-                value="중복체크"
-              />
+
+                <input
+                  type="button"
+                  class="idDuplicateCheckButton w-1/4 my-2 h-12 text-white text-base bg-[#419BED] cursor-pointer font-semibold hover:bg-blue-500 rounded"
+                  onclick="idDuplicateCheck()"
+                  value="중복체크"
+                />
+              </div>
             </div>
             <div class="loginIdGuide hidden mb-4 text-red-500">
               아이디는 6~10글자의 영문, 숫자만 사용 가능합니다.
@@ -67,7 +66,7 @@
                 <br />
                 <input
                   type="password"
-                  class="userPw w-full h-12 px-2 border-2 border-gray-300 rounded-md  focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="userPw w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userPw"
                   placeholder="8~15글자의 영문, 숫자, 특수문자를 포함해야 합니다"
                   required
@@ -84,7 +83,7 @@
                 <br />
                 <input
                   type="password"
-                  class="userPwCheck w-full h-12 px-2 border-2 border-gray-300 rounded-md  focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="userPwCheck w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userPwCheck"
                   placeholder="비밀번호를 한번 더 입력 해야합니다."
                   oninput="userPwRecheck()"
@@ -101,7 +100,7 @@
                 <br />
                 <input
                   type="text"
-                  class="userNick w-full h-12 px-2 mb-4  border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="userNick w-full h-12 px-2 mb-4 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="userNick"
                   placeholder="2~10글자의 한글, 영어만 사용 가능합니다"
                   required
@@ -117,7 +116,7 @@
                 <br />
                 <input
                   type="email"
-                  class="email w-full h-12 px-2 border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="email w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="email"
                   placeholder="cat@example.com"
                 />
@@ -132,10 +131,9 @@
                 <br />
                 <input
                   type="text"
-                  class="address w-full h-12 px-2 border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="address w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="address"
                   placeholder="도로명 주소로 작성 해주세요"
-                  
                 />
               </label>
             </div>
@@ -145,7 +143,7 @@
                 <br />
                 <input
                   type="date"
-                  class="birthday w-full h-12 px-2 border-2 border-gray-300 rounded-md   focus:border-sky-500 focus:outline-none focus:border-2"
+                  class="birthday w-full h-12 px-2 border-2 border-gray-300 rounded-md focus:border-sky-500 focus:outline-none focus:border-2"
                   name="birthday"
                 />
               </label>
@@ -155,7 +153,7 @@
             </div>
             <input
               type="button"
-              class="registerButton w-full h-12 text-white text-base bg-blue-600 mt-6 cursor-pointer font-semibold active:bg-blue-800 rounded"
+              class="registerButton w-full h-12 text-white text-base bg-[#419BED] mt-6 cursor-pointer font-semibold hover:bg-blue-500 rounded"
               value="회원가입"
               onclick="submitRegisterForm()"
             />
