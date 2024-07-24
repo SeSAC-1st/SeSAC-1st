@@ -6,26 +6,61 @@
     <%- include("../include/head.ejs") %>
   </head>
   <body class="w-full h-full">
-    <main class="text-sm flex justify-center items-center bg-[#ffffff] min-h-screen">
-        <div class="loginBox flex justify-center items-center box-border bg-[#ffffff] rounded-lg w-full max-w-screen-lg p-4">
-            <div class="loginWrapper w-5/6 md:w-1/2 p-6 flex flex-col items-center">
-              <a href="/" class="flex justify-center items-center w-full mb-5">
-                <img src="/static/image/Blomit-Logo.png" alt="Blomit-Logo" class="w-2/3">
-                <!-- <img src="/static/image/logoImage.png" alt="logoImage" class="w-24 lg:w-32" /> -->
-             </a>
-              <!-- <hr class="w-full mb-10 border-none h-[1px] bg-[#3FA2F6]" /> -->
-              <form id="loginForm" class="w-full flex flex-col items-center [&_input]:w-full [&_input]:h-[48px] [&_input]:pb-[10px] [&_input]:pt-[10px] [&_input]:box-border [&_input]:mb-[16px] [&_input]:rounded-[6px] [&_input]:bg-[#f6f6f6]">
-                  <input type="text" class="loginId pl-[8px] focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] placeholder:text-[#d2d2d2]" name="loginId" placeholder="아이디" onkeydown="idKeySet(this)" />
-                  <input type="password" class="userPw pl-[8px] focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] placeholder:text-[#d2d2d2]" name="userPw" placeholder="비밀번호" />
-                  <div class="errorMessage text-red-600 text-left text-[13px] w-full" id="errorMessage"></div>
-                  <input type="button" class="loginButton cursor-pointer !bg-[#3FA2F6] mt-[20px] font-semibold text-white" value="로그인" onclick="submitForm()" />
-              </form>
-              <div class="flex registerText justify-center items-center w-full text-left">
-                  <div class="text-gray-500">아직 계정이 없으신가요?</div>
-                  <div>
-                      <a class="inline-block w-[70px] font-bold text-sky-500 text-center no-underline cursor-pointer active:font-extrabold active:border-x-[2px]" href="/user/register">회원가입</a>
-                  </div>
-              </div>
+    <main
+      class="text-sm flex justify-center items-center bg-[#ffffff] min-h-screen"
+    >
+      <div
+        class="loginBox flex justify-center items-center box-border bg-[#ffffff] rounded-lg w-full max-w-screen-lg p-4"
+      >
+        <div class="loginWrapper w-5/6 md:w-1/2 p-6 flex flex-col items-center">
+          <a href="/" class="flex justify-center items-center w-full mb-5">
+            <img
+              src="/static/image/Blomit-Logo.png"
+              alt="Blomit-Logo"
+              class="w-2/3"
+            />
+          </a>
+          <!-- <hr class="w-full mb-10 border-none h-[1px] bg-[#3FA2F6]" /> -->
+          <form
+            id="loginForm"
+            class="w-full flex flex-col items-center [&_input]:w-full [&_input]:h-[48px] [&_input]:pb-[10px] [&_input]:pt-[10px] [&_input]:box-border [&_input]:mb-[16px] [&_input]:rounded-[6px] [&_input]:bg-[#f6f6f6]"
+          >
+            <input
+              type="text"
+              class="loginId pl-[8px] focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] placeholder:text-[#d2d2d2]"
+              name="loginId"
+              placeholder="아이디"
+              onkeydown="idKeySet(this)"
+            />
+            <input
+              type="password"
+              class="userPw pl-[8px] focus:outline-[3px] focus:outline-[#f2f2f2ef] focus:!bg-[#f0f0f0] placeholder:text-[#d2d2d2]"
+              name="userPw"
+              placeholder="비밀번호"
+            />
+            <div
+              class="errorMessage text-red-600 text-left text-[13px] w-full"
+              id="errorMessage"
+            ></div>
+            <input
+              type="button"
+              class="loginButton cursor-pointer !bg-[#3FA2F6] mt-[20px] font-semibold text-white"
+              value="로그인"
+              onclick="submitForm()"
+            />
+          </form>
+          <div
+            class="flex registerText justify-center items-center w-full text-left"
+          >
+            <div class="text-gray-500">아직 계정이 없으신가요?</div>
+            <div>
+              <a
+                class="inline-block w-[70px] font-bold text-sky-500 text-center no-underline cursor-pointer active:font-extrabold active:border-x-[2px]"
+                href="/user/register"
+                >회원가입</a
+              >
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -54,10 +89,9 @@
             alert('아이디 또는 비밀번호를 다시 확인해주세요');
           }
         } catch (error) {
-          console.log('로그인 중 error 발생', error);
           document.getElementById('errorMessage').textContent =
-              '아이디 또는 비밀번호를 다시 확인해주세요';
-            alert('아이디 또는 비밀번호를 다시 확인해주세요');
+            '아이디 또는 비밀번호를 다시 확인해주세요';
+          alert('아이디 또는 비밀번호를 다시 확인해주세요');
         }
       }
     </script>
