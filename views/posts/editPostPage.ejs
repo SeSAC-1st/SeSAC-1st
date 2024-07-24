@@ -115,7 +115,7 @@
     }
     
       // 게시물 임시저장 업데이트 함수
-      async function updatePost(postId) {
+      async function stashPost(postId) {
         const stashTitle = "Stash :" + document.querySelector('#postTitle').value.trim();
         const postContent = editor.getHTML();
 
