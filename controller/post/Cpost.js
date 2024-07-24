@@ -306,7 +306,6 @@ exports.getMonthlyPostCounts = async (userId) => {
 // 단일 게시물 조회 매서드
 exports.getPost = async (req, res) => {
   try {
-    console.log('rewijonovsd>>>>>', req.session.user);
     const { postId } = req.params;
     const post = await Post.findOne({
       where: { postId },

@@ -96,15 +96,6 @@
           previewStyle: 'vertical',
         });
         
-        // // 이미지 객체 변환 hooks
-        // hooks: {
-        //     addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
-        //         console.log('blob, callback =>', blob, callback);
-        //         let formData = new FormData();
-        //     		formData.append('image', blob); 
-        //     }
-        // }
-        // });
 
     // 게시물 게시 함수
     async function insertPost() {
@@ -118,17 +109,7 @@
         alert('제목을 입력해 주세요.')
         throw new Error('Title is empty!');
       }
-      // if (postContent.length < 1) {
-      //   alert('본문을 입력해 주세요.')
-      //   throw new Error('Content is empty!');
-      // }
 
-      console.log(editor.getHTML());
-      console.log(postTitle);
-      
-      // const userId = 1;
-      // req.body : {postTitle, postContent},
-      // userId → 세션에서 가져오기
       try {
           const res = await axios({
             method: 'post',
@@ -139,7 +120,6 @@
             },
           });
 
-          console.log(postTitle, postContent); 
           const { data } = res;
           if (data) {
             alert('게시 완료!');
@@ -171,7 +151,6 @@
             },
           });
 
-          console.log(postTitle, postContent); 
           const { data } = res;
           if (data) {
             alert('게시 완료!');
@@ -183,28 +162,9 @@
   }
 
 
-    // 페이지 로드시 && 임시저장
-    //  async function reloadOnWidthChange() {
-    //         window.onresize = function() {
-    //             let currentWidth = window.innerWidth;
-    //             // 화면 너비가 1025px 이하로 변경될 때 페이지를 다시 로드
-    //             if (previousWidth > 1025 && currentWidth <= 1025) location.reload();
-    //             // 화면 너비가 1025px 이상으로 변경될 때 페이지를 다시 로드
-    //             if (previousWidth < 1025 && currentWidth >= 1025) location.reload();
-
-    //             alert('임시 저장됬습니다.')
-    //             previousWidth = currentWidth;
-    //           };
-    //           await stashPost();
-    //       }
-
-    //   // 페이지 로드 시 체크
-    //   window.onload = reloadOnWidthChange;
-
-
     function changeTextOnHover() {
             const button = document.getElementById('hoverButton');
-            button.innerText = 'Message';
+            button.innerText = '임시 저장';
         }
 
         function revertTextOnHoverOut() {
