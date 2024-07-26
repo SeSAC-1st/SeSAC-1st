@@ -3,7 +3,17 @@
 [대상 - B조.pdf](https://github.com/user-attachments/files/16372912/-.B.pdf)
 
 ## 개발자를 위한 블로그 서비스 웹 “블로밋(Blomit)”
+<img width="1708" alt="blomit_mainPage" src="https://github.com/user-attachments/assets/23a22ff0-3e0a-433e-9445-cb2b156db8bb">
+- 배포 URL: http://223.130.147.143:8080/
+- Test ID: sesac1
+- Test PW: sesac1234!
+---
+
 ## 프로젝트 개요
+- Blomit은 개발자를 주 사용자로 타겟팅하여, 마크다운을 통한 블로깅이 가능하도록 한 서비스입니다.
+- 개발 기간: 2024.07 ~ 2024.07
+
+---
 ## 팀원 구성
 
 ### 1. 개발 환경 
