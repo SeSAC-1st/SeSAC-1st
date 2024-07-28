@@ -57,10 +57,16 @@ SeSAC 영등포 6기 웹 개발자 양성 과정 1차 팀 프로젝트 대상 �
 <pre><code>{code}</code></pre>
 ## 4. 역할 분담
 ## 5. 개발 기간과 협업 관리
-## 6. 프로젝트 설계 - 깃 위키에 있는 설계 파일 링크
+
+## 6. 프로젝트 설계 
+ - [명명법](https://github.com/SeSAC-1st/SeSAC-1st/wiki/%EB%AA%85%EB%AA%85%EB%B2%95)
+ - [DB 설계](https://github.com/SeSAC-1st/SeSAC-1st/wiki/DB-%EC%84%A4%EA%B3%84)
+ - [요구분석 정의서/명세서](https://github.com/SeSAC-1st/SeSAC-1st/wiki/%EC%9A%94%EA%B5%AC-%EB%B6%84%EC%84%9D-%EC%A0%95%EC%9D%98%EC%84%9C-%EB%AA%85%EC%84%B8%EC%84%9C)
+ - [git 규칙](https://github.com/SeSAC-1st/SeSAC-1st/wiki/git-%EA%B7%9C%EC%B9%99)
+   
 ## 7. 구현 기능(기능별)
 ## 8. 트러블 슈팅
 ## 9. 성능 테스트
 ## 10. 차후 목표(개선점) - 리더님 피드백, 구현 후 아쉬웠던 점
-## [부록] 프로젝트 회고 - 개인적으로 적기
+
 
