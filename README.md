@@ -53,25 +53,51 @@ SeSAC 영등포 6기 웹 개발자 양성 과정 1차 팀 프로젝트 대상 �
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 ## 2. 브랜치 전략
+<pre><code>  
+   Main branch
+      └── dev
+	    ├── F-dev
+	    |  ├── F-Login
+	    |  ├── F-Register
+	    |  └── F-Post
+	    |  └── F-Search
+	    |  └── F-Comment
+	    ├── B-dev
+	    |  ├── B-Login
+	    |  ├── B-Register
+	    |  └── B-Post
+	    |  └── B-Search
+	    |  └── B-Comment</code></pre>
 ## 3. 프로젝트 구조 - 트리 형태로 출력
 <pre><code>app.js
+├── config
 ├── controller
-|  ├── Ccomment.js
-|  ├── Cpost.js
-|  └── Cuser.js
+|  ├── comment
+|  ├── post
+|  └── user
+├── middlewares
 ├── models
-|  ├── Comment.js
-|  ├── Post.js
-|  ├── User.js
+|  ├── comment
+|  ├── post
+|  ├── user
 |  └── index.js
 ├── package-lock.json
 ├── package.json
+├── .env
+├── .gitignore
+├── .prettierrc
+├── postcss.config.js
+├── tailwind.config.js
 ├── routes
-|  ├── comment.js
-|  ├── post.js
-|  └── user.js
+|  ├── comment
+|  ├── post
+|  ├── user
+|  └── index.js
 ├── static
+|  ├── css
 |  └── image
+├── uploads
+├── utils
 └── views
    ├── includes
    ├── posts
