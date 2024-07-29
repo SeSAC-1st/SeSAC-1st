@@ -23,7 +23,7 @@ SeSAC 영등포 6기 웹 개발자 양성 과정 1차 팀 프로젝트 대상 �
 ||김어진|김지민|박성환|박은경|이유나|
 |---|---|---|---|---|---|
 |Profile|
-|Role|[팀장] BE|[팀원] FE, BE, DevOps|||[팀원] FE|
+|Role|[팀장] BE|[팀원] FE, BE, DevOps|[팀원] FE, BE, DevOps||[팀원] FE|
 |GitHub|[qldirr][qldirr]|[cmkoi1][cmkoi1]|[aixion1506][aixion1506]|[eungyeong0927][eungyeong0927]|[youna99][youna99]|
 
 [cmkoi1]: https://github.com/cmkoi1
