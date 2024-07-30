@@ -114,6 +114,18 @@ SeSAC 영등포 6기 웹 개발자 양성 과정 1차 팀 프로젝트 대상 �
  - [git 규칙](https://github.com/SeSAC-1st/SeSAC-1st/wiki/git-%EA%B7%9C%EC%B9%99)
    
 ## 7. 구현 기능(기능별)
+ - 회원가입/로그인
+   
+	https://github.com/user-attachments/assets/987a4a03-f986-4334-81ed-23c5dcf68f0b
+
+ - 댓글, 검색, 페이지네이션
+   
+	https://github.com/user-attachments/assets/c637be72-6484-42ab-94cf-9e3edebbe6ef
+
+ - 게시글 CRUD
+   
+	https://github.com/user-attachments/assets/fd3e2784-0c50-4606-afa0-67202f794366
+
 ## 8. 트러블 슈팅
 ## 9. 성능 테스트
 ## 10. 차후 목표(개선점) - 리더님 피드백, 구현 후 아쉬웠던 점
